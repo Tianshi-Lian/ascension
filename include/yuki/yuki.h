@@ -1,0 +1,4 @@
+
+namespace yuki {
+    int test();
+}

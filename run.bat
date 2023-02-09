@@ -1,3 +1,4 @@
 @echo off
 
-.\build\dist\ascension
+cd build\dist
+.\ascension

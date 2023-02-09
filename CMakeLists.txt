@@ -20,6 +20,7 @@ set_project_warnings(project_warnings)
 include(cmake/static_analysis.cmake)
 
 option(ENABLE_PCH "Enable Precompiled Headers" ON)
+
 if(ENABLE_PCH)
     target_precompile_headers(project_options INTERFACE <map> <memory> <string> <vector> <utility>)
 endif()

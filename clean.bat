@@ -1,4 +1,8 @@
 @echo off
 
-rm -r .cache
-rm -r build
+if exist ".cache/" (
+    rm -r .cache
+)
+if exist "build/" (
+    rm -r build
+)

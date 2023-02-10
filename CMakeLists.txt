@@ -24,3 +24,7 @@ target_include_directories(${LIB_NAME} PUBLIC
 set_target_properties(${LIB_NAME} PROPERTIES
     LINK_WHAT_YOU_USE ON
 )
+
+if(ENABLE_PCH)
+    target_precompile_headers(${LIB_NAME} PUBLIC include/yuki/types.h)
+endif()

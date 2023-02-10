@@ -9,7 +9,7 @@ add_library(${LIB_NAME}
 )
 
 target_link_libraries(${LIB_NAME}
-    PRIVATE project_options project_warnings
+    PRIVATE project_options project_warnings yuki
 )
 
 target_include_directories(${LIB_NAME} PRIVATE

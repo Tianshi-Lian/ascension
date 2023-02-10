@@ -19,7 +19,3 @@ target_include_directories(${APP_NAME} PRIVATE
 set_target_properties(${APP_NAME} PROPERTIES
     LINK_WHAT_YOU_USE ON
 )
-
-if(ENABLE_PCH)
-    target_precompile_headers(${APP_NAME} PRIVATE include/ascension/types.h)
-endif()

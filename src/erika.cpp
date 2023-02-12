@@ -4,5 +4,5 @@
 
 int erika::test() {
     std::cout << "void erika::test()" << std::endl;
-    return 0;
+    return 1;
 }

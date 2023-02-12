@@ -1,6 +1,6 @@
 @echo off
 
-if not exist "..\build\dist\ascension" (
+if not exist "..\build\dist\ascension.exe" (
     echo missing executable, attempting to build first...
     call build.bat
 )

@@ -2,11 +2,13 @@ include_guard()
 cmake_minimum_required(VERSION 3.16...3.25)
 
 set(LIB_NAME erika)
+message("Configuring ${LIB_NAME}...")
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../sophia/CMakeLists.txt)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../sophia /build)
-    message(STATUS "${LIB_NAME}: found local sophia directory...")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../sophia ${CMAKE_BINARY_DIR}/deps/${LIB_NAME})
+    message(STATUS "Found local sophia directory.")
 else()
     include(FetchContent)
     FetchContent_Declare(sophia

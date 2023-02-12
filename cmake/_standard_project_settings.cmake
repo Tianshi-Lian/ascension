@@ -17,11 +17,11 @@ function(set_standard_project_settings)
     find_program(CCACHE ccache)
 
     if(CCACHE)
-        message("Using ccache...")
+        message(STATUS "Using ccache.")
         set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
         set(CMAKE_CACHEFILE_DIR ${CMAKE_BINARY_DIR})
     else()
-        message("Could not find ccache...")
+        message(STATUS "Could not find ccache.")
     endif()
 
     # Generates compile_commands.json

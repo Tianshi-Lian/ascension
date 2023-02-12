@@ -1,4 +1,3 @@
-
 namespace yuki {
     int test();
 }

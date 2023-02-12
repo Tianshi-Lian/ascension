@@ -4,5 +4,5 @@
 
 int yuki::test() {
     std::cout << "void yuki::test()" << std::endl;
-    return 0;
+    return 2;
 }

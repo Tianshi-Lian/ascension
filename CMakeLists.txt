@@ -11,7 +11,7 @@ project(${APP_PROJECT_NAME}
 include(cmake/standard_project_settings.cmake)
 
 add_library(project_options INTERFACE)
-target_compile_features(project_options INTERFACE cxx_std_11)
+target_compile_features(project_options INTERFACE cxx_std_17)
 
 add_library(project_warnings INTERFACE)
 include(cmake/compiler_warnings.cmake)

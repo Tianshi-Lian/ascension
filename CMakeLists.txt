@@ -1,4 +1,3 @@
-include_guard()
 cmake_minimum_required(VERSION 3.16...3.25)
 
 set(LIB_NAME erika)
@@ -41,10 +40,6 @@ if(NOT TARGET project_warnings)
     set_compiler_warnings(project_warnings)
 endif()
 
-target_link_libraries(${LIB_NAME}
-    PRIVATE project_options project_warnings yuki
-)
-
 target_include_directories(${LIB_NAME} PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
     $<INSTALL_INTERFACE:include/${LIB_NAME}>
@@ -59,5 +54,9 @@ set_target_properties(${LIB_NAME} PROPERTIES
 )
 
 if(ENABLE_PCH)
-    target_precompile_headers(${LIB_NAME} PUBLIC )
+    target_precompile_headers(${LIB_NAME} PUBLIC)
 endif()
+
+target_link_libraries(${LIB_NAME}
+    PRIVATE project_options project_warnings
+)

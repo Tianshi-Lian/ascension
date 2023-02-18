@@ -25,7 +25,7 @@ function(set_standard_project_settings)
     endif()
 
     # Generates compile_commands.json
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
     # Disable compiler extensions to ensure compliance with ISO C++ standards
     set(CMAKE_CXX_STANDARD_REQUIRED ON)

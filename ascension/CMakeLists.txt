@@ -1,5 +1,3 @@
-include_guard()
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 
 set(APP_NAME ascension)

@@ -9,7 +9,7 @@ if not exist "..\build\build.ninja" (
 )
 
 pushd ..\build
-ninja
+ninja -j16
 popd
 
 if not exist "..\build\dist\logs" (

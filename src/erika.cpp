@@ -1,8 +1,9 @@
 #include "erika.h"
 
-#include <iostream>
+#include <yuki/debug/logger.h>
 
 int erika::test() {
-    std::cout << "void erika::test()" << std::endl;
+    yuki::Logger::info("void erika::test()");
+
     return 1;
 }

@@ -6,7 +6,7 @@ message("Configuring ${LIB_NAME}...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../sophia/CMakeLists.txt)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../sophia ${CMAKE_BINARY_DIR}/deps/${LIB_NAME})
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../sophia ${CMAKE_BINARY_DIR}/deps/${LIB_NAME}/sophia)
     message(STATUS "Found local sophia directory.")
 else()
     include(FetchContent)
@@ -17,6 +17,17 @@ else()
     FetchContent_MakeAvailable(sophia)
 endif()
 include(helpers)
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../yuki/CMakeLists.txt)
+	message(STATUS "Found local yuki directory.")
+else()
+    include(FetchContent)
+    FetchContent_Declare(yuki
+        GIT_REPOSITORY git@github.com:r-ggraham/yuki.git
+        GIT_TAG "origin/main"
+    )
+    FetchContent_MakeAvailable(yuki)
+endif()
 
 project(${LIB_NAME}
     VERSION 0.0.1
@@ -58,5 +69,7 @@ if(ENABLE_PCH)
 endif()
 
 target_link_libraries(${LIB_NAME}
-    PRIVATE project_options project_warnings
+    PRIVATE project_options project_warnings yuki
 )
+
+message("Finished ${LIB_NAME}")

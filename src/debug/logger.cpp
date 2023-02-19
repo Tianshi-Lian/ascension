@@ -11,12 +11,13 @@ using namespace yuki;
 using namespace std::chrono;
 
 namespace {
-void write_direct_log(const char* format, va_list args) {
+template <typename... Args>
+void write_direct_log(const char* format, Args&&... args) {
     std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-    std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
-    int ret = vsnprintf(format_buffer.begin(), MAX_LEN_FMT_BUFFER, format, args);
+    int ret = snprintf(format_buffer.begin(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);   // NOLINT
 
     if (ret != -1) {
+        std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
         ret = snprintf(string_buffer.begin(), MAX_LEN_STR_BUFFER, "%S", format_buffer);   // NOLINT
         if (ret > 0) {
             string str(string_buffer.begin());
@@ -25,22 +26,27 @@ void write_direct_log(const char* format, va_list args) {
     }
 }
 
-void write_sys_log(const char* format, ...) {
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_direct_log(format, va_list);
-    va_end(va_list);
-}
-
 }   // namespace
 
 namespace yuki {
 
 Logger_Worker Logger::s_worker{};   // NOLINT
 
-bool Logger_Util::file_exists(const std::string& file_path) { return (access(file_path.c_str(), F_OK) != -1); }
+int Logger_Util::file_exists(const std::string& file_path) {
+    if (access(file_path.c_str(), F_OK) != 0) {
+        if (errno == ENOENT) {
+            write_direct_log("LoggerUtil::HasPermissions() the path(%s) does not exist", file_path.c_str());
+        } else if (errno == EACCES) {
+            write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not accessible", file_path.c_str());
+        }
 
-void Logger_Util::get_time_string(char* buff) {
+        return errno;
+    }
+
+    return 0;   // success
+}
+
+void Logger_Util::get_time_string(char* buffer) {
     constexpr long long ms_in_s = 1000;
     constexpr int start_year = 1900;
 
@@ -54,7 +60,8 @@ void Logger_Util::get_time_string(char* buff) {
 
     if (ret == 0) {
         // Format time in yyyy-MM-dd HH:mm:ss.SSS format
-        ret = snprintf(buff, MAX_LEN_DATE_BUFFER, "%04d-%02d-%02d %02d:%02d:%02d.%03lld", start_year + time_info.tm_year,
+        // NOLINTNEXTLINE
+        ret = snprintf(buffer, MAX_LEN_DATE_BUFFER, "%04d-%02d-%02d %02d:%02d:%02d.%03lld", start_year + time_info.tm_year,
                        1 + time_info.tm_mon, time_info.tm_mday, time_info.tm_hour, time_info.tm_min, time_info.tm_sec,
                        ms_since_epoch % ms_in_s);
 
@@ -65,36 +72,24 @@ void Logger_Util::get_time_string(char* buff) {
 }
 
 int Logger_Util::has_permissions(const char* file_path) {
-    // Check file existence
-    if (access(file_path, F_OK) != 0) {
-        if (errno == ENOENT) {
-            write_sys_log("LoggerUtil::HasPermissions() the path(%s) does not exist", file_path);
-        } else if (errno == EACCES) {
-            write_sys_log("LoggerUtil::HasPermissions() the path(%s) is not accessible", file_path);
-        }
-
-        return errno;
-    }
-
     // Check read access
     if (access(file_path, R_OK) != 0) {
-        write_sys_log("LoggerUtil::HasPermissions() the path(%s) is not readable (access denied)", file_path);
+        write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not readable (access denied)", file_path);
         return errno;
     }
 
     // Check write access
     if (access(file_path, W_OK) != 0) {
         if (errno == EACCES) {
-            write_sys_log("LoggerUtil::HasPermissions() the path(%s) is not write-able (access denied)", file_path);
+            write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not write-able (access denied)", file_path);
             return errno;
         } else if (errno == EROFS) {
-            write_sys_log("LoggerUtil::HasPermissions() the path(%s) is not write-able (read-only file-system)", file_path);
+            write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not write-able (read-only file-system)", file_path);
             return errno;
         }
         return errno;
     }
 
-    // Success, return zero(0)
     return 0;
 }
 
@@ -107,21 +102,6 @@ void Logger_Util::sleep(unsigned int milliseconds) {
     time_req.tv_sec = val / s_to_ns;
     time_req.tv_nsec = (long)(val % s_to_ns);
     nanosleep(&time_req, (struct timespec*)nullptr);
-}
-
-std::string Logger_Util::str_format(const char* format, ...) {
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-    int ret = vsnprintf(format_buffer.begin(), MAX_LEN_FMT_BUFFER, format, va_list);
-    va_end(va_list);
-
-    string retString;
-    if (ret != -1) {
-        retString = string(format_buffer.begin());
-    }
-
-    return retString;
 }
 
 Logger_Worker::Logger_Worker()
@@ -140,18 +120,15 @@ void Logger_Worker::initialize(std::string& log_file_path) {
     try {
         this->m_log_file_path = log_file_path;
 
-        // Application log write thread creation
         m_app_log_thread = std::make_unique<std::thread>(&Logger_Worker::write_to_log_file, this);
         m_app_log_thread->detach();
         m_is_app_interrupted = false;
     } catch (const std::exception& e) {
-        // Write to syslog and throw
-        write_sys_log("Failed to create logger threads(%s)", e.what());
+        write_direct_log("Failed to create logger threads(%s)", e.what());
         throw Logger_Exception(Log_Exception_Type::INIT,
                                Logger_Util::str_format("LoggerWorker::Init(): failed to create logger threads(%s)", e.what()));
     } catch (...) {
-        // Write to syslog and throw
-        write_sys_log("Failed to create logger threads(unknown exception)");
+        write_direct_log("Failed to create logger threads(unknown exception)");
         throw Logger_Exception(Log_Exception_Type::INIT,
                                "LoggerWorker::Init(): failed to create logger threads(unknown exception)");
     }
@@ -215,9 +192,9 @@ void Logger_Worker::write_to_log_file() {
                 m_log_file_stream.open(m_log_file_path, std::ofstream::out | std::ofstream::app | std::ostream::binary);
             }
 
-            // Write errors to syslog when stream error occurred
+            // Write errors to stdout when stream error occurred
             if (m_log_file_stream.bad() || m_log_file_stream.fail()) {
-                write_sys_log(tmp.c_str());
+                write_direct_log(tmp.c_str());
                 m_log_file_stream.close();
             } else {
                 {
@@ -227,13 +204,13 @@ void Logger_Worker::write_to_log_file() {
                 m_log_file_stream.flush();
             }
         } catch (std::exception& ex) {
-            write_sys_log("LoggerWorker::WriteToAplFile() failed to write to application log file(%s)", ex.what());
+            write_direct_log("LoggerWorker::WriteToAplFile() failed to write to application log file(%s)", ex.what());
             throw Logger_Exception(
                 Log_Exception_Type::STREAM,
                 Logger_Util::str_format("LoggerWorker::WriteToAplFile() failed to write to application log file(%s)",
                                         ex.what()));
         } catch (...) {
-            write_sys_log("LoggerWorker::WriteToAplFile() failed to write to application log file(unknown exception)");
+            write_direct_log("LoggerWorker::WriteToAplFile() failed to write to application log file(unknown exception)");
             throw Logger_Exception(Log_Exception_Type::STREAM,
                                    "LoggerWorker::WriteToAplFile() failed to write to application log file(unknown exception)");
         }
@@ -275,30 +252,38 @@ void Logger::initialize(const std::string& log_file_path) {
     // Set application log file path to default, if empty.
     if (log_file_path.empty() || log_file_path[0] == '\0' || log_file_path[0] == ' ') {
         file_path = LOG_PATH_DEFAULT;
-        write_sys_log("Logger::initialize() application log file path is not valid, setting to default value (%s)",
-                      log_file_path.c_str());
+        write_direct_log("Logger::initialize() application log file path is not valid, setting to default value (%s)",
+                         log_file_path.c_str());
     }
 
     // Extract path and check directory permissions
     const std::string& dir_path = file_path;
     size_t final_slash = dir_path.find_last_of('/');
     std::string dir_path_value = dir_path.substr(0, final_slash);
-    if (Logger_Util::has_permissions(dir_path_value.c_str()) != 0) {
-        write_sys_log("Logger::Init() failed to validate application log file directory (%s) permissions",
-                      dir_path_value.c_str());
+    const auto has_dir_permissions = Logger_Util::has_permissions(dir_path_value.c_str());
+    if (has_dir_permissions != 0) {
+        write_direct_log("Logger::initialize() failed to validate application log file directory (%s) permissions. Error (%d)",
+                         dir_path_value.c_str(), has_dir_permissions);
         throw Logger_Exception(
             Log_Exception_Type::PERMISSION,
-            Logger_Util::str_format("Logger::Init() failed to validate application log file directory (%s) permissions",
-                                    dir_path_value.c_str()));
+            Logger_Util::str_format(
+                "initialize::Init() failed to validate application log file directory (%s) permissions. Error (%d)",
+                dir_path_value.c_str(), has_dir_permissions));
     }
 
-    // Validate application log file permission if already exists
-    if (Logger_Util::file_exists(log_file_path) && Logger_Util::has_permissions(log_file_path.c_str()) != 0) {
-        write_sys_log("Logger::Init() failed to validate application log file (%s) permissions", log_file_path.c_str());
-        throw Logger_Exception(
-            Log_Exception_Type::PERMISSION,
-            Logger_Util::str_format("Logger::Init() failed to validate application log file (%s) permissions",
-                                    log_file_path.c_str()));
+    // Check file exists, if so check permissions on that file
+    const auto file_exists = Logger_Util::file_exists(log_file_path);
+    if (file_exists == 0) {
+        const auto has_file_permissions = Logger_Util::has_permissions(log_file_path.c_str());
+        if (has_file_permissions != 0) {
+            write_direct_log("Logger::initialize() failed to validate application log file (%s) permissions. Error (%d)",
+                             log_file_path.c_str(), has_file_permissions);
+            throw Logger_Exception(
+                Log_Exception_Type::PERMISSION,
+                Logger_Util::str_format(
+                    "Logger::initialize() failed to validate application log file (%s) permissions. Error (%d)",
+                    log_file_path.c_str(), has_file_permissions));
+        }
     }
 
     s_worker.initialize(file_path);
@@ -310,138 +295,6 @@ void Logger::enable_file_logging(bool value) { s_worker.m_file_log_enabled = val
 
 void Logger::enable_console_logging(bool value) { s_worker.m_console_log_enabled = value; }
 
-void Logger::debug(const char* format, ...) {
-    if (Log_Level::DEBUG < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::DEBUG, LOG_CODE_DEBUG_DEFAULT, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::debug(unsigned long code, const char* format, ...) {
-    if (Log_Level::DEBUG < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::DEBUG, code, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::info(const char* format, ...) {
-    if (Log_Level::INFO < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::INFO, LOG_CODE_INFO_DEFAULT, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::info(unsigned long code, const char* format, ...) {
-    if (Log_Level::INFO < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::INFO, code, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::notice(const char* format, ...) {
-    if (Log_Level::NOTICE < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::NOTICE, LOG_CODE_NOTICE_DEFAULT, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::notice(unsigned long code, const char* format, ...) {
-    if (Log_Level::NOTICE < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::NOTICE, code, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::warn(const char* format, ...) {
-    if (Log_Level::WARNING < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::WARNING, LOG_CODE_WARN_DEFAULT, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::warn(unsigned long code, const char* format, ...) {
-    if (Log_Level::WARNING < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::WARNING, code, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::error(const char* format, ...) {
-    if (Log_Level::ERROR < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::ERROR, LOG_CODE_ERROR_DEFAULT, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::error(unsigned long code, const char* format, ...) {
-    if (Log_Level::ERROR < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::ERROR, code, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::critical(const char* format, ...) {
-    if (Log_Level::CRITICAL < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::CRITICAL, LOG_CODE_CRIT_DEFAULT, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::critical(unsigned long code, const char* format, ...) {
-    if (Log_Level::CRITICAL < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::CRITICAL, code, format, va_list);
-    va_end(va_list);
-}
-
 void Logger::drop_all() {
     // Sleep server for 200ms to break the write threads wait
     Logger_Util::sleep(2 * SLEEP_IN_MS);
@@ -449,28 +302,9 @@ void Logger::drop_all() {
     try {
         s_worker.drop_all();
     } catch (Logger_Exception& le) {
-        write_sys_log("Logger::DropAll() error closing stream (%s)", le.get_message());
+        write_direct_log("Logger::DropAll() error closing stream (%s)", le.get_message());
         throw Logger_Exception(Log_Exception_Type::EXIT,
                                Logger_Util::str_format("Logger::DropAll() error closing stream (%s)", le.get_message()));
-    }
-}
-
-void Logger::write_log(Log_Level level, unsigned long code, const char* format, va_list args) {
-    std::array<char, MAX_LEN_DATE_BUFFER> time{0};
-    Logger_Util::get_time_string(time.begin());
-
-    std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-    int ret = vsnprintf(format_buffer.begin(), MAX_LEN_FMT_BUFFER, format, args);
-
-    auto log_level = std::string(magic_enum::enum_name(level));
-
-    // yyyy-MM-dd HH:mm:ss.SSS [LEVEL ](code): Message
-    std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
-    ret = snprintf(string_buffer.begin(), MAX_LEN_STR_BUFFER, "%s [%-6s](%04lu): %s", time, log_level.c_str(), code,
-                   format_buffer);
-
-    if (ret > 0) {
-        s_worker.output_log_line(level, string_buffer.begin());
     }
 }
 

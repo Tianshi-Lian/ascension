@@ -7,7 +7,7 @@ int yuki::test() {
     Logger::set_log_severity_level(Log_Level::DEBUG);
     Logger::enable_console_logging(true);
 
-    Logger::info(L"void yuki::test()");
+    Logger::info("void yuki::test()");
 
     return 2;
 }

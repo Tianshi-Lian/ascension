@@ -11,3 +11,7 @@ if not exist "..\build\build.ninja" (
 pushd ..\build
 ninja
 popd
+
+if not exist "..\build\dist\logs" (
+    mkdir ..\build\dist\logs
+)

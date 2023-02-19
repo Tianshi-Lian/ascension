@@ -66,7 +66,10 @@ set_target_properties(${LIB_NAME} PROPERTIES
 )
 
 if(ENABLE_PCH)
-    target_precompile_headers(${LIB_NAME} PUBLIC include/${LIB_NAME}/types.h)
+    target_precompile_headers(${LIB_NAME}
+		PRIVATE <string>
+		PUBLIC include/${LIB_NAME}/types.h
+	)
 endif()
 
 add_subdirectory(libs/magic_enum)

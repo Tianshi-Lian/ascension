@@ -26,11 +26,6 @@ project(${LIB_NAME}
 )
 set_standard_project_settings()
 
-add_library(${LIB_NAME}
-    src/yuki.cpp
-    include/${LIB_NAME}/yuki.h
-)
-
 if(NOT TARGET project_options)
     add_library(project_options INTERFACE)
     target_compile_features(project_options INTERFACE cxx_std_17)
@@ -41,8 +36,20 @@ if(NOT TARGET project_warnings)
     set_compiler_warnings(project_warnings)
 endif()
 
-target_link_libraries(${LIB_NAME}
-    PRIVATE project_options project_warnings
+set(LIB_SRC_FILES
+	src/yuki.cpp
+	src/debug/logger.cpp
+)
+
+# This isn't needed but makes IDEs function nicer
+set(LIB_INC_FILES
+	include/${LIB_NAME}/yuki.h
+	include/${LIB_NAME}/debug/logger.h
+)
+
+add_library(${LIB_NAME}
+    ${LIB_SRC_FILES}
+	${LIB_INC_FILES}
 )
 
 target_include_directories(${LIB_NAME} PRIVATE
@@ -61,3 +68,10 @@ set_target_properties(${LIB_NAME} PROPERTIES
 if(ENABLE_PCH)
     target_precompile_headers(${LIB_NAME} PUBLIC include/${LIB_NAME}/types.h)
 endif()
+
+add_subdirectory(libs/magic_enum)
+
+target_link_libraries(${LIB_NAME}
+    PRIVATE project_options project_warnings pthread
+	PUBLIC magic_enum
+)

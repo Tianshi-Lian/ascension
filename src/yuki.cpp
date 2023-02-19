@@ -1,8 +1,13 @@
 #include "yuki.h"
 
-#include <iostream>
+#include "debug/logger.h"
 
 int yuki::test() {
-    std::cout << "void yuki::test()" << std::endl;
+    Logger::initialize("logs/app.txt");
+    Logger::set_log_severity_level(Log_Level::DEBUG);
+    Logger::enable_console_logging(true);
+
+    Logger::info(L"void yuki::test()");
+
     return 2;
 }

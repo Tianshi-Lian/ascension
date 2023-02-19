@@ -310,47 +310,25 @@ void Logger::enable_file_logging(bool value) { s_worker.m_file_log_enabled = val
 
 void Logger::enable_console_logging(bool value) { s_worker.m_console_log_enabled = value; }
 
-void Logger::critical(const char* format, ...) {
-    if (Log_Level::CRITICAL < s_worker.m_severity_level) {
+void Logger::debug(const char* format, ...) {
+    if (Log_Level::DEBUG < s_worker.m_severity_level) {
         return;
     }
 
     va_list va_list = nullptr;
     va_start(va_list, format);
-    write_log(Log_Level::CRITICAL, LOG_CODE_CRIT_DEFAULT, format, va_list);
+    write_log(Log_Level::DEBUG, LOG_CODE_DEBUG_DEFAULT, format, va_list);
     va_end(va_list);
 }
 
-void Logger::critical(unsigned long code, const char* format, ...) {
-    if (Log_Level::CRITICAL < s_worker.m_severity_level) {
+void Logger::debug(unsigned long code, const char* format, ...) {
+    if (Log_Level::DEBUG < s_worker.m_severity_level) {
         return;
     }
 
     va_list va_list = nullptr;
     va_start(va_list, format);
-    write_log(Log_Level::CRITICAL, code, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::error(const char* format, ...) {
-    if (Log_Level::ERROR < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::ERROR, LOG_CODE_ERR_DEFAULT, format, va_list);
-    va_end(va_list);
-}
-
-void Logger::error(unsigned long code, const char* format, ...) {
-    if (Log_Level::ERROR < s_worker.m_severity_level) {
-        return;
-    }
-
-    va_list va_list = nullptr;
-    va_start(va_list, format);
-    write_log(Log_Level::ERROR, code, format, va_list);
+    write_log(Log_Level::DEBUG, code, format, va_list);
     va_end(va_list);
 }
 
@@ -376,6 +354,28 @@ void Logger::info(unsigned long code, const char* format, ...) {
     va_end(va_list);
 }
 
+void Logger::notice(const char* format, ...) {
+    if (Log_Level::NOTICE < s_worker.m_severity_level) {
+        return;
+    }
+
+    va_list va_list = nullptr;
+    va_start(va_list, format);
+    write_log(Log_Level::NOTICE, LOG_CODE_NOTICE_DEFAULT, format, va_list);
+    va_end(va_list);
+}
+
+void Logger::notice(unsigned long code, const char* format, ...) {
+    if (Log_Level::NOTICE < s_worker.m_severity_level) {
+        return;
+    }
+
+    va_list va_list = nullptr;
+    va_start(va_list, format);
+    write_log(Log_Level::NOTICE, code, format, va_list);
+    va_end(va_list);
+}
+
 void Logger::warn(const char* format, ...) {
     if (Log_Level::WARNING < s_worker.m_severity_level) {
         return;
@@ -398,14 +398,47 @@ void Logger::warn(unsigned long code, const char* format, ...) {
     va_end(va_list);
 }
 
-void Logger::debug(const char* format, ...) {
-    if (Log_Level::DEBUG < s_worker.m_severity_level) {
+void Logger::error(const char* format, ...) {
+    if (Log_Level::ERROR < s_worker.m_severity_level) {
         return;
     }
 
     va_list va_list = nullptr;
     va_start(va_list, format);
-    write_log(Log_Level::DEBUG, LOG_CODE_DEBUG_DEFAULT, format, va_list);
+    write_log(Log_Level::ERROR, LOG_CODE_ERROR_DEFAULT, format, va_list);
+    va_end(va_list);
+}
+
+void Logger::error(unsigned long code, const char* format, ...) {
+    if (Log_Level::ERROR < s_worker.m_severity_level) {
+        return;
+    }
+
+    va_list va_list = nullptr;
+    va_start(va_list, format);
+    write_log(Log_Level::ERROR, code, format, va_list);
+    va_end(va_list);
+}
+
+void Logger::critical(const char* format, ...) {
+    if (Log_Level::CRITICAL < s_worker.m_severity_level) {
+        return;
+    }
+
+    va_list va_list = nullptr;
+    va_start(va_list, format);
+    write_log(Log_Level::CRITICAL, LOG_CODE_CRIT_DEFAULT, format, va_list);
+    va_end(va_list);
+}
+
+void Logger::critical(unsigned long code, const char* format, ...) {
+    if (Log_Level::CRITICAL < s_worker.m_severity_level) {
+        return;
+    }
+
+    va_list va_list = nullptr;
+    va_start(va_list, format);
+    write_log(Log_Level::CRITICAL, code, format, va_list);
     va_end(va_list);
 }
 

@@ -13,9 +13,6 @@ Checks: "*,
         -readability-avoid-const-params-in-decls,
         -cppcoreguidelines-non-private-member-variables-in-classes,
         -misc-non-private-member-variables-in-classes,
-        -cppcoreguidelines-pro-type-vararg,
-        -hicpp-vararg,
-        -cert-dcl50-cpp,
 "
 WarningsAsErrors: true
 HeaderFilterRegex: ''

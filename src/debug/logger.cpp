@@ -424,16 +424,16 @@ void Logger::drop_all() {
 
 void Logger::write_log(Log_Level level, unsigned long code, const char* format, va_list args) {
     std::array<char, MAX_LEN_DATE_BUFFER> time{0};
-    std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-    std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
     Logger_Util::get_time_string(time.begin());
 
+    std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
     int ret = vsnprintf(format_buffer.begin(), MAX_LEN_FMT_BUFFER, format, args);
 
     auto log_level = std::string(magic_enum::enum_name(level));
 
     // yyyy-MM-dd HH:mm:ss.SSS [LEVEL ](code): Message
-    ret = snprintf(string_buffer.begin(), MAX_LEN_STR_BUFFER, "%S [%-6s](%04lu): %S", time, log_level.c_str(), code,
+    std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
+    ret = snprintf(string_buffer.begin(), MAX_LEN_STR_BUFFER, "%s [%-6s](%04lu): %s", time, log_level.c_str(), code,
                    format_buffer);
 
     if (ret > 0) {

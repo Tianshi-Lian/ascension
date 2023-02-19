@@ -154,11 +154,14 @@ void Logger_Worker::output_log_line(Log_Level level, const char* log_record) {
         // white    37         47
         //
         // Additionally, used numbers are:
-        // reset             0  (everything back to normal) - at the end
-        // bold/bright       1  (often a brighter shade of the same colour) - to make the text bold
-        // inverse           7  (swap foreground and background colours)
-        // TODO(rgg): Dim debug lines a little bit?
+        // reset        0  (everything back to normal)
+        // bright       1  (often a brighter shade of the same colour)
+        // dim          2  (often a dimmer shade of the same colour)
+        // inverse      7  (swap foreground and background colours)
         switch (level) {
+        case Log_Level::DEBUG:
+            cout << "\033[2m" << string << "\033[0m" << std::endl;
+            break;
         case Log_Level::NOTICE:
             cout << "\033[1;32m" << string << "\033[0m" << std::endl;
             break;

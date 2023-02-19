@@ -7,7 +7,7 @@ message("Configuring ${LIB_NAME}...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../sophia/CMakeLists.txt)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../sophia ${CMAKE_BINARY_DIR}/deps/${LIB_NAME})
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../sophia ${CMAKE_BINARY_DIR}/deps/${LIB_NAME}/sophia)
     message(STATUS "Found local sophia directory.")
 else()
     include(FetchContent)
@@ -78,3 +78,5 @@ target_link_libraries(${LIB_NAME}
     PRIVATE project_options project_warnings pthread
 	PUBLIC magic_enum
 )
+
+message("Finished ${LIB_NAME}")

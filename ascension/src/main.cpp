@@ -1,9 +1,11 @@
 #include <iostream>
 
-#include <erika/erika.h>
-#include <yuki/yuki.h>
+#include <erika/erika.hpp>
+#include <yuki/yuki.hpp>
 
-#include <yuki/debug/logger.h>
+#include <yuki/debug/logger.hpp>
+
+#include "ascension.hpp"
 
 int main() {
     yuki::Logger::initialize("logs/app.txt");
@@ -11,13 +13,16 @@ int main() {
     yuki::Logger::enable_console_logging(true);
     yuki::Logger::enable_file_logging(true);
 
-    yuki::Logger::info("Initializing Ascension...");
-
     i32 e_result = erika::test();
     i32 y_result = yuki::test();
 
     yuki::Logger::debug("debug: %s", "test");
     yuki::Logger::notice("erika::test: %d, yuki::test: %d", e_result, y_result);
+
+    yuki::Logger::info("Initializing Ascension...");
+    ascension::Ascension game;
+    game.initialize();
+    game.run();
 
     return 0;
 }

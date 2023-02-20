@@ -3,6 +3,14 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME erika)
 message("Configuring ${LIB_NAME}...")
 
+set(LIB_SRC_FILES
+	src/erika.cpp
+)
+
+set(LIB_INC_FILES
+	include/${LIB_NAME}/erika.hpp
+)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../sophia/CMakeLists.txt)
@@ -36,11 +44,6 @@ project(${LIB_NAME}
 )
 set_standard_project_settings()
 
-add_library(${LIB_NAME}
-    src/erika.cpp
-    include/${LIB_NAME}/erika.h
-)
-
 if(NOT TARGET project_options)
     add_library(project_options INTERFACE)
     target_compile_features(project_options INTERFACE cxx_std_17)
@@ -50,6 +53,11 @@ if(NOT TARGET project_warnings)
     add_library(project_warnings INTERFACE)
     set_compiler_warnings(project_warnings)
 endif()
+
+add_library(${LIB_NAME}
+    ${LIB_SRC_FILES}
+    ${LIB_INC_FILES}
+)
 
 target_include_directories(${LIB_NAME} PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>

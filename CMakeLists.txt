@@ -4,6 +4,16 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME yuki)
 message("Configuring ${LIB_NAME}...")
 
+set(LIB_SRC_FILES
+	src/yuki.cpp
+	src/debug/logger.cpp
+)
+
+set(LIB_INC_FILES
+	include/${LIB_NAME}/yuki.hpp
+	include/${LIB_NAME}/debug/logger.hpp
+)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../sophia/CMakeLists.txt)
@@ -36,17 +46,6 @@ if(NOT TARGET project_warnings)
     set_compiler_warnings(project_warnings)
 endif()
 
-set(LIB_SRC_FILES
-	src/yuki.cpp
-	src/debug/logger.cpp
-)
-
-# This isn't needed but makes IDEs function nicer
-set(LIB_INC_FILES
-	include/${LIB_NAME}/yuki.h
-	include/${LIB_NAME}/debug/logger.h
-)
-
 add_library(${LIB_NAME}
     ${LIB_SRC_FILES}
 	${LIB_INC_FILES}
@@ -68,7 +67,7 @@ set_target_properties(${LIB_NAME} PROPERTIES
 if(ENABLE_PCH)
     target_precompile_headers(${LIB_NAME}
 		PRIVATE <string>
-		PUBLIC include/${LIB_NAME}/types.h
+		PUBLIC include/${LIB_NAME}/types.hpp
 	)
 endif()
 

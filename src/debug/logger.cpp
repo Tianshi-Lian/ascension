@@ -1,4 +1,4 @@
-#include "debug/logger.h"
+#include "debug/logger.hpp"
 
 #include <array>
 #include <iostream>

@@ -1,6 +1,6 @@
-#include "yuki.h"
+#include "yuki.hpp"
 
-#include "debug/logger.h"
+#include "debug/logger.hpp"
 
 int yuki::test() {
     Logger::info("void yuki::test()");

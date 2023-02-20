@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdint>
 
 using u8 = uint32_t;

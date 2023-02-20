@@ -21,14 +21,11 @@ set_compiler_warnings(project_warnings)
 
 enable_static_analysis()
 
-option(ENABLE_PCH "Enable Precompiled Headers" ON)
-if(ENABLE_PCH)
-    target_precompile_headers(project_options INTERFACE <map> <memory> <string> <vector> <utility>)
-endif()
-
 # Libraries
 add_subdirectory(libs/erika)
 add_subdirectory(libs/yuki)
 
 # Application
 add_subdirectory(ascension)
+
+message("Finished ${APP_NAME}")

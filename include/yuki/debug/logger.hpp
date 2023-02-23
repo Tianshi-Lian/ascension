@@ -193,6 +193,9 @@ class Logger_Util {
 
         return result;
     }
+
+    private:
+    static std::mutex m_localtime_mutex;
 };
 
 class Logger;

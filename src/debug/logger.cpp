@@ -1,6 +1,7 @@
 #include "debug/logger.hpp"
 
 #include <array>
+#include <ctime>
 #include <iostream>
 #include <libgen.h>
 #include <unistd.h>
@@ -32,6 +33,7 @@ void write_direct_log(const char* format, Args&&... args) {
 namespace yuki {
 
 Logger_Worker Logger::s_worker{};   // NOLINT
+std::mutex Logger_Util::m_localtime_mutex{}; // NOLINT
 
 int Logger_Util::file_exists(const std::string& file_path) {
     if (access(file_path.c_str(), F_OK) != 0) {
@@ -56,14 +58,14 @@ void Logger_Util::get_time_string(char* buffer) {
     long long ms_since_epoch = duration_cast<milliseconds>(now.time_since_epoch()).count();
     auto sec_since_epoch = time_t(ms_since_epoch / ms_in_s);
 
-    struct tm time_info {};
-    int ret = localtime_s(&time_info, &sec_since_epoch);
+    std::lock_guard<std::mutex> lock(m_localtime_mutex);
+    auto* const time_info = std::localtime(&sec_since_epoch);
 
-    if (ret == 0) {
+    if (time_info != nullptr) {
         // Format time in yyyy-MM-dd HH:mm:ss.SSS format
         // NOLINTNEXTLINE
-        ret = snprintf(buffer, MAX_LEN_DATE_BUFFER, "%04d-%02d-%02d %02d:%02d:%02d.%03lld", start_year + time_info.tm_year,
-                       1 + time_info.tm_mon, time_info.tm_mday, time_info.tm_hour, time_info.tm_min, time_info.tm_sec,
+        const auto ret = snprintf(buffer, MAX_LEN_DATE_BUFFER, "%04d-%02d-%02d %02d:%02d:%02d.%03lld", start_year + time_info->tm_year,
+                       1 + time_info->tm_mon, time_info->tm_mday, time_info->tm_hour, time_info->tm_min, time_info->tm_sec,
                        ms_since_epoch % ms_in_s);
 
         if (ret == 0) {

@@ -66,8 +66,7 @@ set_target_properties(${LIB_NAME} PROPERTIES
 
 if(ENABLE_PCH)
     target_precompile_headers(${LIB_NAME}
-		PRIVATE <string>
-		PUBLIC include/${LIB_NAME}/types.hpp
+		PRIVATE <string> include/${LIB_NAME}/types.hpp
 	)
 endif()
 

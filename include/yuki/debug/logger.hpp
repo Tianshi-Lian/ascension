@@ -7,7 +7,6 @@
 #include <array>
 #include <cstdarg>
 #include <fstream>
-#include <io.h>
 #include <mutex>
 #include <queue>
 #include <thread>

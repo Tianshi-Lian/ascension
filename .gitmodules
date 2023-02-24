@@ -4,6 +4,3 @@
 [submodule "libs/erika"]
 	path = libs/erika
 	url = git@github.com:r-ggraham/erika.git
-[submodule "libs/sophia"]
-	path = libs/sophia
-	url = git@github.com:r-ggraham/sophia.git

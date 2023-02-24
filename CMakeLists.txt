@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16...3.25)
 
 set(APP_NAME ascension)
 
-add_subdirectory(libs/sophia)
+add_subdirectory(sophia)
 include(helpers)
 
 message("Configuring ${APP_NAME}...")

@@ -3,7 +3,6 @@
 #include <array>
 #include <ctime>
 #include <iostream>
-#include <libgen.h>
 #include <unistd.h>
 
 #include <magic_enum/magic_enum.hpp>

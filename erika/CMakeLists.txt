@@ -12,30 +12,7 @@ set(LIB_INC_FILES
 )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
-
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../sophia/CMakeLists.txt)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../sophia ${CMAKE_BINARY_DIR}/deps/${LIB_NAME}/sophia)
-    message(STATUS "Found local sophia directory.")
-else()
-    include(FetchContent)
-    FetchContent_Declare(sophia
-        GIT_REPOSITORY git@github.com:r-ggraham/sophia.git
-        GIT_TAG "origin/main"
-    )
-    FetchContent_MakeAvailable(sophia)
-endif()
 include(helpers)
-
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../yuki/CMakeLists.txt)
-	message(STATUS "Found local yuki directory.")
-else()
-    include(FetchContent)
-    FetchContent_Declare(yuki
-        GIT_REPOSITORY git@github.com:r-ggraham/yuki.git
-        GIT_TAG "origin/main"
-    )
-    FetchContent_MakeAvailable(yuki)
-endif()
 
 project(${LIB_NAME}
     VERSION 0.0.1

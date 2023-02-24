@@ -1,0 +1,3 @@
+namespace erika {
+    int test();
+}

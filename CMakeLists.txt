@@ -72,9 +72,9 @@ set_target_properties(${LIB_NAME} PROPERTIES
     LINK_WHAT_YOU_USE ON
 )
 
-if(ENABLE_PCH)
-    target_precompile_headers(${LIB_NAME} PUBLIC)
-endif()
+# if(ENABLE_PCH)
+#     target_precompile_headers(${LIB_NAME} PUBLIC)
+# endif()
 
 target_link_libraries(${LIB_NAME}
     PRIVATE project_options project_warnings yuki

@@ -26,6 +26,7 @@ target_include_directories(${APP_NAME} PRIVATE
 
 set_target_properties(${APP_NAME} PROPERTIES
 	LINK_WHAT_YOU_USE ON
+	CXX_EXTENSIONS OFF
 )
 
 option(ENABLE_PCH "Enable Precompiled Headers" ON)

@@ -12,14 +12,17 @@ using namespace yuki;
 using namespace std::chrono;
 
 namespace {
+
 template <typename... Args>
 void write_direct_log(const char* format, Args&&... args) {
     std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#pragma GCC diagnostic ignored "-Wformat-security"
     int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);   // NOLINT
 
     if (ret != -1) {
         std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
-        ret = snprintf(string_buffer.data(), MAX_LEN_STR_BUFFER, "%S", format_buffer);   // NOLINT
+        ret = snprintf(string_buffer.data(), MAX_LEN_STR_BUFFER, "%s", format_buffer.data());   // NOLINT
         if (ret > 0) {
             string str(string_buffer.data());
             std::cout << str << std::endl;
@@ -31,8 +34,8 @@ void write_direct_log(const char* format, Args&&... args) {
 
 namespace yuki {
 
-Logger_Worker Logger::s_worker{};   // NOLINT
-std::mutex Logger_Util::m_localtime_mutex{}; // NOLINT
+Logger_Worker Logger::s_worker{};              // NOLINT
+std::mutex Logger_Util::m_localtime_mutex{};   // NOLINT
 
 int Logger_Util::file_exists(const std::string& file_path) {
     if (access(file_path.c_str(), F_OK) != 0) {
@@ -55,7 +58,7 @@ void Logger_Util::get_time_string(char* buffer) {
     system_clock::time_point now = system_clock::now();
 
     long long ms_since_epoch = duration_cast<milliseconds>(now.time_since_epoch()).count();
-    auto sec_since_epoch = time_t(ms_since_epoch / ms_in_s);
+    auto sec_since_epoch = ms_since_epoch / ms_in_s;
 
     std::lock_guard<std::mutex> lock(m_localtime_mutex);
     auto* const time_info = std::localtime(&sec_since_epoch);
@@ -63,9 +66,9 @@ void Logger_Util::get_time_string(char* buffer) {
     if (time_info != nullptr) {
         // Format time in yyyy-MM-dd HH:mm:ss.SSS format
         // NOLINTNEXTLINE
-        const auto ret = snprintf(buffer, MAX_LEN_DATE_BUFFER, "%04d-%02d-%02d %02d:%02d:%02d.%03lld", start_year + time_info->tm_year,
-                       1 + time_info->tm_mon, time_info->tm_mday, time_info->tm_hour, time_info->tm_min, time_info->tm_sec,
-                       ms_since_epoch % ms_in_s);
+        const auto ret = snprintf(buffer, MAX_LEN_DATE_BUFFER, "%04d-%02d-%02d %02d:%02d:%02d.%03lld",
+                                  start_year + time_info->tm_year, 1 + time_info->tm_mon, time_info->tm_mday,
+                                  time_info->tm_hour, time_info->tm_min, time_info->tm_sec, ms_since_epoch % ms_in_s);
 
         if (ret == 0) {
             throw Logger_Exception(Log_Exception_Type::FORMAT, "Logger_Util::get_time_string() failed to format time");
@@ -73,20 +76,21 @@ void Logger_Util::get_time_string(char* buffer) {
     }
 }
 
-int Logger_Util::has_permissions(const char* file_path) {
+int Logger_Util::has_permissions(std::string file_path) {
     // Check read access
-    if (access(file_path, R_OK) != 0) {
-        write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not readable (access denied)", file_path);
+    if (access(file_path.c_str(), R_OK) != 0) {
+        write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not readable (access denied)", file_path.c_str());
         return errno;
     }
 
     // Check write access
-    if (access(file_path, W_OK) != 0) {
+    if (access(file_path.c_str(), W_OK) != 0) {
         if (errno == EACCES) {
-            write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not write-able (access denied)", file_path);
+            write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not write-able (access denied)", file_path.c_str());
             return errno;
         } else if (errno == EROFS) {
-            write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not write-able (read-only file-system)", file_path);
+            write_direct_log("LoggerUtil::HasPermissions() the path(%s) is not write-able (read-only file-system)",
+                             file_path.c_str());
             return errno;
         }
         return errno;
@@ -136,12 +140,11 @@ void Logger_Worker::initialize(std::string& log_file_path) {
     }
 }
 
-void Logger_Worker::output_log_line(Log_Level level, const char* log_record) {
-    string string(log_record);
+void Logger_Worker::output_log_line(Log_Level level, std::string log_record) {
     std::lock_guard<std::mutex> lock(m_mutex_log_queue);
 
     if (m_file_log_enabled) {
-        log_queue.push(string);
+        log_queue.push(log_record);
     }
 
     if (m_console_log_enabled) {
@@ -162,22 +165,22 @@ void Logger_Worker::output_log_line(Log_Level level, const char* log_record) {
         // inverse      7  (swap foreground and background colours)
         switch (level) {
         case Log_Level::DEBUG:
-            cout << "\033[2m" << string << "\033[0m" << std::endl;
+            cout << "\033[2m" << log_record << "\033[0m" << std::endl;
             break;
         case Log_Level::NOTICE:
-            cout << "\033[1;32m" << string << "\033[0m" << std::endl;
+            cout << "\033[1;32m" << log_record << "\033[0m" << std::endl;
             break;
         case Log_Level::WARNING:
-            cout << "\033[1;33m" << string << "\033[0m" << std::endl;
+            cout << "\033[1;33m" << log_record << "\033[0m" << std::endl;
             break;
         case Log_Level::ERROR:
-            cout << "\033[1;31m" << string << "\033[0m" << std::endl;
+            cout << "\033[1;31m" << log_record << "\033[0m" << std::endl;
             break;
         case Log_Level::CRITICAL:
-            cout << "\033[1;7;31;47m" << string << "\033[0m" << std::endl;
+            cout << "\033[1;7;31;47m" << log_record << "\033[0m" << std::endl;
             break;
         default:
-            cout << string << endl;
+            cout << log_record << endl;
             break;
         }
     }
@@ -307,9 +310,9 @@ void Logger::drop_all() {
     try {
         s_worker.drop_all();
     } catch (Logger_Exception& le) {
-        write_direct_log("Logger::DropAll() error closing stream (%s)", le.get_message());
+        write_direct_log("Logger::DropAll() error closing stream (%s)", le.get_message().c_str());
         throw Logger_Exception(Log_Exception_Type::EXIT,
-                               Logger_Util::str_format("Logger::DropAll() error closing stream (%s)", le.get_message()));
+                               Logger_Util::str_format("Logger::DropAll() error closing stream (%s)", le.get_message().c_str()));
     }
 }
 

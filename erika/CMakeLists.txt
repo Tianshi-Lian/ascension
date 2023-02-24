@@ -21,16 +21,6 @@ project(${LIB_NAME}
 )
 set_standard_project_settings()
 
-if(NOT TARGET project_options)
-    add_library(project_options INTERFACE)
-    target_compile_features(project_options INTERFACE cxx_std_17)
-endif()
-
-if(NOT TARGET project_warnings)
-    add_library(project_warnings INTERFACE)
-    set_compiler_warnings(project_warnings)
-endif()
-
 add_library(${LIB_NAME}
     ${LIB_SRC_FILES}
     ${LIB_INC_FILES}
@@ -46,7 +36,8 @@ target_include_directories(${LIB_NAME} PUBLIC
 )
 
 set_target_properties(${LIB_NAME} PROPERTIES
-    LINK_WHAT_YOU_USE ON
+	LINK_WHAT_YOU_USE ON
+	CXX_EXTENSIONS OFF
 )
 
 # if(ENABLE_PCH)

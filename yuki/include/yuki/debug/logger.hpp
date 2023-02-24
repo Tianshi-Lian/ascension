@@ -59,14 +59,14 @@ class Logger_Exception : std::exception {
      *
      * @param	type The logger exception type.
      */
-    explicit Logger_Exception(Log_Exception_Type type) : m_type(type){}
+    explicit Logger_Exception(Log_Exception_Type type) : m_type(type) {}
 
     /*! Sets the logger exception type & message in C-string format.
      *
      * @param	type	    The logger exception type.
      * @param	message		The logger exception message in C-string format.
      */
-    Logger_Exception(Log_Exception_Type type, std::string message) : m_message(std::move(message)), m_type(type){}
+    Logger_Exception(Log_Exception_Type type, std::string message) : m_message(std::move(message)), m_type(type) {}
 
     /**
      * Retrieves the logger exception type.
@@ -80,7 +80,7 @@ class Logger_Exception : std::exception {
      *
      * @return	The logger exception message as C-string.
      */
-    const char* get_message() { return m_message.c_str(); }
+    std::string get_message() { return m_message.c_str(); }
 
     private:
     std::string m_message;
@@ -161,7 +161,7 @@ class Logger_Util {
      * @return 	0 is returned in the case that proper permissions are set.
      *			Otherwise, error number is returned.
      */
-    static int has_permissions(const char* file_path);
+    static int has_permissions(std::string file_path);
 
     /**
      * Set sleep to the process for given number of milliseconds.
@@ -182,9 +182,11 @@ class Logger_Util {
      * @return	formatted data in string format
      */
     template <typename... Args>
-    static std::string str_format(const char* format, Args&&... args) {
+    static std::string str_format(const std::string& format, Args&&... args) {
         std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-        int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);
+        #pragma GCC diagnostic ignored "-Wformat-nonliteral"
+        #pragma GCC diagnostic ignored "-Wformat-security"
+        int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format.c_str(), std::forward<Args>(args)...);
 
         std::string result;
         if (ret != -1) {
@@ -232,7 +234,7 @@ class Logger_Worker {
      * @param	level		The log severity level
      * @param 	log_record 	Pointer to the log record which is to be add to the queue.
      */
-    void output_log_line(Log_Level level, const char* log_record);
+    void output_log_line(Log_Level level, std::string log_record);
 
     /**
      * Pop log record from application log queue and writes to application log file.
@@ -320,7 +322,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void debug(const char* format, Args&&... args) {
+    static void debug(const std::string& format, Args&&... args) {
         debug(LOG_CODE_DEBUG_DEFAULT, format, std::forward<Args>(args)...);
     }
     /**
@@ -333,7 +335,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void debug(unsigned long code, const char* format, Args&&... args) {
+    static void debug(unsigned long code, const std::string& format, Args&&... args) {
         write_log(Log_Level::DEBUG, code, format, std::forward<Args>(args)...);
     }
 
@@ -346,7 +348,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void info(const char* format, Args&&... args) {
+    static void info(const std::string& format, Args&&... args) {
         info(LOG_CODE_INFO_DEFAULT, format, std::forward<Args>(args)...);
     }
     /**
@@ -359,7 +361,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void info(unsigned long code, const char* format, Args&&... args) {
+    static void info(unsigned long code, const std::string& format, Args&&... args) {
         write_log(Log_Level::INFO, code, format, std::forward<Args>(args)...);
     }
 
@@ -372,7 +374,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void notice(const char* format, Args&&... args) {
+    static void notice(const std::string& format, Args&&... args) {
         notice(LOG_CODE_NOTICE_DEFAULT, format, std::forward<Args>(args)...);
     }
     /**
@@ -385,7 +387,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void notice(unsigned long code, const char* format, Args&&... args) {
+    static void notice(unsigned long code, const std::string& format, Args&&... args) {
         write_log(Log_Level::NOTICE, code, format, std::forward<Args>(args)...);
     }
 
@@ -398,7 +400,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void warn(const char* format, Args&&... args) {
+    static void warn(const std::string& format, Args&&... args) {
         warn(LOG_CODE_WARN_DEFAULT, format, std::forward<Args>(args)...);
     }
     /**
@@ -411,7 +413,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void warn(unsigned long code, const char* format, Args&&... args) {
+    static void warn(unsigned long code, const std::string& format, Args&&... args) {
         write_log(Log_Level::WARNING, code, format, std::forward<Args>(args)...);
     }
 
@@ -424,7 +426,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void error(const char* format, Args&&... args) {
+    static void error(const std::string& format, Args&&... args) {
         error(LOG_CODE_ERROR_DEFAULT, format, std::forward<Args>(args)...);
     }
     /**
@@ -437,7 +439,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void error(unsigned long code, const char* format, Args&&... args) {
+    static void error(unsigned long code, const std::string& format, Args&&... args) {
         write_log(Log_Level::ERROR, code, format, std::forward<Args>(args)...);
     }
 
@@ -450,7 +452,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void critical(const char* format, Args&&... args) {
+    static void critical(const std::string& format, Args&&... args) {
         critical(LOG_CODE_CRIT_DEFAULT, format, std::forward<Args>(args)...);
     }
     /**
@@ -463,7 +465,7 @@ class Logger {
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
-    static void critical(unsigned long code, const char* format, Args&&... args) {
+    static void critical(unsigned long code, const std::string& format, Args&&... args) {
         write_log(Log_Level::CRITICAL, code, format, std::forward<Args>(args)...);
     }
 
@@ -485,7 +487,7 @@ class Logger {
      * @param	args	The variable argument list (va_list)
      */
     template <typename... Args>
-    static void write_log(Log_Level level, unsigned long code, const char* format, Args&&... args) {
+    static void write_log(Log_Level level, unsigned long code, const std::string& format, Args&&... args) {
         if (level < s_worker.m_severity_level) {
             return;
         }
@@ -494,15 +496,17 @@ class Logger {
         Logger_Util::get_time_string(time.data());
 
         std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-        int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);
+        #pragma GCC diagnostic ignored "-Wformat-nonliteral"
+        #pragma GCC diagnostic ignored "-Wformat-security"
+        int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format.c_str(), std::forward<Args>(args)...);
 
         auto log_level = std::string(magic_enum::enum_name(level));
 
         // yyyy-MM-dd HH:mm:ss.SSS [LEVEL ](code): Message
         std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
         // NOLINTNEXTLINE
-        ret = snprintf(string_buffer.data(), MAX_LEN_STR_BUFFER, "%s [%-6s](%04lu): %s", time, log_level.c_str(), code,
-                       format_buffer);
+        ret = snprintf(string_buffer.data(), MAX_LEN_STR_BUFFER, "%s [%-6s](%04lu): %s", time.data(), log_level.c_str(), code,
+                       format_buffer.data());
 
         if (ret > 0) {
             s_worker.output_log_line(level, string_buffer.data());

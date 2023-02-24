@@ -22,7 +22,7 @@ set_compiler_warnings(project_warnings)
 enable_static_analysis()
 
 # Libraries
-add_subdirectory(libs/erika)
+add_subdirectory(erika)
 add_subdirectory(yuki)
 
 # Application

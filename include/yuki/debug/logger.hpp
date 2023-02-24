@@ -184,11 +184,11 @@ class Logger_Util {
     template <typename... Args>
     static std::string str_format(const char* format, Args&&... args) {
         std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-        int ret = snprintf(format_buffer.begin(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);
+        int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);
 
         std::string result;
         if (ret != -1) {
-            result = std::string(format_buffer.begin());
+            result = std::string(format_buffer.data());
         }
 
         return result;
@@ -491,21 +491,21 @@ class Logger {
         }
 
         std::array<char, MAX_LEN_DATE_BUFFER> time{0};
-        Logger_Util::get_time_string(time.begin());
+        Logger_Util::get_time_string(time.data());
 
         std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-        int ret = snprintf(format_buffer.begin(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);
+        int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);
 
         auto log_level = std::string(magic_enum::enum_name(level));
 
         // yyyy-MM-dd HH:mm:ss.SSS [LEVEL ](code): Message
         std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
         // NOLINTNEXTLINE
-        ret = snprintf(string_buffer.begin(), MAX_LEN_STR_BUFFER, "%s [%-6s](%04lu): %s", time, log_level.c_str(), code,
+        ret = snprintf(string_buffer.data(), MAX_LEN_STR_BUFFER, "%s [%-6s](%04lu): %s", time, log_level.c_str(), code,
                        format_buffer);
 
         if (ret > 0) {
-            s_worker.output_log_line(level, string_buffer.begin());
+            s_worker.output_log_line(level, string_buffer.data());
         }
     }
 

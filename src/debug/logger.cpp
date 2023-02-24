@@ -15,13 +15,13 @@ namespace {
 template <typename... Args>
 void write_direct_log(const char* format, Args&&... args) {
     std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-    int ret = snprintf(format_buffer.begin(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);   // NOLINT
+    int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format, std::forward<Args>(args)...);   // NOLINT
 
     if (ret != -1) {
         std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
-        ret = snprintf(string_buffer.begin(), MAX_LEN_STR_BUFFER, "%S", format_buffer);   // NOLINT
+        ret = snprintf(string_buffer.data(), MAX_LEN_STR_BUFFER, "%S", format_buffer);   // NOLINT
         if (ret > 0) {
-            string str(string_buffer.begin());
+            string str(string_buffer.data());
             std::cout << str << std::endl;
         }
     }

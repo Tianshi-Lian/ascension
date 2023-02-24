@@ -59,28 +59,28 @@ class Logger_Exception : std::exception {
      *
      * @param	type The logger exception type.
      */
-    explicit Logger_Exception(Log_Exception_Type type) : m_type(type){};
+    explicit Logger_Exception(Log_Exception_Type type) : m_type(type){}
 
     /*! Sets the logger exception type & message in C-string format.
      *
      * @param	type	    The logger exception type.
      * @param	message		The logger exception message in C-string format.
      */
-    Logger_Exception(Log_Exception_Type type, std::string message) : m_message(std::move(message)), m_type(type){};
+    Logger_Exception(Log_Exception_Type type, std::string message) : m_message(std::move(message)), m_type(type){}
 
     /**
      * Retrieves the logger exception type.
      *
      * @return	The logger exception type.
      */
-    Log_Exception_Type get_type() { return m_type; };
+    Log_Exception_Type get_type() { return m_type; }
 
     /**
      * Retrieves the logger exception message as C-string.
      *
      * @return	The logger exception message as C-string.
      */
-    const char* get_message() { return m_message.c_str(); };
+    const char* get_message() { return m_message.c_str(); }
 
     private:
     std::string m_message;
@@ -110,7 +110,7 @@ class Blocking_string_Queue {
         result = m_queue.front();
         m_queue.pop();
         return true;
-    };
+    }
 
     /**
      * Push an element to the queue.
@@ -120,7 +120,7 @@ class Blocking_string_Queue {
     void push(const std::string& value) {
         std::lock_guard<std::mutex> lock(m_mutex);
         m_queue.push(value);
-    };
+    }
 
     private:
     std::mutex m_mutex;

@@ -31,5 +31,5 @@ set_target_properties(${APP_NAME} PROPERTIES
 option(ENABLE_PCH "Enable Precompiled Headers" ON)
 
 if(ENABLE_PCH)
-	target_precompile_headers(project_options INTERFACE <map> <memory> <string> <vector> <utility>)
+	target_precompile_headers(project_options INTERFACE <map> <memory> <string> <vector> <utility> <yuki/types.hpp>)
 endif()

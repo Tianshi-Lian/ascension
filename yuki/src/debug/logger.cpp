@@ -99,16 +99,16 @@ void Logger_Util::sleep(unsigned int milliseconds) {
     constexpr unsigned long ms_to_ns = 1000000L;
     constexpr unsigned long s_to_ns = 1000000000L;
 
-    struct timespec time_req = {0};
-    unsigned long val = ((unsigned long)milliseconds) * ms_to_ns;
+    struct timespec time_req = {0, 0};
+    unsigned long val = static_cast<unsigned long>(milliseconds) * ms_to_ns;
     time_req.tv_sec = val / s_to_ns;
-    time_req.tv_nsec = (long)(val % s_to_ns);
-    nanosleep(&time_req, (struct timespec*)nullptr);
+    time_req.tv_nsec = static_cast<long>(val % s_to_ns);
+    nanosleep(&time_req, static_cast<struct timespec*>(nullptr));
 }
 
 Logger_Worker::Logger_Worker()
-    : m_severity_level(Log_Level::ERROR), m_file_log_enabled(false), m_console_log_enabled(false), m_is_app_interrupted(false),
-      m_app_log_thread(nullptr) {}
+    : m_app_log_thread(nullptr), m_is_app_interrupted(false), m_severity_level(Log_Level::ERROR), m_file_log_enabled(false),
+      m_console_log_enabled(false) {}
 
 Logger_Worker::~Logger_Worker() {
     try {

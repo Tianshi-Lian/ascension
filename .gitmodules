@@ -1,6 +1,3 @@
-[submodule "libs/yuki"]
-	path = libs/yuki
-	url = git@github.com:r-ggraham/yuki.git
 [submodule "libs/erika"]
 	path = libs/erika
 	url = git@github.com:r-ggraham/erika.git

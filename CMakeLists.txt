@@ -23,7 +23,7 @@ enable_static_analysis()
 
 # Libraries
 add_subdirectory(libs/erika)
-add_subdirectory(libs/yuki)
+add_subdirectory(yuki)
 
 # Application
 add_subdirectory(ascension)

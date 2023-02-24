@@ -2,12 +2,12 @@
 A game about ascending through the six planes of heaven
 
 ## Dependencies
-- [**sophia**](https://github.com/r-ggraham/yuki): A set of CMake utility files
-- [**yuki**](https://github.com/r-ggraham/yuki): A core library for development, graphics & games
-- [**erika**](https://github.com/r-ggraham/erika): A 2D game engine written in C++17
+- [**sophia**](sophia): A set of CMake utility files
+- [**yuki**](yuki): A core library for development, graphics & games
+- [**erika**](erika): A 2D game engine written in C++17
 
 ## Build
-All libraries and dependencies are either included in this repository or added as submodules in the [libs](libs) directory.  
+All libraries and dependencies are either included in this repository or added as submodules in the respective libs directories.  
 Don't forget to initialise them with `git submodule --init --recursive`
 
 The project currently builds with `clang++` using `c++17`

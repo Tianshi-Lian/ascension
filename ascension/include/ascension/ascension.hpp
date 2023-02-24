@@ -23,7 +23,7 @@ enum class path { MARTIAL, ALCHEMY, SMITHING, FORMATION, DIVINE, CELESTIAL };
 //     their martial path cultivation
 //  - "formation emperor" will be a rank 6 formation expert of the plane which matches
 //     their martial path cultivation
-enum class rank { NOVICE, WARRIOR, MASTER, NOBLE, MONARCH, EMPEROR, SAINT, DEMIGOD, GOD};
+enum class rank { NOVICE, WARRIOR, MASTER, NOBLE, MONARCH, EMPEROR, SAINT, DEMIGOD, GOD };
 
 // Fire > Ice > Wind > Earth > Lightning > Water > Fire...
 // Aether is a mysterious, unseen power from which the primal aspects emerge and return

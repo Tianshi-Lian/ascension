@@ -52,23 +52,31 @@ int Logger_Util::file_exists(const std::string& file_path) {
 }
 
 void Logger_Util::get_time_string(char* buffer) {
-    constexpr long long ms_in_s = 1000;
-    constexpr int start_year = 1900;
+    constexpr i64 ms_in_s = 1000;
+    constexpr i64 start_year = 1900;
 
     system_clock::time_point now = system_clock::now();
 
-    long long ms_since_epoch = duration_cast<milliseconds>(now.time_since_epoch()).count();
-    auto sec_since_epoch = ms_since_epoch / ms_in_s;
+    const i64 ms_since_epoch = duration_cast<milliseconds>(now.time_since_epoch()).count();
+    const i64 sec_since_epoch = ms_since_epoch / ms_in_s;
 
     std::lock_guard<std::mutex> lock(m_localtime_mutex);
-    auto* const time_info = std::localtime(&sec_since_epoch);
+    auto time_info = std::localtime(&sec_since_epoch);
 
     if (time_info != nullptr) {
         // Format time in yyyy-MM-dd HH:mm:ss.SSS format
+
+#ifdef _WIN32
         // NOLINTNEXTLINE
-        const auto ret = snprintf(buffer, MAX_LEN_DATE_BUFFER, "%04d-%02d-%02d %02d:%02d:%02d.%03lld",
+        const auto ret = snprintf(buffer, MAX_LEN_DATE_BUFFER, "%04lld-%02d-%02d %02d:%02d:%02d.%03lld",
                                   start_year + time_info->tm_year, 1 + time_info->tm_mon, time_info->tm_mday,
                                   time_info->tm_hour, time_info->tm_min, time_info->tm_sec, ms_since_epoch % ms_in_s);
+#elif __linux__
+        // NOLINTNEXTLINE
+        const auto ret = snprintf(buffer, MAX_LEN_DATE_BUFFER, "%04ld-%02d-%02d %02d:%02d:%02d.%03ld",
+                                  start_year + time_info->tm_year, 1 + time_info->tm_mon, time_info->tm_mday,
+                                  time_info->tm_hour, time_info->tm_min, time_info->tm_sec, ms_since_epoch % ms_in_s);
+#endif
 
         if (ret == 0) {
             throw Logger_Exception(Log_Exception_Type::FORMAT, "Logger_Util::get_time_string() failed to format time");
@@ -100,13 +108,13 @@ int Logger_Util::has_permissions(std::string file_path) {
 }
 
 void Logger_Util::sleep(unsigned int milliseconds) {
-    constexpr unsigned long ms_to_ns = 1000000L;
-    constexpr unsigned long s_to_ns = 1000000000L;
+    constexpr i32 ms_to_ns = 1000000L;
+    constexpr i64 s_to_ns = 1000000000L;
 
     struct timespec time_req = {0, 0};
-    unsigned long val = static_cast<unsigned long>(milliseconds) * ms_to_ns;
+    i64 val = milliseconds * ms_to_ns;
     time_req.tv_sec = val / s_to_ns;
-    time_req.tv_nsec = static_cast<long>(val % s_to_ns);
+    time_req.tv_nsec = static_cast<i32>(val % s_to_ns);
     nanosleep(&time_req, static_cast<struct timespec*>(nullptr));
 }
 
@@ -311,8 +319,8 @@ void Logger::drop_all() {
         s_worker.drop_all();
     } catch (Logger_Exception& le) {
         write_direct_log("Logger::DropAll() error closing stream (%s)", le.get_message().c_str());
-        throw Logger_Exception(Log_Exception_Type::EXIT,
-                               Logger_Util::str_format("Logger::DropAll() error closing stream (%s)", le.get_message().c_str()));
+        throw Logger_Exception(Log_Exception_Type::EXIT, Logger_Util::str_format("Logger::DropAll() error closing stream (%s)",
+                                                                                 le.get_message().c_str()));
     }
 }
 

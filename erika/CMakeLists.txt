@@ -11,15 +11,11 @@ set(LIB_INC_FILES
 	include/${LIB_NAME}/erika.hpp
 )
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
-include(helpers)
-
 project(${LIB_NAME}
     VERSION 0.0.1
     DESCRIPTION "A 2D game engine written in C++17"
     LANGUAGES CXX
 )
-set_standard_project_settings()
 
 add_library(${LIB_NAME}
     ${LIB_SRC_FILES}
@@ -40,9 +36,11 @@ set_target_properties(${LIB_NAME} PROPERTIES
 	CXX_EXTENSIONS OFF
 )
 
-# if(ENABLE_PCH)
-#     target_precompile_headers(${LIB_NAME} PUBLIC)
-# endif()
+if(ENABLE_PCH)
+    target_precompile_headers(${LIB_NAME}
+		PRIVATE <string>
+	)
+endif()
 
 target_link_libraries(${LIB_NAME}
     PRIVATE project_options project_warnings yuki

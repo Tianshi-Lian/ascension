@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
 set(LIB_NAME magic_enum)
-message("Configuring ${LIB_NAME}...")
+message("  (yuki) Configuring ${LIB_NAME}...")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 
@@ -20,4 +20,4 @@ target_include_directories(${LIB_NAME} INTERFACE
     $<INSTALL_INTERFACE:include>
 )
 
-message("Finished ${LIB_NAME}")
+message("  (yuki) Finished ${LIB_NAME}")

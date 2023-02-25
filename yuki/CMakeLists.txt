@@ -13,15 +13,11 @@ set(LIB_INC_FILES
 	include/${LIB_NAME}/debug/logger.hpp
 )
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
-include(helpers)
-
 project(${LIB_NAME}
     VERSION 0.0.1
     DESCRIPTION "A core library for C++ development, graphics & games"
     LANGUAGES CXX
 )
-set_standard_project_settings()
 
 add_library(${LIB_NAME}
     ${LIB_SRC_FILES}

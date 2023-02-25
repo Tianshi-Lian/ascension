@@ -8,18 +8,18 @@ struct skill {
     enum class stage { novice, adept, master };
 
     std::string name;
-    aspect aspect;
-    plane rank;
+    ascension::aspect aspect;
+    ascension::plane rank;
 
-    stage stage;
+    skill::stage stage;
     u64 experience;
 };
 
 struct player {
     std::string name;
 
-    plane plane;
-    rank rank;
+    ascension::plane plane;
+    ascension::rank rank;
     u64 cultivation;
 
     std::unordered_map<aspect, f32> aspect_mastery;

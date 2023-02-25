@@ -1,10 +1,10 @@
 @echo off
 
-if not exist "..\build\dist\ascension.exe" (
+if not exist "..\build\ascension\bin\ascension.exe" (
     echo missing executable, attempting to build first...
     call build.bat
 )
 
-pushd ..\build\dist
+pushd ..\build\ascension\bin
 .\ascension
 popd

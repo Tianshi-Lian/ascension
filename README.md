@@ -1,10 +1,12 @@
 # Ascension
 A game about ascending through the six planes of heaven
 
+## Application
+- [**ascension**](ascension/): The main application for the game
 ## Dependencies
-- [**sophia**](sophia): A set of CMake utility files
-- [**yuki**](yuki): A core library for development, graphics & games
-- [**erika**](erika): A 2D game engine written in C++17
+- [**sophia**](sophia/): A set of CMake utility files
+- [**yuki**](yuki/): A core library for development, graphics & games
+- [**erika**](erika/): A 2D game engine written in C++17
 
 ## Build
 All libraries and dependencies are either included in this repository or added as submodules in the respective libs directories.  

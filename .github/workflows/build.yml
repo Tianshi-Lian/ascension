@@ -63,6 +63,11 @@ jobs:
       name: 🪛 Configure WinLibs Path
       run: $env:Path += "C:\mingw64\bin"
 
+    - if: ${{ runner.os == 'Linux' }}
+      name: 📥 Download Ninja
+      run: |
+        sudo apt-get install ninja-build
+
     - name: 🤖 Checkout
       uses: actions/checkout@v3
 
@@ -75,4 +80,4 @@ jobs:
 
     - name: 🔨 Build
       run: |
-        Ninja -C build -j 0
+        ninja -C build -j 0

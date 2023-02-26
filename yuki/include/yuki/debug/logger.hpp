@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <array>
-#include <cstdarg>
 #include <fstream>
 #include <mutex>
 #include <queue>
@@ -13,20 +11,8 @@
 
 #include <magic_enum/magic_enum.hpp>
 
-#define MAX_LEN_FMT_BUFFER  2048
-#define MAX_LEN_STR_BUFFER  2080
-#define MAX_LEN_DATE_BUFFER 32
-#define SLEEP_IN_MS         100
-
+#define SLEEP_IN_MS      100
 #define LOG_PATH_DEFAULT "logs/app.log"
-
-// Default log/error codes
-#define LOG_CODE_DEBUG_DEFAULT  0001
-#define LOG_CODE_INFO_DEFAULT   0001
-#define LOG_CODE_NOTICE_DEFAULT 0001
-#define LOG_CODE_WARN_DEFAULT   0001
-#define LOG_CODE_ERROR_DEFAULT  0001
-#define LOG_CODE_CRIT_DEFAULT   0001
 
 namespace yuki {
 
@@ -35,9 +21,9 @@ namespace yuki {
  *
  * @brief Enumerator which defined the different log severity levels.
  * Available log levels are:
- *   DEBUG, INFO, NOTICE, WARNING, ERROR, CRITICAL
+ *   MANUAL, DEBUG, INFO, NOTICE, WARNING, ERROR, CRITICAL
  */
-enum class Log_Level { DEBUG = 0, INFO = 1, NOTICE = 2, WARNING = 3, ERROR = 4, CRITICAL = 5 };
+enum class Log_Level { MANUAL = 99, DEBUG = 0, INFO = 1, NOTICE = 2, WARNING = 3, ERROR = 4, CRITICAL = 5 };
 
 /**
  * @enum Log_Exception_Type
@@ -61,10 +47,10 @@ class Logger_Exception : std::exception {
      */
     explicit Logger_Exception(Log_Exception_Type type) : m_type(type) {}
 
-    /*! Sets the logger exception type & message in C-string format.
+    /*! Sets the logger exception type & message in string format.
      *
      * @param	type	    The logger exception type.
-     * @param	message		The logger exception message in C-string format.
+     * @param	message		The logger exception message in string format.
      */
     Logger_Exception(Log_Exception_Type type, std::string message) : m_message(std::move(message)), m_type(type) {}
 
@@ -76,11 +62,11 @@ class Logger_Exception : std::exception {
     Log_Exception_Type get_type() { return m_type; }
 
     /**
-     * Retrieves the logger exception message as C-string.
+     * Retrieves the logger exception message as string.
      *
-     * @return	The logger exception message as C-string.
+     * @return	std::string containing the logger exception message.
      */
-    std::string get_message() { return m_message.c_str(); }
+    std::string get_message() { return m_message; }
 
     private:
     std::string m_message;
@@ -115,7 +101,7 @@ class Blocking_string_Queue {
     /**
      * Push an element to the queue.
      *
-     * @param	value		The C-string element that requires insertion.
+     * @param	value		The string element that requires insertion.
      */
     void push(const std::string& value) {
         std::lock_guard<std::mutex> lock(m_mutex);
@@ -133,40 +119,28 @@ class Blocking_string_Queue {
  * @brief Utility class which provides helper functions to logging operations.
  */
 class Logger_Util {
-
     public:
     /**
-     * Checks whether the specified file exists
+     * Creates a timestamp of the current time in the format "yyyy-MM-dd HH:mm:ss.SSS"
      *
-     * @param 	file_path	Pointer to a file name that requires validation.
-     *
-     * @return 	0 is returned in the case that the file exist.
-     *			Otherwise, an error code is returned.
+     * @return  std::string containing the formatted timestamp.
      */
-    static int file_exists(const std::string& file_path);
+    static std::string get_time_string();
 
     /**
-     * Write time stamp in 'yyyy-MM-dd HH:mm:ss.SSS' format to string.
+     * Checks whether we have read & write access to the specified file.
      *
-     * @param	buffer	Pointer to a buffer where the resulting C-char is stored.
-     *					The buffer should be large enough to contain the resulting string.
+     * @param	file_path		The path to the file to validate.
+     *
+     * @return 	true is returned in the case that proper permissions are set.
+     *			Otherwise, false is returned and an error logged.
      */
-    static void get_time_string(char* buffer);
-
-    /**
-     * Checks whether proper permissions (exist/read/write) are set..
-     *
-     * @param	file_path		Pointer to the file/directory name that requires validation
-     *
-     * @return 	0 is returned in the case that proper permissions are set.
-     *			Otherwise, error number is returned.
-     */
-    static int has_permissions(std::string file_path);
+    static bool has_permissions_for_file(const std::string& file_path);
 
     /**
      * Set sleep to the process for given number of milliseconds.
      *
-     * @param	milliseconds	the number of milliseconds to sleep
+     * @param	milliseconds	The number of milliseconds to sleep
      */
     static void sleep(unsigned int milliseconds);
 
@@ -174,19 +148,19 @@ class Logger_Util {
      * Composes a string with the same text that would be printed.
      * After the format parameter, the function expects at least as many additional arguments as specified by format.
      *
-     * @param	format	C string that contains a format string that follows the same specifications as format in
+     * @param	format	String that contains a format string that follows the same specifications as format in
      *					printf (see printf for details)
      * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
      *                  each containing a value to be used to replace a format specifier in the format string.
      *
-     * @return	formatted data in string format
+     * @return  std::string containing the formatted data.
      */
     template <typename... Args>
     static std::string str_format(const std::string& format, Args&&... args) {
-        std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-        #pragma GCC diagnostic ignored "-Wformat-nonliteral"
-        #pragma GCC diagnostic ignored "-Wformat-security"
-        int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format.c_str(), std::forward<Args>(args)...);
+        std::vector<char> format_buffer(128);
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#pragma GCC diagnostic ignored "-Wformat-security"
+        int ret = snprintf(format_buffer.data(), format_buffer.size(), format.c_str(), std::forward<Args>(args)...);
 
         std::string result;
         if (ret != -1) {
@@ -226,7 +200,7 @@ class Logger_Worker {
      *
      * @throw	The logger exception with exception details.
      */
-    void initialize(std::string& log_file_path);
+    void initialize(const std::string& log_file_path);
 
     /**
      * Receives the log record to write, and pushes the record to the application log queue.
@@ -290,7 +264,8 @@ class Logger {
      *
      * @throw	The logger exception with exception details.
      */
-    static void initialize(const std::string& log_file_path);
+    static void initialize(const std::string& log_file_path, Log_Level level = Log_Level::NOTICE, bool log_to_file = true,
+                           bool log_to_console = false);
 
     /**
      * Set the log severity level (determines minimum log level).
@@ -314,159 +289,95 @@ class Logger {
     static void enable_console_logging(bool value);
 
     /**
+     * Write debug level log record to the application log file.
+     *
+     * @param   level   The severity level to output this log record at.
+     * @param	format	String that contains a format string that follows the same specifications as format in
+     *					printf (see printf for details)
+     * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
+     *                  each containing a value to be used to replace a format specifier in the format string.
+     */
+    template <typename... Args>
+    static void log(Log_Level level, const std::string& format, Args&&... args) {
+        write_log(level, format, std::forward<Args>(args)...);
+    }
+
+    /**
      * Write debug level log records to the application log file.
      *
-     * @param	format	C string that contains a format string that follows the same specifications as format in
+     * @param	format	String that contains a format string that follows the same specifications as format in
      *					printf (see printf for details)
      * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
     static void debug(const std::string& format, Args&&... args) {
-        debug(LOG_CODE_DEBUG_DEFAULT, format, std::forward<Args>(args)...);
-    }
-    /**
-     * Write debug level log record to the application log file.
-     *
-     * @param 	code 	The 5 digit custom defined code to each record.
-     * @param	format	C string that contains a format string that follows the same specifications as format in
-     *					printf (see printf for details)
-     * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
-     *                  each containing a value to be used to replace a format specifier in the format string.
-     */
-    template <typename... Args>
-    static void debug(unsigned long code, const std::string& format, Args&&... args) {
-        write_log(Log_Level::DEBUG, code, format, std::forward<Args>(args)...);
+        write_log(Log_Level::DEBUG, format, std::forward<Args>(args)...);
     }
 
     /**
      * Write info level log records to the application log file.
      *
-     * @param	format	C string that contains a format string that follows the same specifications as format in
+     * @param	format	String that contains a format string that follows the same specifications as format in
      *					printf (see printf for details)
      * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
     static void info(const std::string& format, Args&&... args) {
-        info(LOG_CODE_INFO_DEFAULT, format, std::forward<Args>(args)...);
-    }
-    /**
-     * Write info level log record to the application log file.
-     *
-     * @param 	code 	The 5 digit custom defined code to each record.
-     * @param	format	C string that contains a format string that follows the same specifications as format in
-     *					printf (see printf for details)
-     * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
-     *                  each containing a value to be used to replace a format specifier in the format string.
-     */
-    template <typename... Args>
-    static void info(unsigned long code, const std::string& format, Args&&... args) {
-        write_log(Log_Level::INFO, code, format, std::forward<Args>(args)...);
+        write_log(Log_Level::INFO, format, std::forward<Args>(args)...);
     }
 
     /**
      * Write notice level log records to the application log file.
      *
-     * @param	format	C string that contains a format string that follows the same specifications as format in
+     * @param	format	String that contains a format string that follows the same specifications as format in
      *					printf (see printf for details)
      * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
     static void notice(const std::string& format, Args&&... args) {
-        notice(LOG_CODE_NOTICE_DEFAULT, format, std::forward<Args>(args)...);
-    }
-    /**
-     * Write notice level log record to the application log file.
-     *
-     * @param 	code 	The 5 digit custom defined code to each record.
-     * @param	format	C string that contains a format string that follows the same specifications as format in
-     *					printf (see printf for details)
-     * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
-     *                  each containing a value to be used to replace a format specifier in the format string.
-     */
-    template <typename... Args>
-    static void notice(unsigned long code, const std::string& format, Args&&... args) {
-        write_log(Log_Level::NOTICE, code, format, std::forward<Args>(args)...);
+        write_log(Log_Level::NOTICE, format, std::forward<Args>(args)...);
     }
 
     /**
      * Write warning level log records to the application log file.
      *
-     * @param	format	C string that contains a format string that follows the same specifications as format in
+     * @param	format	String that contains a format string that follows the same specifications as format in
      *					printf (see printf for details)
      * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
     static void warn(const std::string& format, Args&&... args) {
-        warn(LOG_CODE_WARN_DEFAULT, format, std::forward<Args>(args)...);
-    }
-    /**
-     * Write warning level log record to the application log file.
-     *
-     * @param 	code 	The 5 digit custom defined code to each record.
-     * @param	format	C string that contains a format string that follows the same specifications as format in
-     *					printf (see printf for details)
-     * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
-     *                  each containing a value to be used to replace a format specifier in the format string.
-     */
-    template <typename... Args>
-    static void warn(unsigned long code, const std::string& format, Args&&... args) {
-        write_log(Log_Level::WARNING, code, format, std::forward<Args>(args)...);
+        write_log(Log_Level::WARNING, format, std::forward<Args>(args)...);
     }
 
     /**
      * Write error level log records to the application log file.
      *
-     * @param	format	C string that contains a format string that follows the same specifications as format in
+     * @param	format	String that contains a format string that follows the same specifications as format in
      *					printf (see printf for details)
      * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
     static void error(const std::string& format, Args&&... args) {
-        error(LOG_CODE_ERROR_DEFAULT, format, std::forward<Args>(args)...);
-    }
-    /**
-     * Write error level log record to the application log file.
-     *
-     * @param 	code 	The 5 digit custom defined code to each record.
-     * @param	format	C string that contains a format string that follows the same specifications as format in
-     *					printf (see printf for details)
-     * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
-     *                  each containing a value to be used to replace a format specifier in the format string.
-     */
-    template <typename... Args>
-    static void error(unsigned long code, const std::string& format, Args&&... args) {
-        write_log(Log_Level::ERROR, code, format, std::forward<Args>(args)...);
+        write_log(Log_Level::ERROR, format, std::forward<Args>(args)...);
     }
 
     /**
      * Write critical level log records to the application log file.
      *
-     * @param	format	C string that contains a format string that follows the same specifications as format in
+     * @param	format	String that contains a format string that follows the same specifications as format in
      *					printf (see printf for details)
      * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
      *                  each containing a value to be used to replace a format specifier in the format string.
      */
     template <typename... Args>
     static void critical(const std::string& format, Args&&... args) {
-        critical(LOG_CODE_CRIT_DEFAULT, format, std::forward<Args>(args)...);
-    }
-    /**
-     * Write critical level log record to the application log file.
-     *
-     * @param 	code 	The 5 digit custom defined code to each record.
-     * @param	format	C string that contains a format string that follows the same specifications as format in
-     *					printf (see printf for details)
-     * @param	args	Depending on the format string, the function may expect a sequence of additional arguments,
-     *                  each containing a value to be used to replace a format specifier in the format string.
-     */
-    template <typename... Args>
-    static void critical(unsigned long code, const std::string& format, Args&&... args) {
-        write_log(Log_Level::CRITICAL, code, format, std::forward<Args>(args)...);
+        write_log(Log_Level::CRITICAL, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -479,34 +390,33 @@ class Logger {
     private:
     /**
      * Write the formatted log record to the respective log queue.
+     * Standard format: yyyy-MM-dd HH:mm:ss.SSS [LEVEL ](source): Message
      *
      * @param	level	The log severity level
-     * @param	code	The 5 digit custom defined code to each record.
-     * @param	format	C string that contains a format string that follows the same specifications as format in
+     * @param	format	String that contains a format string that follows the same specifications as format in
      *					printf (see printf for details)
      * @param	args	The variable argument list (va_list)
      */
     template <typename... Args>
-    static void write_log(Log_Level level, unsigned long code, const std::string& format, Args&&... args) {
+    static void write_log(Log_Level level, const std::string& format, Args&&... args) {
         if (level < s_worker.m_severity_level) {
             return;
         }
 
-        std::array<char, MAX_LEN_DATE_BUFFER> time{0};
-        Logger_Util::get_time_string(time.data());
+        std::vector<char> format_buffer(128);
+        int ret = snprintf(format_buffer.data(), format_buffer.size(), format.c_str(), std::forward<Args>(args)...);
 
-        std::array<char, MAX_LEN_FMT_BUFFER> format_buffer{0};
-        #pragma GCC diagnostic ignored "-Wformat-nonliteral"
-        #pragma GCC diagnostic ignored "-Wformat-security"
-        int ret = snprintf(format_buffer.data(), MAX_LEN_FMT_BUFFER, format.c_str(), std::forward<Args>(args)...);
+        std::vector<char> string_buffer(128);
 
-        auto log_level = std::string(magic_enum::enum_name(level));
+        if (level != Log_Level::MANUAL) {
+            const auto timestamp = Logger_Util::get_time_string();
+            const auto log_level = std::string(magic_enum::enum_name(level));
 
-        // yyyy-MM-dd HH:mm:ss.SSS [LEVEL ](code): Message
-        std::array<char, MAX_LEN_STR_BUFFER> string_buffer{0};
-        // NOLINTNEXTLINE
-        ret = snprintf(string_buffer.data(), MAX_LEN_STR_BUFFER, "%s [%-6s](%04lu): %s", time.data(), log_level.c_str(), code,
-                       format_buffer.data());
+            ret = snprintf(string_buffer.data(), string_buffer.size(), "%s [%-6s] %s", timestamp.c_str(), log_level.c_str(),
+                           format_buffer.data());
+        } else {
+            ret = snprintf(string_buffer.data(), string_buffer.size(), "%s", format_buffer.data());
+        }
 
         if (ret > 0) {
             s_worker.output_log_line(level, string_buffer.data());

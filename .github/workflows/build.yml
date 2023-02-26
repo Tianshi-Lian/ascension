@@ -7,12 +7,44 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    name: 🚧${{ matrix.config.icon }} ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
-    steps:
+      matrix:
+        config:
+          - {
+              icon: "🟦", name: "Windows GCC",
+              os: windows-latest,
+              build_type: "Release",
+              cc: "C:/mingw64/bin/gcc.exe",
+              cxx: "C:/mingw64/bin/g++.exe"
+            }
+          - {
+              icon: "🟦", name: "Windows Clang",
+              os: windows-latest,
+              build_type: "Release",
+              cc: "C:/mingw64/bin/clang.exe",
+              cxx: "C:/mingw64/bin/clang++.exe"
+            }
+          - {
+              icon: "🟧", name: "Ubuntu GCC",
+              os: ubuntu-latest,
+              build_type: "Release",
+              cc: "gcc",
+              cxx: "g++"
+            }
+          - {
+              icon: "🟧", name: "Ubuntu Clang",
+              os: ubuntu-latest,
+              build_type: "Release",
+              cc: "clang",
+              cxx: "clang++"
+            }
 
-    - name: Cache WinLibs
+    steps:
+    - if: ${{ runner.os == 'Windows' }}
+      name: 💾 Cache WinLibs
       id: cache-winlibs
       uses: actions/cache@v3
       env:
@@ -21,22 +53,26 @@ jobs:
         path: C:\mingw64
         key: ${{ runner.os }}-build-${{ env.cache-name }}
 
-    - if: ${{ steps.cache-winlibs.outputs.cache-hit != 'true' }}
-      name: Download WinLibs
+    - if: ${{ runner.os == 'Windows' && steps.cache-winlibs.outputs.cache-hit != 'true' }}
+      name: 📥 Download WinLibs
       run: |
         Invoke-WebRequest -Uri https://github.com/brechtsanders/winlibs_mingw/releases/download/12.2.0-15.0.7-10.0.0-ucrt-r4/winlibs-x86_64-posix-seh-gcc-12.2.0-llvm-15.0.7-mingw-w64ucrt-10.0.0-r4.zip -OutFile C:\winlibs.zip
         Expand-Archive C:\winlibs.zip -DestinationPath C:\
 
-    - name: Configure WinLibs Path
+    - if: ${{ runner.os == 'Windows' }}
+      name: 🪛 Configure WinLibs Path
       run: $env:Path += "C:\mingw64\bin"
 
-    - name: Checkout
+    - name: 🤖 Checkout
       uses: actions/checkout@v3
 
-    - name: Configure
-      run: |
-        cmake -GNinja -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER="C:/mingw64/bin/clang.exe" -DCMAKE_CXX_COMPILER="C:/mingw64/bin/clang++.exe"
+    - name: ⚙️ Configure
+      run: >
+        cmake -GNinja -B build -S .
+        -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+        -DCMAKE_C_COMPILER=${{ matrix.config.cc }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
 
-    - name: Build
+    - name: 🔨 Build
       run: |
-        Ninja -C build
+        Ninja -C build -j 0

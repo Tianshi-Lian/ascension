@@ -14,28 +14,28 @@ jobs:
       matrix:
         config:
           - {
-              icon: "🟦", name: "Windows GCC",
+              icon: "🟦", name: "Windows-GCC",
               os: windows-latest,
               build_type: "Release",
               cc: "C:/mingw64/bin/gcc.exe",
               cxx: "C:/mingw64/bin/g++.exe"
             }
           - {
-              icon: "🟦", name: "Windows Clang",
+              icon: "🟦", name: "Windows-Clang",
               os: windows-latest,
               build_type: "Release",
               cc: "C:/mingw64/bin/clang.exe",
               cxx: "C:/mingw64/bin/clang++.exe"
             }
           - {
-              icon: "🟧", name: "Ubuntu GCC",
+              icon: "🟧", name: "Ubuntu-GCC",
               os: ubuntu-latest,
               build_type: "Release",
               cc: "gcc",
               cxx: "g++"
             }
           - {
-              icon: "🟧", name: "Ubuntu Clang",
+              icon: "🟧", name: "Ubuntu-Clang",
               os: ubuntu-latest,
               build_type: "Release",
               cc: "clang",
@@ -81,3 +81,9 @@ jobs:
     - name: 🔨 Build
       run: |
         ninja -C build -j 0
+
+    - name: 📤 Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.config.name }}-${{ matrix.config.build_type }}
+        path: build/ascension/bin

@@ -5,7 +5,11 @@
 namespace ascension {
 
 struct skill {
-    enum class stage { novice, adept, master };
+    enum class stage {
+        novice,
+        adept,
+        master
+    };
 
     std::string name;
     ascension::aspect aspect;
@@ -29,7 +33,9 @@ struct player {
 
 player player;
 
-void ascension::Ascension::initialize() {
+void
+ascension::Ascension::initialize()
+{
     player.name = "Tianshi";
     player.plane = plane::MORTAL;
     player.rank = rank::NOVICE;
@@ -37,9 +43,12 @@ void ascension::Ascension::initialize() {
 
     player.aspect_mastery[aspect::FIRE] = 1.0f;
     player.path_mastery[path::ALCHEMY] = 0.1f;
-    player.skills.push_back({"Fire palm", aspect::FIRE, plane::MORTAL, skill::stage::novice, 0});
+    player.skills.push_back({ "Fire palm", aspect::FIRE, plane::MORTAL, skill::stage::novice, 0 });
 }
 
-void ascension::Ascension::run() {}
+void
+ascension::Ascension::run()
+{
+}
 
-}   // namespace ascension
+} // namespace ascension

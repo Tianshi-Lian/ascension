@@ -7,7 +7,9 @@
 
 #include "ascension.hpp"
 
-int main() {
+int
+main()
+{
     yuki::Logger::initialize("logs/app.log", yuki::Log_Level::DEBUG, true, true);
 
     i32 e_result = erika::test();

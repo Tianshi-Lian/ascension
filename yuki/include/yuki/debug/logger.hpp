@@ -13,6 +13,7 @@
 
 #define SLEEP_IN_MS 100
 #define LOG_PATH_DEFAULT "logs/app.log"
+#define DEFAULT_BUFFER_LENGTH 128
 
 namespace yuki {
 
@@ -192,7 +193,7 @@ class Logger_Util {
     template<typename... Args>
     static std::string str_format(const std::string& format, Args&&... args)
     {
-        std::vector<char> format_buffer(128);
+        std::vector<char> format_buffer(DEFAULT_BUFFER_LENGTH);
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 #pragma GCC diagnostic ignored "-Wformat-security"
         int ret = snprintf(format_buffer.data(), format_buffer.size(), format.c_str(), std::forward<Args>(args)...);
@@ -206,7 +207,7 @@ class Logger_Util {
     }
 
     private:
-    static std::mutex m_localtime_mutex;
+    static std::mutex& get_mutex();
 };
 
 class Logger;
@@ -245,7 +246,7 @@ class Logger_Worker {
      * @param 	log_record 	Pointer to the log record which is to be add to the
      * queue.
      */
-    void output_log_line(Log_Level level, std::string log_record);
+    void output_log_line(Log_Level level, const std::string& log_record);
 
     /**
      * Pop log record from application log queue and writes to application log
@@ -445,6 +446,14 @@ class Logger {
 
     private:
     /**
+     * Get the internal worker object for this logger.
+     * Initializes the worker if required.
+     *
+     * @return   reference to the internal worker instance
+     */
+    static Logger_Worker& get_worker();
+
+    /**
      * Write the formatted log record to the respective log queue.
      * Standard format: yyyy-MM-dd HH:mm:ss.SSS [LEVEL ](source): Message
      *
@@ -456,14 +465,14 @@ class Logger {
     template<typename... Args>
     static void write_log(Log_Level level, const std::string& format, Args&&... args)
     {
-        if (level < s_worker.m_severity_level) {
+        if (level < get_worker().m_severity_level) {
             return;
         }
 
-        std::vector<char> format_buffer(128);
+        std::vector<char> format_buffer(DEFAULT_BUFFER_LENGTH);
         int ret = snprintf(format_buffer.data(), format_buffer.size(), format.c_str(), std::forward<Args>(args)...);
 
-        std::vector<char> string_buffer(128);
+        std::vector<char> string_buffer(DEFAULT_BUFFER_LENGTH);
 
         if (level != Log_Level::MANUAL) {
             const auto timestamp = Logger_Util::get_time_string();
@@ -483,11 +492,9 @@ class Logger {
         }
 
         if (ret > 0) {
-            s_worker.output_log_line(level, string_buffer.data());
+            get_worker().output_log_line(level, string_buffer.data());
         }
     }
-
-    static Logger_Worker s_worker; // NOLINT
 };
 
 } // namespace yuki

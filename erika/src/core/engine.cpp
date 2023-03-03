@@ -1,6 +1,6 @@
 #include "core/engine.hpp"
 
-#include <yuki/debug/logger.hpp>
+#include "yuki/debug/logger.hpp"
 
 #include "core/game.hpp"
 

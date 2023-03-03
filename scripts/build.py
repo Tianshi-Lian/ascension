@@ -6,20 +6,10 @@ import sys
 import os
 
 args = _helpers.process_args(sys.argv)
+
 build_type = _helpers.get_arg_value(args, ["build-type", "bt"], _globals.BUILD_TYPE)
-compiler = _helpers.get_arg_value(args, ["compiler", "c"], "clang")
-
-c_compiler = "clang"
-cxx_compiler = "clang++"
-
-if compiler == "gcc" or compiler == "g++":
-    c_compiler = "gcc"
-    cxx_compiler = "g++"
-elif compiler == "clang" or compiler == "clang++":
-    c_compiler = "clang"
-    cxx_compiler = "clang++"
-else:
-    print("Unknown compiler= arg, defaulting to clang")
+c_compiler = _helpers.get_arg_value(args, ["compiler", "c"], "clang")
+cxx_compiler = _helpers.get_arg_value(args, ["compiler", "cxx"], "clang++")
 
 exit_code = 0
 if not os.path.isfile("./build/build.ninja"):

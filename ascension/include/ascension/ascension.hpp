@@ -1,5 +1,7 @@
 #pragma once
 
+#include <erika/core/game.hpp>
+
 namespace ascension {
 
 // The six planes of existence to ascend through
@@ -81,18 +83,11 @@ enum class creature {
     SPIRIT
 };
 
-class Ascension {
-    public:
-    Ascension() = default;
-    ~Ascension() = default;
-
-    Ascension(const Ascension&) = default;
-    Ascension(Ascension&&) = delete;
-    Ascension& operator=(const Ascension&) = default;
-    Ascension& operator=(Ascension&&) = delete;
-
-    void initialize();
-    void run();
+class Ascension : public erika::Game {
+  public:
+    bool on_initialize() override;
+    void on_update(f32 delta_time) override;
+    void on_render(f32 delta_time) override;
 };
 
 } // namespace ascension

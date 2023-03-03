@@ -1,6 +1,7 @@
 # CLI tool for handling build pipeline
 # cli help      - displays a list of CLI commands
 # cli build     - builds project for active platform
+# cli clean     - cleans all project files, build files and build code
 
 import sys, os
 import subprocess

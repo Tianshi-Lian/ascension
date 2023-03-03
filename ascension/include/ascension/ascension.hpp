@@ -1,6 +1,6 @@
 #pragma once
 
-#include <erika/core/game.hpp>
+#include "erika/core/game.hpp"
 
 namespace ascension {
 

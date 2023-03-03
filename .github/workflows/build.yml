@@ -17,29 +17,33 @@ jobs:
               icon: "🟦", name: "Windows-GCC",
               os: windows-latest,
               build_type: "Release",
-              cc: "C:/mingw64/bin/gcc.exe",
-              cxx: "C:/mingw64/bin/g++.exe"
+              cc: "gcc",
+              cxx: "g++",
+              dev: ".bat"
             }
           - {
               icon: "🟦", name: "Windows-Clang",
               os: windows-latest,
               build_type: "Release",
-              cc: "C:/mingw64/bin/clang.exe",
-              cxx: "C:/mingw64/bin/clang++.exe"
+              cc: "clang",
+              cxx: "clang++",
+              dev: ".bat"
             }
           - {
               icon: "🟧", name: "Ubuntu-GCC",
               os: ubuntu-latest,
               build_type: "Release",
               cc: "gcc",
-              cxx: "g++"
+              cxx: "g++",
+              dev: ".sh"
             }
           - {
               icon: "🟧", name: "Ubuntu-Clang",
               os: ubuntu-latest,
               build_type: "Release",
               cc: "clang",
-              cxx: "clang++"
+              cxx: "clang++",
+              dev: ".sh"
             }
 
     steps:
@@ -71,16 +75,8 @@ jobs:
     - name: 🤖 Checkout
       uses: actions/checkout@v3
 
-    - name: ⚙️ Configure
-      run: >
-        cmake -GNinja -B build -S .
-        -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
-        -DCMAKE_C_COMPILER=${{ matrix.config.cc }}
-        -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-
     - name: 🔨 Build
-      run: |
-        ninja -C build -j 0
+      run: ./scripts/dev${{ matrix.config.dev }} build -bt=${{ matrix.config.build-type }} -c=${{ matrix.config.cxx }}
 
     - name: 📤 Upload
       uses: actions/upload-artifact@v3

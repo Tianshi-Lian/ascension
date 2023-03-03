@@ -4,13 +4,14 @@
 
 namespace ascension {
 
-// The six planes of existence to ascend through
+// The seven planes of existence to ascend through
 enum class plane {
     MORTAL,
     MARTIAL,
     IMMORTAL,
     DIVINE,
     HEAVENLY,
+    ANCESTRAL,
     CELESTIAL
 };
 

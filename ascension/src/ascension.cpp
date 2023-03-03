@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 
+#include <yuki/debug/logger.hpp>
+
 namespace ascension {
 
 struct skill {
@@ -33,9 +35,11 @@ struct player {
 
 player player;
 
-void
-ascension::Ascension::initialize()
+bool
+Ascension::on_initialize()
 {
+    yuki::Logger::info("ascension > Initializing game...");
+
     player.name = "Tianshi";
     player.plane = plane::MORTAL;
     player.rank = rank::NOVICE;
@@ -44,11 +48,22 @@ ascension::Ascension::initialize()
     player.aspect_mastery[aspect::FIRE] = 1.0f;
     player.path_mastery[path::ALCHEMY] = 0.1f;
     player.skills.push_back({ "Fire palm", aspect::FIRE, plane::MORTAL, skill::stage::novice, 0 });
+
+    yuki::Logger::notice("ascension > Game initialized.");
+
+    return true;
 }
 
 void
-ascension::Ascension::run()
+Ascension::on_update(f32 delta_time)
 {
+    (void)delta_time;
+}
+
+void
+Ascension::on_render(f32 delta_time)
+{
+    (void)delta_time;
 }
 
 } // namespace ascension

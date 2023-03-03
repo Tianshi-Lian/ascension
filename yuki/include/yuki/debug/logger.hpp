@@ -9,7 +9,7 @@
 #include <queue>
 #include <thread>
 
-#include <magic_enum/magic_enum.hpp>
+#include "magic_enum/magic_enum.hpp"
 
 #define SLEEP_IN_MS 100
 #define LOG_PATH_DEFAULT "logs/app.log"
@@ -56,7 +56,7 @@ enum class Log_Exception_Type {
  * @brief Class which implements logger general exception handler.
  */
 class Logger_Exception : std::exception {
-    public:
+  public:
     /*! Sets the logger exception type.
      *
      * @param	type The logger exception type.
@@ -97,7 +97,7 @@ class Logger_Exception : std::exception {
         return m_message;
     }
 
-    private:
+  private:
     std::string m_message;
     Log_Exception_Type m_type;
 };
@@ -108,7 +108,7 @@ class Logger_Exception : std::exception {
  * @brief Utility queue class which performs string pop/push operation.
  */
 class Blocking_string_Queue {
-    public:
+  public:
     /**
      * Pop elements from queue.
      *
@@ -140,7 +140,7 @@ class Blocking_string_Queue {
         m_queue.push(value);
     }
 
-    private:
+  private:
     std::mutex m_mutex;
     std::queue<std::string> m_queue;
 };
@@ -151,7 +151,7 @@ class Blocking_string_Queue {
  * @brief Utility class which provides helper functions to logging operations.
  */
 class Logger_Util {
-    public:
+  public:
     /**
      * Creates a timestamp of the current time in the format "yyyy-MM-dd
      * HH:mm:ss.SSS"
@@ -206,7 +206,7 @@ class Logger_Util {
         return result;
     }
 
-    private:
+  private:
     static std::mutex& get_mutex();
 };
 
@@ -220,7 +220,7 @@ class Logger;
 class Logger_Worker {
     friend Logger;
 
-    public:
+  public:
     Logger_Worker();
     ~Logger_Worker();
 
@@ -263,7 +263,7 @@ class Logger_Worker {
      */
     void drop_all();
 
-    private:
+  private:
     std::unique_ptr<std::thread> m_app_log_thread;
     volatile bool m_is_app_interrupted;
 
@@ -286,7 +286,7 @@ class Logger_Worker {
  * @brief Utility class which provides the interfaces to write application logs.
  */
 class Logger {
-    public:
+  public:
     Logger();
     ~Logger();
 
@@ -444,7 +444,7 @@ class Logger {
      */
     static void drop_all();
 
-    private:
+  private:
     /**
      * Get the internal worker object for this logger.
      * Initializes the worker if required.

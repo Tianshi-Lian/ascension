@@ -13,6 +13,7 @@ set(LIB_INC_FILES
 	include/${LIB_NAME}/erika.hpp
 	include/${LIB_NAME}/core/game.hpp
 	include/${LIB_NAME}/core/engine.hpp
+	include/${LIB_NAME}/core/entry.hpp
 )
 
 project(${LIB_NAME}

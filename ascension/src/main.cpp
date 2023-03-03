@@ -1,17 +1,9 @@
-#include <iostream>
-
-#include <erika/core/engine.hpp>
+#include "erika/core/entry.hpp"
 
 #include "ascension.hpp"
 
-int
-main()
+std::shared_ptr<erika::Game>
+erika::game::create()
 {
-    erika::Engine engine;
-    engine.initialize();
-
-    auto game = std::make_shared<ascension::Ascension>();
-    engine.run(game);
-
-    return 0;
+    return std::make_shared<ascension::Ascension>();
 }

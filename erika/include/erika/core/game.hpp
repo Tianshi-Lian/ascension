@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace erika {
 
 class Game {
@@ -24,5 +26,12 @@ class Game {
     void update(f32 delta_time);
     void render(f32 delta_time);
 };
+
+namespace game {
+
+std::shared_ptr<Game>
+create();
+
+}
 
 }

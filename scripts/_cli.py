@@ -1,13 +1,9 @@
-# CLI tool for handling build pipeline
-# cli help      - displays a list of CLI commands
-# cli build     - builds project for active platform
-# cli clean     - cleans all project files, build files and build code
-
+import _globals
 import sys, os
 import subprocess
+import importlib
 
 SCRIPTS_DIR = "scripts"
-SUCCESS = 0
 
 def run_command(cmds):
     exit_code = 0
@@ -21,13 +17,11 @@ def run_command(cmds):
     else:
         print("==============================================")
         if os.path.exists(script):
-            print("Executing {}({}):".format(cmds[0], ", ".join(cmds[1:])))
+            command_name = cmds[0]
+            print("Executing {} ({}):".format(command_name, ", ".join(cmds[1:])))
 
-            cmds[0] = script
-            cmds.insert(0, "python")
-
-            process = subprocess.run(cmds)
-            exit_code = process.returncode
+            module = importlib.import_module(command_name)
+            exit_code = module.run()
         else:
             print("Invalid CLI command! Type `cli help` for a list of commands.")
             exit_code = -1
@@ -50,6 +44,6 @@ else:
             else:
                 break
 
-        if (run_command(cmds) != SUCCESS):
+        if (run_command(cmds) != _globals.SUCCESS):
             break # this will stop us running any more commands if we failed one
         i += 1

@@ -12,8 +12,8 @@ def process_args(argv) -> ParsedArgs:
                 k = arg[1:arg.index("=")]
                 v = arg[arg.index("=") + 1:]
             except:
-                k = arg
-                v = 0
+                k = arg[1:]
+                v = True
             dict[k] = v
 
     return ParsedArgs(argv[0], argv, dict)

@@ -81,7 +81,7 @@ jobs:
         chmod +x ./scripts/dev.sh
 
     - name: 🔨 Build
-      run: ./scripts/dev${{ matrix.config.dev }} build -bt=${{ matrix.config.build_type }} -c=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }}
+      run: ./scripts/dev${{ matrix.config.dev }} build -bt=${{ matrix.config.build_type }} -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }}
 
     - name: 📤 Upload
       uses: actions/upload-artifact@v3

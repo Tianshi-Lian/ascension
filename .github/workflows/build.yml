@@ -74,6 +74,12 @@ jobs:
         fetch-depth: 1
         ref: ${{ github.event.pull_request.head.sha }}
 
+    - if: ${{ runner.os == 'Linux' }}
+      name: ⚙️ Configure Linux
+      run: |
+        chown $(whoami) ./scripts/dev.sh
+        chmod +x ./scripts/dev.sh
+
     - name: 🔨 Build
       run: ./scripts/dev${{ matrix.config.dev }} build -bt=${{ matrix.config.build_type }} -c=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }}
 

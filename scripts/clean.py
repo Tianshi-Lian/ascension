@@ -1,3 +1,4 @@
+import _globals
 import os, sys
 import shutil
 
@@ -16,11 +17,15 @@ def clean_directory(dirname):
                 print(f'Removing: {filename}...')
                 os.remove(filename)
 
-exit_code = 0
-try:
-    clean_directory('.')
+def run():
+    exit_code = _globals.SUCCESS
+    try:
+        clean_directory('.')
 
-except OSError as e:
-    exit_code = -1
+    except OSError as e:
+        exit_code = -1
 
-sys.exit(exit_code)
+    return exit_code
+
+def get_help_description():
+    return _globals.Help_Text('Clean the project build files', '')

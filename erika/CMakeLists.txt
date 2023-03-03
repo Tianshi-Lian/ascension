@@ -5,30 +5,34 @@ message("Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
 	src/erika.cpp
+	src/core/game.cpp
+	src/core/engine.cpp
 )
 
 set(LIB_INC_FILES
 	include/${LIB_NAME}/erika.hpp
+	include/${LIB_NAME}/core/game.hpp
+	include/${LIB_NAME}/core/engine.hpp
 )
 
 project(${LIB_NAME}
-    VERSION 0.0.1
-    DESCRIPTION "A 2D game engine written in C++17"
-    LANGUAGES CXX
+	VERSION 0.0.1
+	DESCRIPTION "A 2D game engine written in C++17"
+	LANGUAGES CXX
 )
 
 add_library(${LIB_NAME}
-    ${LIB_SRC_FILES}
-    ${LIB_INC_FILES}
+	${LIB_SRC_FILES}
+	${LIB_INC_FILES}
 )
 
 target_include_directories(${LIB_NAME} PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
-    $<INSTALL_INTERFACE:include/${LIB_NAME}>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
+	$<INSTALL_INTERFACE:include/${LIB_NAME}>
 )
 target_include_directories(${LIB_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:include>
 )
 
 set_target_properties(${LIB_NAME} PROPERTIES
@@ -37,13 +41,13 @@ set_target_properties(${LIB_NAME} PROPERTIES
 )
 
 if(ENABLE_PCH)
-    target_precompile_headers(${LIB_NAME}
-		PRIVATE <string>
+	target_precompile_headers(${LIB_NAME}
+		PRIVATE <string> <yuki/types.hpp>
 	)
 endif()
 
 target_link_libraries(${LIB_NAME}
-    PRIVATE project_options project_warnings yuki
+	PRIVATE project_options project_warnings yuki
 )
 
 message("Finished ${LIB_NAME}")

@@ -2,7 +2,7 @@
 # options: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 BasedOnStyle: Mozilla
 IndentWidth: 4
-AccessModifierOffset: 0
+AccessModifierOffset: -2
 ColumnLimit: 128
 UseTab: Never
 UseCRLF: false

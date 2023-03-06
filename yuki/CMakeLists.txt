@@ -4,33 +4,35 @@ set(LIB_NAME yuki)
 message("Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
-	src/yuki.cpp
+	src/debug/instrumentor.cpp
 	src/debug/logger.cpp
+	src/yuki.cpp
 )
 
 set(LIB_INC_FILES
-	include/${LIB_NAME}/yuki.hpp
+	include/${LIB_NAME}/debug/instrumentor.hpp
 	include/${LIB_NAME}/debug/logger.hpp
+	include/${LIB_NAME}/yuki.hpp
 )
 
 project(${LIB_NAME}
-    VERSION 0.0.1
-    DESCRIPTION "A core library for C++ development, graphics & games"
-    LANGUAGES CXX
+	VERSION 0.0.1
+	DESCRIPTION "A core library for C++ development, graphics & games"
+	LANGUAGES CXX
 )
 
 add_library(${LIB_NAME}
-    ${LIB_SRC_FILES}
+	${LIB_SRC_FILES}
 	${LIB_INC_FILES}
 )
 
 target_include_directories(${LIB_NAME} PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
-    $<INSTALL_INTERFACE:include/${LIB_NAME}>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
+	$<INSTALL_INTERFACE:include/${LIB_NAME}>
 )
 target_include_directories(${LIB_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:include>
 )
 
 set_target_properties(${LIB_NAME} PROPERTIES
@@ -39,7 +41,7 @@ set_target_properties(${LIB_NAME} PROPERTIES
 )
 
 if(ENABLE_PCH)
-    target_precompile_headers(${LIB_NAME}
+	target_precompile_headers(${LIB_NAME}
 		PRIVATE <string> include/${LIB_NAME}/types.hpp
 	)
 endif()
@@ -47,7 +49,7 @@ endif()
 add_subdirectory(libs/magic_enum)
 
 target_link_libraries(${LIB_NAME}
-    PRIVATE project_options project_warnings pthread
+	PRIVATE project_options project_warnings pthread
 	PUBLIC magic_enum
 )
 

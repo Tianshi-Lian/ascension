@@ -1,5 +1,6 @@
 #include "core/engine.hpp"
 
+#include "yuki/debug/instrumentor.hpp"
 #include "yuki/debug/logger.hpp"
 
 #include "core/game.hpp"
@@ -9,6 +10,7 @@ namespace erika {
 void
 Engine::initialize()
 {
+    PROFILE_FUNCTION();
     yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Log_Level::DEBUG, true, true);
     yuki::debug::Logger::info("erika > Initializing game engine...");
 
@@ -18,6 +20,7 @@ Engine::initialize()
 void
 Engine::run(const std::shared_ptr<Game>& game)
 {
+    PROFILE_FUNCTION();
     if (!game) {
         yuki::debug::Logger::critical("Engine::run() failed to run: invalid game!");
     }

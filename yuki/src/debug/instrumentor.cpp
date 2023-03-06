@@ -92,4 +92,31 @@ Instrumentor::internal_end_session()
     }
 }
 
+Instrumentor_Timer::Instrumentor_Timer(std::string name)
+  : m_name(std::move(name))
+  , m_start_time(std::chrono::steady_clock::now())
+  , m_stopped(false)
+{
+}
+
+Instrumentor_Timer::~Instrumentor_Timer()
+{
+    if (!m_stopped) {
+        stop();
+    }
+}
+
+void
+Instrumentor_Timer::stop()
+{
+    const auto end_time{ std::chrono::steady_clock::now() };
+    const auto elapsed_time{ std::chrono::time_point_cast<std::chrono::microseconds>(end_time).time_since_epoch() -
+                             std::chrono::time_point_cast<std::chrono::microseconds>(m_start_time).time_since_epoch() };
+    const auto high_res_start_time{ std::chrono::duration<double, std::micro>{ m_start_time.time_since_epoch() } };
+
+    Instrumentor::get().output_profile_result(m_name, high_res_start_time, elapsed_time, std::this_thread::get_id());
+
+    m_stopped = true;
+}
+
 }

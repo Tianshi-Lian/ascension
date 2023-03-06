@@ -28,7 +28,8 @@ write_direct_log(const std::string& format, Args&&... args)
 
 } // namespace
 
-namespace yuki {
+namespace yuki::debug {
+
 using std::localtime;
 
 std::string

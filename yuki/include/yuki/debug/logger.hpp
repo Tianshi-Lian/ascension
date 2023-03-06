@@ -15,7 +15,7 @@
 #define LOG_PATH_DEFAULT "logs/app.log"
 #define DEFAULT_BUFFER_LENGTH 128
 
-namespace yuki {
+namespace yuki::debug {
 
 /**
  * @enum Log_Level
@@ -497,4 +497,4 @@ class Logger {
     }
 };
 
-} // namespace yuki
+}

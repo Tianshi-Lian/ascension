@@ -13,7 +13,7 @@
 
 #define SLEEP_IN_MS 100
 #define LOG_PATH_DEFAULT "logs/app.log"
-#define DEFAULT_BUFFER_LENGTH 128
+#define DEFAULT_BUFFER_LENGTH 256
 
 namespace yuki::debug {
 

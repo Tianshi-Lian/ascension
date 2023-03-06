@@ -18,6 +18,7 @@ Checks: "*,
         -readability-else-after-return,
         -readability-static-accessed-through-instance,
         -readability-uppercase-literal-suffix,
+        -bugprone-easily-swappable-parameters,
 "
 WarningsAsErrors: true
 HeaderFilterRegex: ''

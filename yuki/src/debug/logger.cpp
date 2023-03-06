@@ -91,16 +91,16 @@ Logger_Util::get_time_string()
 }
 
 bool
-Logger_Util::has_permissions_for_file(const std::string& file_path)
+Logger_Util::has_permissions_for_file(const std::string& filepath)
 {
     // Check read access
     {
-        std::ifstream file(file_path);
+        std::ifstream file(filepath);
         if (!file.good()) {
             write_direct_log(
                 "LoggerUtil::HasPermissions() the path(%s) is not "
                 "readable (access denied)",
-                file_path.c_str()
+                filepath.c_str()
             );
             return false;
         }
@@ -108,12 +108,12 @@ Logger_Util::has_permissions_for_file(const std::string& file_path)
 
     // Check write access
     {
-        std::ofstream file(file_path);
+        std::ofstream file(filepath);
         if (!file.good()) {
             write_direct_log(
                 "LoggerUtil::HasPermissions() the path(%s) is not "
                 "write-able (access denied)",
-                file_path.c_str()
+                filepath.c_str()
             );
             return false;
         }
@@ -162,10 +162,10 @@ Logger_Worker::~Logger_Worker()
 }
 
 void
-Logger_Worker::initialize(const std::string& log_file_path)
+Logger_Worker::initialize(const std::string& log_filepath)
 {
     try {
-        this->m_log_file_path = log_file_path;
+        this->m_log_filepath = log_filepath;
 
         m_app_log_thread = std::make_unique<std::thread>(&Logger_Worker::write_to_log_file, this);
         m_app_log_thread->detach();
@@ -250,7 +250,7 @@ Logger_Worker::write_to_log_file()
             }
 
             if (!m_log_file_stream.is_open()) {
-                m_log_file_stream.open(m_log_file_path, std::ofstream::out | std::ofstream::app | std::ostream::binary);
+                m_log_file_stream.open(m_log_filepath, std::ofstream::out | std::ofstream::app | std::ostream::binary);
             }
 
             // Write errors to stdout when stream error occurred
@@ -332,20 +332,20 @@ Logger::~Logger()
 }
 
 void
-Logger::initialize(const std::string& log_file_path, Log_Level level, bool log_to_file, bool log_to_console)
+Logger::initialize(const std::string& log_filepath, Log_Level level, bool log_to_file, bool log_to_console)
 {
-    std::string file_path = log_file_path;
+    std::string filepath = log_filepath;
 
-    size_t final_slash = log_file_path.find_last_of('/');
-    const std::string dir_path = file_path.substr(0, final_slash);
+    size_t final_slash = log_filepath.find_last_of('/');
+    const std::string dir_path = filepath.substr(0, final_slash);
 
     // Set application log file path to default, if empty.
-    if (log_file_path.empty() || log_file_path[0] == '\0' || log_file_path[0] == ' ') {
-        file_path = LOG_PATH_DEFAULT;
+    if (log_filepath.empty() || log_filepath[0] == '\0' || log_filepath[0] == ' ') {
+        filepath = LOG_PATH_DEFAULT;
         write_direct_log(
             "Logger::initialize() application log file path is not "
             "valid, setting to default value (%s)",
-            log_file_path.c_str()
+            log_filepath.c_str()
         );
     }
 
@@ -374,20 +374,20 @@ Logger::initialize(const std::string& log_file_path, Log_Level level, bool log_t
 
     // Check file exists, otherwise attempt to make it
     auto log_file_just_created = false;
-    if (!std::filesystem::exists(file_path)) {
-        std::ofstream out_file(file_path);
+    if (!std::filesystem::exists(filepath)) {
+        std::ofstream out_file(filepath);
         out_file << " == Log Start == ";
         out_file.close();
         log_file_just_created = true;
     }
 
     // Check file permissions
-    const auto has_file_permissions = Logger_Util::has_permissions_for_file(log_file_path);
+    const auto has_file_permissions = Logger_Util::has_permissions_for_file(log_filepath);
     if (!has_file_permissions) {
         write_direct_log(
             "Logger::initialize() failed to validate application log "
             "file (%s) permissions. Error (%d)",
-            log_file_path.c_str(),
+            log_filepath.c_str(),
             has_file_permissions
         );
         throw Logger_Exception(
@@ -396,13 +396,13 @@ Logger::initialize(const std::string& log_file_path, Log_Level level, bool log_t
                 "Logger::initialize() failed to validate application log file "
                 "(%s) "
                 "permissions. Error (%d)",
-                log_file_path.c_str(),
+                log_filepath.c_str(),
                 has_file_permissions
             )
         );
     }
 
-    get_worker().initialize(file_path);
+    get_worker().initialize(filepath);
 
     set_log_severity_level(level);
 

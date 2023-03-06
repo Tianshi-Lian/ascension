@@ -163,12 +163,12 @@ class Logger_Util {
     /**
      * Checks whether we have read & write access to the specified file.
      *
-     * @param	file_path		The path to the file to validate.
+     * @param	filepath		The path to the file to validate.
      *
      * @return 	true is returned in the case that proper permissions are set.
      *			Otherwise, false is returned and an error logged.
      */
-    static bool has_permissions_for_file(const std::string& file_path);
+    static bool has_permissions_for_file(const std::string& filepath);
 
     /**
      * Set sleep to the process for given number of milliseconds.
@@ -232,11 +232,11 @@ class Logger_Worker {
     /**
      * Initialize logger threads and sets the log file names.
      *
-     * @param	log_file_path	Pointer to the application log file name
+     * @param	log_filepath	Pointer to the application log file name
      *
      * @throw	The logger exception with exception details.
      */
-    void initialize(const std::string& log_file_path);
+    void initialize(const std::string& log_filepath);
 
     /**
      * Receives the log record to write, and pushes the record to the
@@ -275,7 +275,7 @@ class Logger_Worker {
     volatile bool m_file_log_enabled;
     volatile bool m_console_log_enabled;
 
-    std::string m_log_file_path;
+    std::string m_log_filepath;
     std::ofstream m_log_file_stream;
     std::mutex m_mutex_log_file;
 };
@@ -299,12 +299,12 @@ class Logger {
      * Validate the log files and initialize logger worker process.
      * Set log file path to default if no values provided from calling module.
      *
-     * @param	log_file_path	Pointer to the application log file name
+     * @param	log_filepath	Pointer to the application log file name
      *
      * @throw	The logger exception with exception details.
      */
     static void initialize(
-        const std::string& log_file_path,
+        const std::string& log_filepath,
         Log_Level level = Log_Level::NOTICE,
         bool log_to_file = true,
         bool log_to_console = false

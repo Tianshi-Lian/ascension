@@ -5,7 +5,7 @@
 int
 yuki::test()
 {
-    Logger::info("yuki > void yuki::test()");
+    debug::Logger::info("yuki > void yuki::test()");
 
     return 2;
 }

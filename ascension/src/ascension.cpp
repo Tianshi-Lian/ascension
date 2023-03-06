@@ -38,7 +38,7 @@ player player;
 bool
 Ascension::on_initialize()
 {
-    yuki::Logger::info("ascension > Initializing game...");
+    yuki::debug::Logger::info("ascension > Initializing game...");
 
     player.name = "Tianshi";
     player.plane = plane::MORTAL;
@@ -49,7 +49,7 @@ Ascension::on_initialize()
     player.path_mastery[path::ALCHEMY] = 0.1f;
     player.skills.push_back({ "Fire palm", aspect::FIRE, plane::MORTAL, skill::stage::novice, 0 });
 
-    yuki::Logger::notice("ascension > Game initialized.");
+    yuki::debug::Logger::notice("ascension > Game initialized.");
 
     return true;
 }

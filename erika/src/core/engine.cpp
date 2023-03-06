@@ -9,17 +9,17 @@ namespace erika {
 void
 Engine::initialize()
 {
-    yuki::Logger::initialize("logs/app.log", yuki::Log_Level::DEBUG, true, true);
-    yuki::Logger::info("erika > Initializing game engine...");
+    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Log_Level::DEBUG, true, true);
+    yuki::debug::Logger::info("erika > Initializing game engine...");
 
-    yuki::Logger::notice("erika > Initialized game engine.");
+    yuki::debug::Logger::notice("erika > Initialized game engine.");
 }
 
 void
 Engine::run(const std::shared_ptr<Game>& game)
 {
     if (!game) {
-        yuki::Logger::critical("Engine::run() failed to run: invalid game!");
+        yuki::debug::Logger::critical("Engine::run() failed to run: invalid game!");
     }
 
     game->initialize();

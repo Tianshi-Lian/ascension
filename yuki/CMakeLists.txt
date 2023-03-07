@@ -26,6 +26,8 @@ add_library(${LIB_NAME}
 	${LIB_INC_FILES}
 )
 
+target_compile_definitions(${LIB_NAME} PUBLIC $<$<CONFIG:Debug>:YUKI_DEBUG>)
+
 target_include_directories(${LIB_NAME} PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
 	$<INSTALL_INTERFACE:include/${LIB_NAME}>

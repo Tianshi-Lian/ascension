@@ -2,12 +2,15 @@
 #include "erika/core/game.hpp"
 
 #include "yuki/debug/instrumentor.hpp"
+#include "yuki/debug/logger.hpp"
+
+#include <iostream>
 
 int
 main() // NOLINT
 {
-    // TODO: End initialize session and create a session for the game.name
-    PROFILE_BEGIN_SESSION("erika_initialize", "logs/erika_profile.json");
+    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Log_Level::DEBUG, true, true);
+    PROFILE_BEGIN_SESSION("erika_profiling", "logs/timings.json");
 
     erika::Engine engine;
     engine.initialize();

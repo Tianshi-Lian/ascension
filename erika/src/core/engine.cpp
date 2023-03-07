@@ -11,7 +11,6 @@ void
 Engine::initialize()
 {
     PROFILE_FUNCTION();
-    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Log_Level::DEBUG, true, true);
     yuki::debug::Logger::info("erika > Initializing game engine...");
 
     yuki::debug::Logger::notice("erika > Initialized game engine.");

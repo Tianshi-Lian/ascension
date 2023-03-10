@@ -4,11 +4,11 @@ set(LIB_NAME d3d11)
 message("    (plugins) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
-	src/d3d11_main.cpp
+	src/d3d11.cpp
 )
 
 set(LIB_INC_FILES
-	${ERIKA_BASE_PLUGIN_INC}/renderer/${LIB_NAME}/d3d11_main.hpp
+	${ERIKA_BASE_PLUGIN_INC}/renderer/${LIB_NAME}/d3d11.hpp
 )
 
 project(${LIB_NAME}

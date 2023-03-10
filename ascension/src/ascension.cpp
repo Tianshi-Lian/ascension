@@ -4,6 +4,8 @@
 
 #include "yuki/debug/logger.hpp"
 
+#include "erika/plugins/d3d11/d3d11_main.hpp"
+
 namespace ascension {
 
 struct skill {
@@ -50,6 +52,9 @@ Ascension::on_initialize()
     player.skills.push_back({ "Fire palm", aspect::FIRE, plane::MORTAL, skill::stage::novice, 0 });
 
     yuki::debug::Logger::notice("ascension > Game initialized.");
+
+    // TODO: Remove, temporary test.
+    yuki::debug::Logger::notice("Dynamic lib stuff: %d", erika::plugins::renderer::d3d11::test_get_int());
 
     return true;
 }

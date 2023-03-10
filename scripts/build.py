@@ -23,6 +23,8 @@ def run():
         build_args =f"-j {str(wanted_threads)}"
 
         process = subprocess.run(["ninja", "-C./build", build_args])
+
+        
         exit_code = process.returncode
 
     return exit_code

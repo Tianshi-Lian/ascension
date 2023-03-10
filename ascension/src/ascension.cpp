@@ -4,7 +4,7 @@
 
 #include "yuki/debug/logger.hpp"
 
-#include "erika/plugins/d3d11/d3d11_main.hpp"
+#include "erika/plugins/renderer/d3d11/d3d11_main.hpp"
 
 namespace ascension {
 

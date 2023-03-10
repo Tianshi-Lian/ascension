@@ -11,7 +11,7 @@ add_library(${LIB_NAME} INTERFACE)
 # of erika, even though they "aren't" e.g.: #include "erika/plugins/renderer/d3d11.hpp"
 set(ERIKA_BASE_PLUGIN_INC include/erika/plugins)
 
-# TODO: Add renderer/CMakeLists.txt and make sure ../renderer/.. is added to public target includes
+# TODO: Add renderer/CMakeLists.txt
 add_subdirectory(renderer/d3d11)
 
 target_link_libraries(${LIB_NAME} INTERFACE d3d11)

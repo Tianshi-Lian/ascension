@@ -8,7 +8,7 @@ set(LIB_SRC_FILES
 )
 
 set(LIB_INC_FILES
-	${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}/d3d11_main.hpp
+	${ERIKA_BASE_PLUGIN_INC}/renderer/${LIB_NAME}/d3d11_main.hpp
 )
 
 project(${LIB_NAME}
@@ -25,7 +25,7 @@ add_library(${LIB_NAME} SHARED
 target_compile_definitions(${LIB_NAME} PRIVATE ERIKA_EXPORT)
 
 target_include_directories(${LIB_NAME} PRIVATE
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${ERIKA_BASE_PLUGIN_INC}/renderer/${LIB_NAME}>
 	$<INSTALL_INTERFACE:include/${LIB_NAME}>
 )
 target_include_directories(${LIB_NAME} PUBLIC

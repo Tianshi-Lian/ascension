@@ -3,13 +3,8 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME erika)
 message("Configuring ${LIB_NAME}...")
 
-set(LIB_SRC_FILES
-	src/erika.cpp
-)
-
-set(LIB_INC_FILES
-	include/${LIB_NAME}/erika.hpp
-)
+set(LIB_SRC_FILES "")
+set(LIB_INC_FILES "")
 
 # Pull in our source dirs
 include(src/core/sources.cmake)

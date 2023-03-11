@@ -2,8 +2,8 @@
 A 2D game engine written in C++17 
 
 ## Dependencies
-- [**sophia**](https://github.com/r-ggraham/yuki): A set of CMake utility files
-- [**yuki**](https://github.com/r-ggraham/yuki): A core library for development, graphics & games
+- [**sophia**](../sophia): A set of CMake utility files
+- [**yuki**](../yuki): A core library for development, graphics & games
 
 ## Build
 All libraries and dependencies are either included in this repository or added as submodules in the [libs](libs) directory.  

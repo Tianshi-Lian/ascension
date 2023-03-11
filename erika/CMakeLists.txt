@@ -5,16 +5,14 @@ message("Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
 	src/erika.cpp
-	src/core/game.cpp
-	src/core/engine.cpp
 )
 
 set(LIB_INC_FILES
 	include/${LIB_NAME}/erika.hpp
-	include/${LIB_NAME}/core/game.hpp
-	include/${LIB_NAME}/core/engine.hpp
-	include/${LIB_NAME}/core/entry.hpp
 )
+
+# Pull in our source dirs
+include(src/core/sources.cmake)
 
 project(${LIB_NAME}
 	VERSION 0.0.1

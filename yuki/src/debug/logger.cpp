@@ -96,7 +96,7 @@ Logger_Util::has_permissions_for_file(const std::string& filepath)
 {
     // Check read access
     {
-        std::ifstream file(filepath);
+        std::ifstream file(filepath, std::ifstream::in | std::ifstream::app | std::ifstream::binary);
         if (!file.good()) {
             write_direct_log(
                 "LoggerUtil::HasPermissions() the path(%s) is not "
@@ -109,7 +109,7 @@ Logger_Util::has_permissions_for_file(const std::string& filepath)
 
     // Check write access
     {
-        std::ofstream file(filepath);
+        std::ofstream file(filepath, std::ofstream::out | std::ofstream::app | std::ofstream::binary);
         if (!file.good()) {
             write_direct_log(
                 "LoggerUtil::HasPermissions() the path(%s) is not "
@@ -139,7 +139,7 @@ Logger_Util::sleep(unsigned int milliseconds)
 std::mutex&
 Logger_Util::get_mutex()
 {
-    static std::mutex s_mutex;
+    __attribute__((visibility("default"))) static std::mutex s_mutex;
     return s_mutex;
 }
 
@@ -251,7 +251,7 @@ Logger_Worker::write_to_log_file()
             }
 
             if (!m_log_file_stream.is_open()) {
-                m_log_file_stream.open(m_log_filepath, std::ofstream::out | std::ofstream::app | std::ostream::binary);
+                m_log_file_stream.open(m_log_filepath, std::ofstream::out | std::ofstream::app | std::ofstream::binary);
             }
 
             // Write errors to stdout when stream error occurred
@@ -335,6 +335,10 @@ Logger::~Logger()
 void
 Logger::initialize(const std::string& log_filepath, Log_Level level, bool log_to_file, bool log_to_console)
 {
+    // TODO ?: We probably shouldn't bother with all this file setup if the user doesn't want to log to files
+    // /t however this would possibly require moving things to enable_file_logging() as it could be toggled
+    // /t at anytime and that just doesn't seem worth it right now.
+
     std::string filepath = log_filepath;
 
     size_t final_slash = log_filepath.find_last_of('/');
@@ -354,6 +358,7 @@ Logger::initialize(const std::string& log_filepath, Log_Level level, bool log_to
     if (!std::filesystem::exists(dir_path)) {
         std::error_code error;
         const auto success = std::filesystem::create_directory(dir_path, error);
+        std::cout << "Creating directory" << std::endl;
         if (!success) {
             write_direct_log(
                 "Logger::initialize() failed to create log file "
@@ -376,8 +381,8 @@ Logger::initialize(const std::string& log_filepath, Log_Level level, bool log_to
     // Check file exists, otherwise attempt to make it
     auto log_file_just_created = false;
     if (!std::filesystem::exists(filepath)) {
-        std::ofstream out_file(filepath);
-        out_file << " == Log Start == ";
+        std::ofstream out_file(filepath, std::ofstream::out | std::ofstream::app | std::ofstream::binary);
+        out_file << " == Log Start == \n";
         out_file.close();
         log_file_just_created = true;
     }
@@ -413,7 +418,7 @@ Logger::initialize(const std::string& log_filepath, Log_Level level, bool log_to
     }
     enable_console_logging(log_to_console);
 
-    Logger::notice("yuki > Logger Initialized.");
+    Logger::notice("yuki > Logger initialized: %s.", filepath.c_str());
 }
 
 Logger_Worker&

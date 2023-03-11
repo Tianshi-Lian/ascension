@@ -12,7 +12,8 @@ class Plugin_Manager {
   public:
     Plugin_Manager();
 
-    // TODO: have the plugin manager register plugins found in the .exe directory during initialize().
+    // TODO: initialize() method for loading plugins. See plugins/plugin_types.hpp for more infomation.
+
     void register_renderer(std::string name, const std::shared_ptr<Plugin_Factory<Renderer>>& factory);
     void change_active_renderer(const std::string& name);
 

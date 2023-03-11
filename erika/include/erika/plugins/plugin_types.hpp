@@ -14,6 +14,8 @@ class Plugin {
     // /t and using magic_enum to convert the sub dir name into a corresponding Plugin_Type. This will
     // /t require us to move to use LoadLibrary (win32 (and linux equiv)) instead of relying on the
     // /t current behaviour of dumping all shared libs into the same dir as the executable.
+    // /t Alternatively we could use a .xml (or other) file to specify where/which plugins we should
+    // /t be using and their types, and then deserializing and loading that.
     explicit Plugin(Plugin_Type type, std::string name);
     virtual ~Plugin() = default;
 

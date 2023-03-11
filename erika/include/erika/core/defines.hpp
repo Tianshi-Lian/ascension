@@ -1,3 +1,4 @@
+#pragma once
 
 // Exports
 #ifdef ERIKA_EXPORT

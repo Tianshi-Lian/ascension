@@ -43,7 +43,9 @@ set_target_properties(${LIB_NAME} PROPERTIES
 
 if(ENABLE_PCH)
 	target_precompile_headers(${LIB_NAME}
-		PRIVATE <string> <yuki/types.hpp>
+		PRIVATE <string> <memory>
+		PRIVATE <yuki/types.hpp>
+		PRIVATE <core/defines.hpp>
 	)
 endif()
 

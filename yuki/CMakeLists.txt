@@ -3,15 +3,13 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME yuki)
 message("Configuring ${LIB_NAME}...")
 
-set(LIB_SRC_FILES
-	src/debug/instrumentor.cpp
-	src/debug/logger.cpp
+set(LIB_SRC_FILES "")
+set(LIB_INC_FILES
+	include/${LIB_NAME}/types.hpp
 )
 
-set(LIB_INC_FILES
-	include/${LIB_NAME}/debug/instrumentor.hpp
-	include/${LIB_NAME}/debug/logger.hpp
-)
+# Pull in our source dirs
+include(src/debug/sources.cmake)
 
 project(${LIB_NAME}
 	VERSION 0.0.1

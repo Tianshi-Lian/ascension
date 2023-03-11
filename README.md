@@ -1,5 +1,5 @@
 # Ascension
-A game about ascending through the six planes of heaven
+A game about ascending through the seven planes of heaven
 
 ## Application
 - [**ascension**](ascension/): The main application for the game

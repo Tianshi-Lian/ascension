@@ -2,7 +2,7 @@
 A core library for C++ development, graphics & games
 
 ## Dependencies
-- [**sophia**](https://github.com/r-ggraham/yuki): A set of CMake utility files
+- [**sophia**](../sophia): A set of CMake utility files
 
 ## Build
 All libraries and dependencies are either included in this repository or added as submodules in the [libs](libs) directory.  

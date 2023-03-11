@@ -13,6 +13,7 @@ set(LIB_INC_FILES
 
 # Pull in our source dirs
 include(src/core/sources.cmake)
+include(src/plugins/sources.cmake)
 
 project(${LIB_NAME}
 	VERSION 0.0.1

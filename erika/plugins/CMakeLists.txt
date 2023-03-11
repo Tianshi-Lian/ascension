@@ -3,17 +3,19 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME erika_plugins)
 message("  (erika) Configuring ${LIB_NAME}...")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/erika/plugins/bin)
-
 add_library(${LIB_NAME} INTERFACE)
+
+# This ensures that erika is built first, even though linked to it should do this
+add_dependencies(${LIB_NAME} erika)
 
 # We use this to ensure all users (applications) can refer to plugins as if they are part
 # of erika, even though they "aren't" e.g.: #include "erika/plugins/renderer/d3d11.hpp"
+# This can be overriden by subdirs.
 set(ERIKA_BASE_PLUGIN_INC include/erika/plugins)
 
-# TODO: Add renderer/CMakeLists.txt
-add_subdirectory(renderer/d3d11)
+# Import & link to all our plugin options/types.
+add_subdirectory(renderer)
 
-target_link_libraries(${LIB_NAME} INTERFACE d3d11)
+target_link_libraries(${LIB_NAME} INTERFACE erika_renderer_plugins)
 
 message("  (erika) Finished ${LIB_NAME}")

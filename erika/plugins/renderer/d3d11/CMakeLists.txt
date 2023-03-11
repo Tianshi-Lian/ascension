@@ -8,7 +8,7 @@ set(LIB_SRC_FILES
 )
 
 set(LIB_INC_FILES
-	${ERIKA_BASE_PLUGIN_INC}/renderer/${LIB_NAME}/d3d11.hpp
+	${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}/d3d11.hpp
 )
 
 project(${LIB_NAME}
@@ -25,7 +25,7 @@ add_library(${LIB_NAME} SHARED
 target_compile_definitions(${LIB_NAME} PRIVATE ERIKA_EXPORT)
 
 target_include_directories(${LIB_NAME} PRIVATE
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${ERIKA_BASE_PLUGIN_INC}/renderer/${LIB_NAME}>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}>
 	$<INSTALL_INTERFACE:include/${LIB_NAME}>
 )
 target_include_directories(${LIB_NAME} PUBLIC
@@ -40,6 +40,7 @@ set_target_properties(${LIB_NAME} PROPERTIES
 
 if(ENABLE_PCH)
 	target_precompile_headers(${LIB_NAME}
+		PRIVATE <string> <memory>
 		PRIVATE <yuki/types.hpp>
 	)
 endif()

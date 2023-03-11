@@ -4,6 +4,7 @@
 
 #include "yuki/debug/logger.hpp"
 
+#include "erika/plugins/plugin_manager.hpp"
 #include "erika/plugins/renderer/d3d11/d3d11.hpp"
 
 namespace ascension {
@@ -37,9 +38,16 @@ struct player {
 
 player player;
 
+struct Foo {};
+struct Bar : public Foo {};
+
+template<typename T>
+class A {};
+
 bool
 Ascension::on_initialize()
 {
+    using namespace erika::plugins;
     yuki::debug::Logger::info("ascension > Initializing game...");
 
     player.name = "Tianshi";
@@ -53,8 +61,22 @@ Ascension::on_initialize()
 
     yuki::debug::Logger::notice("ascension > Game initialized.");
 
-    // TODO: Remove, temporary test.
-    yuki::debug::Logger::notice("Dynamic lib stuff: %d", erika::plugins::renderer::d3d11::test_get_int());
+    {
+        // TODO: Remove, temporary test.
+        Plugin_Manager plugin_manager;
+
+        const auto d3d11_plugin_factory = std::make_shared<renderer::d3d11::D3D11_Renderer_Factory>();
+        plugin_manager.register_renderer("D3D11_Renderer", d3d11_plugin_factory);
+
+        const auto renderer_plugins_available = plugin_manager.get_registered_renderers();
+        yuki::debug::Logger::debug("Renderer plugin: %s", renderer_plugins_available.at(0).c_str());
+
+        plugin_manager.change_active_renderer(renderer_plugins_available.at(0));
+
+        auto renderer = plugin_manager.get_active_renderer();
+        renderer->begin_scene();
+        renderer->end_scene();
+    }
 
     return true;
 }

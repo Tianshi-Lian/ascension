@@ -22,7 +22,6 @@ Instrumentor::~Instrumentor()
 void
 Instrumentor::begin_session(const std::string& name, const std::string& filepath)
 {
-    Logger::info("Test");
     std::lock_guard lock(m_mutex);
     if (!m_current_session.empty()) {
         Logger::error(

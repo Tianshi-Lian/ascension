@@ -1,7 +1,7 @@
 import sys
 from collections import namedtuple
 
-BUILD_TYPE = "debug"
+BUILD_TYPE = "Debug"
 BUILD_PROJECT_NAME = "ascension"
 
 SUCCESS = 0

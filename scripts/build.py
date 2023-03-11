@@ -1,8 +1,8 @@
 import _globals
 import _helpers
-import multiprocessing
 import os, sys
 import subprocess
+import importlib
 
 def run():
     args = _helpers.process_args(sys.argv)
@@ -13,18 +13,16 @@ def run():
 
     exit_code = _globals.SUCCESS
     if not os.path.isfile("./build/build.ninja"):
-        process = subprocess.run(["cmake", "-S .",  "-B ./build",  "-GNinja", f"-DCMAKE_C_COMPILER={c_compiler}", f"-DCMAKE_CXX_COMPILER={cxx_compiler}"])
-        exit_code = process.returncode
+        module = importlib.import_module('config')
+        exit_code = module.run()
     else:
         print("Using previous build.ninja")
 
     if exit_code == _globals.SUCCESS:
-        wanted_threads = int(os.cpu_count() / 1.2) # use 80% of available threads
-        build_args =f"-j {str(wanted_threads)}"
+        wanted_threads = str(int(os.cpu_count() / 1.2)) # use 80% of available threads
 
-        process = subprocess.run(["ninja", "-C./build", build_args])
+        process = subprocess.run(["ninja", "-C./build", f'-j{wanted_threads}', f'-fbuild-{build_type}.ninja'])
 
-        
         exit_code = process.returncode
 
     return exit_code

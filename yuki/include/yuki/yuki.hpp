@@ -1,6 +1,0 @@
-namespace yuki {
-
-int
-test();
-
-}

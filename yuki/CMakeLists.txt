@@ -6,13 +6,11 @@ message("Configuring ${LIB_NAME}...")
 set(LIB_SRC_FILES
 	src/debug/instrumentor.cpp
 	src/debug/logger.cpp
-	src/yuki.cpp
 )
 
 set(LIB_INC_FILES
 	include/${LIB_NAME}/debug/instrumentor.hpp
 	include/${LIB_NAME}/debug/logger.hpp
-	include/${LIB_NAME}/yuki.hpp
 )
 
 project(${LIB_NAME}

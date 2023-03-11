@@ -36,7 +36,7 @@ D3D11_Renderer::end_scene()
 std::shared_ptr<Renderer>
 D3D11_Renderer_Factory::create()
 {
-    yuki::debug::Logger::initialize("logs/plugins.log", yuki::debug::Log_Level::DEBUG, true, true);
+    yuki::debug::Logger::initialize("logs/renderer.log", yuki::debug::Log_Level::DEBUG, true, true);
     yuki::debug::Logger::debug("erika > D3D11_Renderer_Factory::create()");
     return std::make_shared<D3D11_Renderer>();
 }

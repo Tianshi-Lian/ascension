@@ -57,7 +57,8 @@ enum class Log_Exception_Type {
  */
 class Logger_Exception : std::exception {
   public:
-    /*! Sets the logger exception type.
+    /**
+     * @brief Sets the logger exception type.
      *
      * @param	type The logger exception type.
      */
@@ -66,7 +67,8 @@ class Logger_Exception : std::exception {
     {
     }
 
-    /*! Sets the logger exception type & message in string format.
+    /**
+     * @brief Sets the logger exception type & message in string format.
      *
      * @param	type	    The logger exception type.
      * @param	message		The logger exception message in string format.
@@ -78,7 +80,7 @@ class Logger_Exception : std::exception {
     }
 
     /**
-     * Retrieves the logger exception type.
+     * @brief Retrieves the logger exception type.
      *
      * @return	The logger exception type.
      */
@@ -88,7 +90,7 @@ class Logger_Exception : std::exception {
     }
 
     /**
-     * Retrieves the logger exception message as string.
+     * @brief Retrieves the logger exception message as string.
      *
      * @return	std::string containing the logger exception message.
      */
@@ -110,7 +112,7 @@ class Logger_Exception : std::exception {
 class Blocking_string_Queue {
   public:
     /**
-     * Pop elements from queue.
+     * @brief Pop elements from queue.
      *
      * @param	result	Pointer to a string where the resulting C-string is
      *stored.
@@ -130,7 +132,7 @@ class Blocking_string_Queue {
     }
 
     /**
-     * Push an element to the queue.
+     * @brief Push an element to the queue.
      *
      * @param	value		The string element that requires insertion.
      */
@@ -153,7 +155,7 @@ class Blocking_string_Queue {
 class Logger_Util {
   public:
     /**
-     * Creates a timestamp of the current time in the format "yyyy-MM-dd
+     * @brief Creates a timestamp of the current time in the format "yyyy-MM-dd
      * HH:mm:ss.SSS"
      *
      * @return  std::string containing the formatted timestamp.
@@ -161,7 +163,7 @@ class Logger_Util {
     static std::string get_time_string();
 
     /**
-     * Checks whether we have read & write access to the specified file.
+     * @brief Checks whether we have read & write access to the specified file.
      *
      * @param	filepath		The path to the file to validate.
      *
@@ -171,14 +173,14 @@ class Logger_Util {
     static bool has_permissions_for_file(const std::string& filepath);
 
     /**
-     * Set sleep to the process for given number of milliseconds.
+     * @brief Set sleep to the process for given number of milliseconds.
      *
      * @param	milliseconds	The number of milliseconds to sleep
      */
     static void sleep(unsigned int milliseconds);
 
     /**
-     * Composes a string with the same text that would be printed.
+     * @brief Composes a string with the same text that would be printed.
      * After the format parameter, the function expects at least as many
      *additional arguments as specified by format.
      *
@@ -224,13 +226,8 @@ class Logger_Worker {
     Logger_Worker();
     ~Logger_Worker();
 
-    Logger_Worker(const Logger_Worker&) = delete;
-    Logger_Worker(Logger_Worker&&) = delete;
-    Logger_Worker& operator=(const Logger_Worker&) = delete;
-    Logger_Worker& operator=(Logger_Worker&&) = delete;
-
     /**
-     * Initialize logger threads and sets the log file names.
+     * @brief Initialize logger threads and sets the log file names.
      *
      * @param	log_filepath	Pointer to the application log file name
      *
@@ -239,7 +236,7 @@ class Logger_Worker {
     void initialize(const std::string& log_filepath);
 
     /**
-     * Receives the log record to write, and pushes the record to the
+     * @brief Receives the log record to write, and pushes the record to the
      * application log queue.
      *
      * @param	level		The log severity level
@@ -249,7 +246,7 @@ class Logger_Worker {
     void output_log_line(Log_Level level, const std::string& log_record);
 
     /**
-     * Pop log record from application log queue and writes to application log
+     * @brief Pop log record from application log queue and writes to application log
      * file.
      *
      * @throw	The logger exception with exception details.
@@ -257,11 +254,16 @@ class Logger_Worker {
     void write_to_log_file();
 
     /**
-     * Release and close all loggers
+     * @brief Release and close all loggers
      *
      * @throw	The logger exception with exception details.
      */
     void drop_all();
+
+    Logger_Worker(const Logger_Worker&) = delete;
+    Logger_Worker(Logger_Worker&&) = delete;
+    Logger_Worker& operator=(const Logger_Worker&) = delete;
+    Logger_Worker& operator=(Logger_Worker&&) = delete;
 
   private:
     std::unique_ptr<std::thread> m_app_log_thread;
@@ -290,13 +292,8 @@ class Logger {
     Logger();
     ~Logger();
 
-    Logger(const Logger&) = default;
-    Logger(Logger&&) = delete;
-    Logger& operator=(const Logger&) = default;
-    Logger& operator=(Logger&&) = delete;
-
     /**
-     * Validate the log files and initialize logger worker process.
+     * @brief Validate the log files and initialize logger worker process.
      * Set log file path to default if no values provided from calling module.
      *
      * @param	log_filepath	Pointer to the application log file name
@@ -311,28 +308,28 @@ class Logger {
     );
 
     /**
-     * Set the log severity level (determines minimum log level).
+     * @brief Set the log severity level (determines minimum log level).
      *
      * @param	level	the log severity level
      */
     static void set_log_severity_level(Log_Level level);
 
     /**
-     * Enable/disable application logging to file.
+     * @brief Enable/disable application logging to file.
      *
      * @param	value	the parameter to enable or disable logging to file.
      */
     static void enable_file_logging(bool value);
 
     /**
-     * Enable/disable application logging to console.
+     * @brief Enable/disable application logging to console.
      *
      * @param	value	the parameter to enable or disable logging to console.
      */
     static void enable_console_logging(bool value);
 
     /**
-     * Write debug level log record to the application log file.
+     * @brief Write debug level log record to the application log file.
      *
      * @param   level   The severity level to output this log record at.
      * @param	format	String that contains a format string that follows the
@@ -348,7 +345,7 @@ class Logger {
     }
 
     /**
-     * Write debug level log records to the application log file.
+     * @brief Write debug level log records to the application log file.
      *
      * @param	format	String that contains a format string that follows the
      *same specifications as format in printf (see printf for details)
@@ -363,7 +360,7 @@ class Logger {
     }
 
     /**
-     * Write info level log records to the application log file.
+     * @brief Write info level log records to the application log file.
      *
      * @param	format	String that contains a format string that follows the
      *same specifications as format in printf (see printf for details)
@@ -378,7 +375,7 @@ class Logger {
     }
 
     /**
-     * Write notice level log records to the application log file.
+     * @brief Write notice level log records to the application log file.
      *
      * @param	format	String that contains a format string that follows the
      *same specifications as format in printf (see printf for details)
@@ -393,7 +390,7 @@ class Logger {
     }
 
     /**
-     * Write warning level log records to the application log file.
+     * @brief Write warning level log records to the application log file.
      *
      * @param	format	String that contains a format string that follows the
      *same specifications as format in printf (see printf for details)
@@ -408,7 +405,7 @@ class Logger {
     }
 
     /**
-     * Write error level log records to the application log file.
+     * @brief Write error level log records to the application log file.
      *
      * @param	format	String that contains a format string that follows the
      *same specifications as format in printf (see printf for details)
@@ -423,7 +420,7 @@ class Logger {
     }
 
     /**
-     * Write critical level log records to the application log file.
+     * @brief Write critical level log records to the application log file.
      *
      * @param	format	String that contains a format string that follows the
      *same specifications as format in printf (see printf for details)
@@ -438,15 +435,20 @@ class Logger {
     }
 
     /**
-     * Release and close all loggers
+     * @brief Release and close all loggers
      *
      * @throw	The logger exception with exception details.
      */
     static void drop_all();
 
+    Logger(const Logger&) = default;
+    Logger(Logger&&) = delete;
+    Logger& operator=(const Logger&) = default;
+    Logger& operator=(Logger&&) = delete;
+
   private:
     /**
-     * Get the internal worker object for this logger.
+     * @brief Get the internal worker object for this logger.
      * Initializes the worker if required.
      *
      * @return   reference to the internal worker instance
@@ -454,7 +456,7 @@ class Logger {
     static Logger_Worker& get_worker();
 
     /**
-     * Write the formatted log record to the respective log queue.
+     * @brief Write the formatted log record to the respective log queue.
      * Standard format: yyyy-MM-dd HH:mm:ss.SSS [LEVEL ](source): Message
      *
      * @param	level	The log severity level

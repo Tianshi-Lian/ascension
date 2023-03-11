@@ -5,6 +5,11 @@
 
 namespace yuki::debug {
 
+/**
+ * @class Instrumentor
+ *
+ * @brief A debug utility class for profiling/instrumenting code.
+ */
 class Instrumentor {
   public:
     Instrumentor(const Instrumentor&) = delete;
@@ -13,14 +18,14 @@ class Instrumentor {
     Instrumentor& operator=(Instrumentor&&) = delete;
 
     /**
-     * Get the global Instrumentor object.
+     * @brief Get the global Instrumentor object.
      *
      * @return  reference to the global Instrumentor.
      */
     static Instrumentor& get();
 
     /**
-     * Begin a new instrumentation session.
+     * @brief Begin a new instrumentation session.
      * This will collect and output profiling calls until end_session is called.
      *
      * @param   name      The name of the profiling session.
@@ -29,12 +34,12 @@ class Instrumentor {
     void begin_session(const std::string& name, const std::string& filepath = "logs/results.json");
 
     /**
-     * End the current profiling session.
+     * @brief End the current profiling session.
      */
     void end_session();
 
     /**
-     * Output a profiling result into the active session.
+     * @brief Output a profiling result into the active session.
      *
      * @param   name          The result name, this is usually the fuction/line which is profiled.
      * @param   start_time    The starting time in microseconds of the profiled section.
@@ -70,7 +75,7 @@ class Instrumentor_Timer {
     Instrumentor_Timer& operator=(Instrumentor_Timer&&) = delete;
 
     /**
-     * Stop the current timer.
+     * @brief Stop the current timer.
      * This will cause the result to be written to the current session.
      */
     void stop();

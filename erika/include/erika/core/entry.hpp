@@ -1,3 +1,5 @@
+#pragma once
+
 #include "erika/core/engine.hpp"
 #include "erika/core/game.hpp"
 

@@ -1,16 +1,17 @@
+import os
 import sys
-from collections import namedtuple
 
-BUILD_TYPE = "Debug"
-BUILD_PROJECT_NAME = "ascension"
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+BUILD_TYPE = os.getenv('BUILD_TYPE')
+BUILD_PROJECT_NAME = os.getenv('PROJECT_NAME')
 
 SUCCESS = 0
 
-PLATFORM = sys.platform
-
-if "linux" in PLATFORM: # this could be linux or linux2
-    PLATFORM = "linux"
-elif "win" in PLATFORM:
-    PLATFORM = "windows"
-
-Help_Text = namedtuple('Help_Text', ['description', 'params'])
+PLATFORM = \
+    'linux' if 'linux' in sys.platform else \
+    'windows' if 'win' in sys.platform else \
+    'unknown'

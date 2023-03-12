@@ -20,7 +20,7 @@ class Platform {
     );
 
     static void shutdown(const std::shared_ptr<Platform_State>& platform_state);
-    static void process_messages(/*std::shared_ptr<void> platform_state*/);
+    static bool process_messages(const std::shared_ptr<Platform_State>& platform_state);
     static void sleep(u32 milliseconds);
 };
 

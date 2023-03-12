@@ -1,14 +1,17 @@
-import _globals
-import sys, os
-import subprocess
 import importlib
+import os
+import sys
+
+import _globals
+
 
 SCRIPTS_DIR = "scripts"
 
-def run_command(cmds):
+
+def run_command(commands):
     exit_code = 0
 
-    script = "./{}/{}.py".format(SCRIPTS_DIR, cmds[0])
+    script = "./{}/{}.py".format(SCRIPTS_DIR, commands[0])
 
     # As we just run any file specified by cmd we should at least check it's not one _we_ are ignoring
     if script.startswith("_"):
@@ -17,8 +20,9 @@ def run_command(cmds):
     else:
         print("==============================================")
         if os.path.exists(script):
-            command_name = cmds[0]
-            print("Executing {} ({}):".format(command_name, ", ".join(cmds[1:])))
+            command_name = commands[0]
+            print("Executing {} ({}):".format(
+                command_name, ", ".join(commands[1:])))
 
             module = importlib.import_module(command_name)
             exit_code = module.run()
@@ -29,21 +33,26 @@ def run_command(cmds):
     return exit_code
 
 
-argc = len(sys.argv)
-if argc < 2:
-    print("Invalid CLI command! Type `cli help` for a list of commands.")
-else:
-    i = 1
-    while i < argc:
-        cmds = [sys.argv[i]]
+def main():
+    argc = len(sys.argv)
+    if argc < 2:
+        print("Invalid CLI command! Type `cli help` for a list of commands.")
+    else:
+        i = 1
+        while i < argc:
+            commands = [sys.argv[i]]
 
-        while True:
-            if i < argc - 1 and sys.argv[i + 1][0] == "-":
-                cmds.append(sys.argv[i + 1][1:])
-                i += 1
-            else:
-                break
+            while True:
+                if i < argc - 1 and sys.argv[i + 1][0] == "-":
+                    commands.append(sys.argv[i + 1][1:])
+                    i += 1
+                else:
+                    break
 
-        if (run_command(cmds) != _globals.SUCCESS):
-            break # this will stop us running any more commands if we failed one
-        i += 1
+            if (run_command(commands) != _globals.SUCCESS):
+                break  # this will stop us running any more commands if we failed one
+            i += 1
+
+
+if __name__ == "__main__":
+    main()

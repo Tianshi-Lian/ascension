@@ -80,6 +80,9 @@ jobs:
         chown $(whoami) ./scripts/dev.sh
         chmod +x ./scripts/dev.sh
 
+    - name: 🐍 Install python dependencies
+      run: pip install -r ./requirements.txt
+
     - name: 🔨 Build
       run: ./scripts/dev${{ matrix.config.dev }} build -bt=${{ matrix.config.build_type }} -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }}
 

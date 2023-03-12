@@ -84,7 +84,7 @@ jobs:
       run: pip install -r ./requirements.txt
 
     - name: 🔨 Build
-      run: ./scripts/dev${{ matrix.config.dev }} build -bt=${{ matrix.config.build_type }} -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }}
+      run: ./scripts/dev${{ matrix.config.dev }} configure -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }} build -bt=${{ matrix.config.build_type }}
 
     - name: 📤 Upload
       uses: actions/upload-artifact@v3

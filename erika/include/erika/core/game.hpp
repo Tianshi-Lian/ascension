@@ -11,8 +11,10 @@ class Game {
     friend class Engine;
 
   public:
-    Game() = default;
+    explicit Game(std::string window_title = "Erika Game");
     virtual ~Game() = default;
+
+    [[nodiscard]] const std::string& get_window_title() const;
 
     Game(const Game&) = default;
     Game(Game&&) = delete;
@@ -37,10 +39,19 @@ class Game {
      */
     virtual void on_render(f32 delta_time) = 0;
 
+    /**
+     * @brief Set the window title for the games application.
+     *
+     * @param     value     string holding the value to set the title to
+     */
+    void set_window_title(std::string value);
+
   private:
     bool initialize();
     void update(f32 delta_time);
     void render(f32 delta_time);
+
+    std::string m_window_title;
 };
 
 namespace game {

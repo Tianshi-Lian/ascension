@@ -2,6 +2,11 @@
 
 namespace erika {
 
+Game::Game(std::string window_title)
+  : m_window_title(std::move(window_title))
+{
+}
+
 bool
 Game::initialize()
 {
@@ -18,6 +23,18 @@ void
 Game::render(f32 delta_time)
 {
     on_render(delta_time);
+}
+
+const std::string&
+Game::get_window_title() const
+{
+    return m_window_title;
+}
+
+void
+Game::set_window_title(std::string value)
+{
+    m_window_title = std::move(value);
 }
 
 }

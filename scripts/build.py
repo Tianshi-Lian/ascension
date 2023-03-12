@@ -25,10 +25,10 @@ def run():
         wanted_threads = str(int(os.cpu_count() / 1.2))
 
         print(
-            f'ninja: Building with config `{build_type}` using {wanted_threads} threads')
+            f'ninja: Building with config `{build_type}` using {wanted_threads} threads', flush=True)
+
         process = subprocess.run(
             ['ninja', '-C./build', f'-j{wanted_threads}', f'-fbuild-{build_type}.ninja'])
-
         exit_code = process.returncode
 
     return exit_code

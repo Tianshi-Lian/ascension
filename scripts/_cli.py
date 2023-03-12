@@ -9,7 +9,7 @@ SCRIPTS_DIR = "scripts"
 
 
 def run_command(commands):
-    exit_code = 0
+    exit_code = _globals.SUCCESS
 
     script = "./{}/{}.py".format(SCRIPTS_DIR, commands[0])
 
@@ -49,8 +49,10 @@ def main():
                 else:
                     break
 
-            if (run_command(commands) != _globals.SUCCESS):
-                break  # this will stop us running any more commands if we failed one
+            command_result = run_command(commands)
+            if (command_result != _globals.SUCCESS):
+                # this will stop us running any more commands if we failed one
+                sys.exit(command_result)
             i += 1
 
 

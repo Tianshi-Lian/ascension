@@ -36,7 +36,7 @@ main(int /*argc*/, char** /*args*/) // NOLINT
     // TODO: Move the game loop inside of the engine.run()
     u64 milliseconds_elapsed = 0;
     while (milliseconds_elapsed < 3000) {
-        yuki::platform::Platform::process_messages();
+        yuki::platform::Platform::process_messages(state);
         yuki::platform::Platform::sleep(50);
         milliseconds_elapsed += 50;
     }

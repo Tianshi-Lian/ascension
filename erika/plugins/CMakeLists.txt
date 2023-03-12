@@ -5,9 +5,6 @@ message("  (erika) Configuring ${LIB_NAME}...")
 
 add_library(${LIB_NAME} INTERFACE)
 
-# This ensures that erika is built first, even though linked to it should do this
-add_dependencies(${LIB_NAME} erika)
-
 # We use this to ensure all users (applications) can refer to plugins as if they are part
 # of erika, even though they "aren't" e.g.: #include "erika/plugins/renderer/d3d11.hpp"
 # This can be overriden by subdirs.

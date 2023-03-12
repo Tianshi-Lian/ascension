@@ -37,6 +37,7 @@ target_include_directories(${LIB_NAME} PUBLIC
 set_target_properties(${LIB_NAME} PROPERTIES
 	LINK_WHAT_YOU_USE ON
 	CXX_EXTENSIONS OFF
+	COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
 )
 
 if(ENABLE_PCH)

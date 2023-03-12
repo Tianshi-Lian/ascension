@@ -1,7 +1,4 @@
-from collections import namedtuple
-
-Help_Text = namedtuple('Help_Text', ['description', 'params'])
-Parsed_Args = namedtuple('Parsed_Args', 'command original dict')
+from _types import Parsed_Args
 
 
 def process_args(argv) -> Parsed_Args:

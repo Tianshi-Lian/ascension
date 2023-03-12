@@ -54,4 +54,10 @@ target_link_libraries(${LIB_NAME}
 	PUBLIC magic_enum
 )
 
+if(UNIX)
+	target_link_libraries(${LIB_NAME}
+		PRIVATE X11 xcb X11-xcb
+	)
+endif()
+
 message("Finished ${LIB_NAME}")

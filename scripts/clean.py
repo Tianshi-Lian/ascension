@@ -5,20 +5,16 @@ import _globals
 
 
 def clean_directory(dirname):
-    for roots, dirs, files in os.walk(dirname):
+    for dirpath, dirs, _ in os.walk(dirname, followlinks=False):
+       # hard guard against deleting any of our git
+        dirs[:] = [d for d in dirs if '.git' not in d]
+
         for folder in dirs:
             if folder == 'build':
-                print(f'Removing: {dirname}/build/*...')
-                shutil.rmtree(os.path.join(dirname, folder),
-                              ignore_errors=True)
-            else:
-                clean_directory(os.path.join(dirname, folder))
-
-        for name in files:
-            if name.endswith('.sln') or '.vcxproj' in name or name == 'Makefile':
-                filename = os.path.join(dirname, name)
-                print(f'Removing: {filename}...')
-                os.remove(filename)
+                print(f'Removing: {dirpath}/{folder}/*...')
+                shutil.rmtree(os.path.join(dirname, folder))
+                dirs[:] = [d for d in dirs if folder not in d]
+    return
 
 
 def run():
@@ -28,6 +24,7 @@ def run():
 
     except OSError as e:
         exit_code = -1
+        print(e)
 
     return exit_code
 

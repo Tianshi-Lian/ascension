@@ -1,6 +1,6 @@
 #include "platform/platform.hpp"
 
-#if _WIN32
+#ifdef _WIN32
 
 #define NOGDI
 
@@ -173,14 +173,16 @@ Platform::shutdown(const std::shared_ptr<Platform_State>& platform_state)
     }
 }
 
-void
-Platform::process_messages()
+bool
+Platform::process_messages(const std::shared_ptr<Platform_State>& /*platform_state*/)
 {
     MSG message;
     while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
         TranslateMessage(&message);
         DispatchMessage(&message);
     }
+
+    return true;
 }
 
 void

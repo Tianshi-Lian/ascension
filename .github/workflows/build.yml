@@ -90,4 +90,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.config.name }}-${{ matrix.config.build_type }}
-        path: build/ascension/bin
+        path: build/ascension/bin/${{ matrix.config.build_type }}

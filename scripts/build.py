@@ -15,7 +15,7 @@ def run():
 
     exit_code = _globals.SUCCESS
     if not os.path.isfile('./build/build.ninja'):
-        module = importlib.import_module('config')
+        module = importlib.import_module('configure')
         exit_code = module.run()
     else:
         print('ninja: Using previous `build.ninja`')

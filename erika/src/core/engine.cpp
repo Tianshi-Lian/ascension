@@ -23,6 +23,7 @@ Engine::run(const std::shared_ptr<Game>& game)
     if (!game) {
         yuki::debug::Logger::critical("Engine::run() failed to run: invalid game!");
     }
+    yuki::debug::Logger::debug("erika > Engine::run() starting game %s", game->get_window_title().c_str());
 
     game->initialize();
 

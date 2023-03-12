@@ -10,6 +10,7 @@ set(LIB_INC_FILES
 
 # Pull in our source dirs
 include(src/debug/sources.cmake)
+include(src/platform/sources.cmake)
 
 project(${LIB_NAME}
 	VERSION 0.0.1
@@ -44,6 +45,7 @@ if(ENABLE_PCH)
 	)
 endif()
 
+# External libs
 add_subdirectory(libs/magic_enum)
 
 target_link_libraries(${LIB_NAME}

@@ -1,4 +1,4 @@
-#include "erika/core/entry.hpp"
+#include "erika/core/entry.hpp" // IWYU pragma: keep
 
 #include "ascension.hpp"
 

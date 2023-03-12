@@ -139,7 +139,7 @@ Logger_Util::sleep(unsigned int milliseconds)
 std::mutex&
 Logger_Util::get_mutex()
 {
-    __attribute__((visibility("default"))) static std::mutex s_mutex;
+    static std::mutex s_mutex;
     return s_mutex;
 }
 

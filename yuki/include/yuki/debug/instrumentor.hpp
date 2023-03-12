@@ -131,4 +131,9 @@ _cleanup_timer_name(const char (&expr)[N], const char (&remove)[K])
 #else
 #define PROFILE_BEGIN_SESSION(name, filepath)
 #define PROFILE_END_SESSION(YDI_FUNC_SIG)
+
+#define PROFILE_SCOPE_LINE(name, line)
+#define PROFILE_SCOPE_LINE_INTERNAL(name, line)
+#define PROFILE_SCOPE(name)
+#define PROFILE_FUNCTION()
 #endif

@@ -38,11 +38,10 @@ struct player {
 
 player player;
 
-struct Foo {};
-struct Bar : public Foo {};
-
-template<typename T>
-class A {};
+Ascension::Ascension()
+  : erika::Game("Ascension")
+{
+}
 
 bool
 Ascension::on_initialize()

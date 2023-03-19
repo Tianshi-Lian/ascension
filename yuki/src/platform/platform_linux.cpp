@@ -6,6 +6,7 @@
 #include <X11/Xlib-xcb.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#include <dlfcn.h>
 #include <sys/time.h>
 #include <xcb/xcb.h>
 
@@ -214,6 +215,60 @@ Platform::sleep(u32 milliseconds)
     }
     usleep((milliseconds % 1000) * 1000);
 #endif
+}
+
+Library_Handle
+Platform::load_shared_library(const std::string& filepath)
+{
+    Library_Handle result;
+    result.internal_state = nullptr;
+
+    auto* const handle = dlopen(filepath.c_str(), RTLD_LAZY);
+    if (handle == nullptr) {
+        yuki::debug::Logger::error("Failed to load handle to library %s", filepath.c_str());
+        return result;
+    }
+
+    dlerror();
+
+    result.internal_state = std::make_shared<void*>(handle);
+    result.filepath = filepath;
+
+    return result;
+}
+
+void
+Platform::free_shared_library(const Library_Handle& library_handle)
+{
+    dlclose(library_handle.internal_state.get());
+}
+
+std::shared_ptr<void (*)()>
+Platform::load_library_function_internal(const Library_Handle& library_handle, const std::string& function_name)
+{
+    if (function_name.empty()) {
+        yuki::debug::Logger::error("Attempting to load unnamed function from library handle", function_name.c_str());
+        return nullptr;
+    }
+
+    if (library_handle.internal_state == nullptr) {
+        yuki::debug::Logger::error("Trying to load function %s from null library handle", function_name.c_str());
+        return nullptr;
+    }
+
+    const auto library{ library_handle.internal_state };
+
+    const auto proc_address{ dlsym(library.get(), function_name.c_str()) };
+    if (proc_address == nullptr) {
+        yuki::debug::Logger::error(
+            "Failed to load handle to function %s from library %s", function_name.c_str(), library_handle.filepath.c_str()
+        );
+        return nullptr;
+    }
+
+    const auto function{ std::make_shared<void*>(proc_address) };
+
+    return std::reinterpret_pointer_cast<void (*)()>(function);
 }
 
 }

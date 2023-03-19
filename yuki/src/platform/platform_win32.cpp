@@ -244,6 +244,7 @@ Platform::load_library_function_internal(const Library_Handle& library_handle, c
 
     return std::reinterpret_pointer_cast<void (*)()>(function);
 }
+
 }
 
 #endif

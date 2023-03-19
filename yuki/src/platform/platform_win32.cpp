@@ -98,7 +98,7 @@ Platform::initialize(
 
     const std::string wnd_class_name = "yuki_platform_win32_wnd_class";
 
-    const HICON icon{ LoadIcon(state->h_instance, IDI_APPLICATION) };
+    auto* const icon{ LoadIcon(state->h_instance, IDI_APPLICATION) };
     WNDCLASS wnd_class{};
     wnd_class.style = CS_DBLCLKS;
     wnd_class.lpfnWndProc = win32_process_messages;
@@ -191,6 +191,59 @@ Platform::sleep(u32 milliseconds)
     Sleep(milliseconds);
 }
 
+Library_Handle
+Platform::load_shared_library(const std::string& filepath)
+{
+    Library_Handle result;
+    result.internal_state = nullptr;
+
+    auto* const h_instance{ LoadLibrary(TEXT(filepath.c_str())) };
+    if (h_instance == nullptr) {
+        yuki::debug::Logger::error("Failed to load handle to library %s", filepath.c_str());
+        return result;
+    }
+
+    const auto state{ std::make_shared<HINSTANCE>(h_instance) };
+    result.internal_state = std::static_pointer_cast<void>(state);
+    result.filepath = filepath;
+
+    return result;
+}
+
+void
+Platform::free_shared_library(const Library_Handle& library_handle)
+{
+    const auto library{ std::static_pointer_cast<HINSTANCE>(library_handle.internal_state) };
+    FreeLibrary(*library);
+}
+
+std::shared_ptr<void (*)()>
+Platform::load_library_function_internal(const Library_Handle& library_handle, const std::string& function_name)
+{
+    if (function_name.empty()) {
+        yuki::debug::Logger::error("Attempting to load unnamed function from library handle", function_name.c_str());
+        return nullptr;
+    }
+
+    if (library_handle.internal_state == nullptr) {
+        yuki::debug::Logger::error("Trying to load function %s from null library handle", function_name.c_str());
+        return nullptr;
+    }
+
+    const auto library{ std::static_pointer_cast<HINSTANCE>(library_handle.internal_state) };
+
+    const auto proc_address{ GetProcAddress(*library, function_name.c_str()) };
+    if (proc_address == nullptr) {
+        yuki::debug::Logger::error(
+            "Failed to load handle to function %s from library %s", function_name.c_str(), library_handle.filepath.c_str()
+        );
+        return nullptr;
+    }
+
+    const auto function{ std::make_shared<FARPROC>(proc_address) };
+
+    return std::reinterpret_pointer_cast<void (*)()>(function);
+}
 }
 
 #endif

@@ -80,7 +80,8 @@ Ascension::on_initialize()
         renderer->begin_scene();
         renderer->end_scene();
 
-        yuki::platform::Platform::free_shared_library(libd3d11);
+        // We're leaking without freeing but this needs to be handled after any registered factories have been destroyed.
+        // yuki::platform::Platform::free_shared_library(libd3d11);
     }
 
     return true;

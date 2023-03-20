@@ -9,4 +9,5 @@ set(LIB_SRC_FILES
 set(LIB_INC_FILES
 	${LIB_INC_FILES}
 	include/${LIB_NAME}/platform/platform.hpp
+	include/${LIB_NAME}/platform/platform_types.hpp
 )

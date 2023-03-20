@@ -34,6 +34,9 @@ Plugin_Manager::initialize()
             continue;
         }
 
+        // TODO: handle loading linux shared libraries.
+        // /t We will probably want to check the current platform instead of naively just trying to load a different extension
+        // /t as we don't want to be loading dll files on linux or vice versa.
         for (const auto& file : std::filesystem::directory_iterator{ plugin_type_dir }) {
             if (!file.is_regular_file() || file.path().extension() != ".dll") {
                 continue;

@@ -1,7 +1,3 @@
-// A simple thread-safe application logging class.
-// Supports logging to the console and to a file.
-// Original by: https://github.com/prajilal/cpplogger
-
 #pragma once
 
 #include <fstream>
@@ -286,6 +282,7 @@ class Logger_Worker {
  * @class Logger
  *
  * @brief Utility class which provides the interfaces to write application logs.
+ * Original by: https://github.com/prajilal/cpplogger
  */
 class Logger {
   public:

@@ -42,7 +42,7 @@ if(ENABLE_PCH)
 endif()
 
 target_link_libraries(${APP_NAME}
-	PRIVATE project_options project_warnings erika yuki erika_plugins
+	PRIVATE project_options project_warnings erika yuki
 )
 
 # Add a post build command to copy all of erikas plugins to our output.

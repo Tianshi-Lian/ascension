@@ -3,8 +3,10 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME erika_renderer_plugins)
 
 # TODO: Move to using LoadLibrary (and linux equivalent) to load shared libs from sub-folders
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/erika/plugins/bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/erika/plugins/bin")
+foreach(CONFIG_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
+	string(TOUPPER ${CONFIG_TYPE} CONFIG_PROPERTY)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG_PROPERTY} "${CMAKE_BINARY_DIR}/erika/plugins/bin/${CONFIG_TYPE}/renderer")
+endforeach()
 
 add_library(${LIB_NAME} INTERFACE)
 

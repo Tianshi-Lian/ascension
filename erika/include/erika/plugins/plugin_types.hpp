@@ -20,13 +20,10 @@ enum class Plugin_Type : u32 {
  */
 class Plugin {
   public:
-    // TODO: replace passing in an explicit type with using sub dirs in the game distribution folder
-    // /t and using magic_enum to convert the sub dir name into a corresponding Plugin_Type. This will
-    // /t require us to move to use LoadLibrary (win32 (and linux equiv)) instead of relying on the
-    // /t current behaviour of dumping all shared libs into the same dir as the executable.
-    // /t Alternatively we could use a .xml (or other) file to specify where/which plugins we should
-    // /t be using and their types, and then deserializing and loading that.
-    explicit Plugin(Plugin_Type type, std::string name);
+    explicit Plugin(Plugin_Type type)
+      : m_type(type)
+    {
+    }
     virtual ~Plugin() = default;
 
     /**
@@ -38,12 +35,6 @@ class Plugin {
      */
     virtual void shutdown() = 0;
 
-    /**
-     * @brief Get the name of this plugin.
-     *
-     * @returns     string representing the plugin name
-     */
-    [[nodiscard]] const std::string& get_name() const;
     /**
      * @brief Get the type of this plugin.
      *
@@ -58,7 +49,6 @@ class Plugin {
 
   private:
     Plugin_Type m_type;
-    std::string m_name;
 };
 
 /**

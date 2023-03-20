@@ -6,7 +6,7 @@
 namespace erika::plugins::renderer::opengl {
 class OpenGL_Renderer : public erika::plugins::Renderer {
   public:
-    OpenGL_Renderer();
+    OpenGL_Renderer() = default;
     ~OpenGL_Renderer() override = default;
 
     void initialize() override;

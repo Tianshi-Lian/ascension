@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "yuki/platform/platform_types.hpp"
+
 namespace erika::plugins {
 
 class Renderer;
@@ -15,9 +17,14 @@ class Plugin_Factory;
  */
 class Plugin_Manager {
   public:
-    Plugin_Manager();
+    Plugin_Manager() = default;
+    ~Plugin_Manager();
 
-    // TODO: initialize() method for loading plugins. See plugins/plugin_types.hpp for more infomation.
+    /**
+     * @brief Initialize the plugin manager, registering found plugins.
+     * This will attempt to call an exported registerPlugin() in each shared library.
+     */
+    void initialize();
 
     /**
      * @brief Register a renderer plugin with the manager.
@@ -47,7 +54,14 @@ class Plugin_Manager {
      */
     [[nodiscard]] std::shared_ptr<Renderer> get_active_renderer() const;
 
+    Plugin_Manager(const Plugin_Manager&) = default;
+    Plugin_Manager(Plugin_Manager&&) = delete;
+    Plugin_Manager& operator=(const Plugin_Manager&) = default;
+    Plugin_Manager& operator=(Plugin_Manager&&) = delete;
+
   private:
+    std::vector<yuki::platform::Library_Handle> m_loaded_plugins;
+
     // NOTE: We use vector<pairs> here because the vectors should be so small that it will be more efficient
     // than paying the overhead cost of a map. These vectors are likely to also just be all loaded into cache
     // when we do iterate them anyway.

@@ -6,7 +6,7 @@
 namespace erika::plugins::renderer::d3d11 {
 class D3D11_Renderer : public erika::plugins::Renderer {
   public:
-    D3D11_Renderer();
+    D3D11_Renderer() = default;
     ~D3D11_Renderer() override = default;
 
     void initialize() override;

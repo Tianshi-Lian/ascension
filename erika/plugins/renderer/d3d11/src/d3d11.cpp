@@ -17,11 +17,6 @@ class D3D11_Renderer_Factory : public Renderer_Plugin_Factory {
     D3D11_Renderer_Factory& operator=(D3D11_Renderer_Factory&&) = delete;
 };
 
-D3D11_Renderer::D3D11_Renderer()
-  : erika::plugins::Renderer("D3D11_Renderer")
-{
-}
-
 void
 D3D11_Renderer::initialize()
 {

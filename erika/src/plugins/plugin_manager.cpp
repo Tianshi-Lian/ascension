@@ -1,16 +1,72 @@
 #include "plugins/plugin_manager.hpp"
 
+#include <filesystem>
 #include <functional>
 
 #include "yuki/debug/logger.hpp"
+#include "yuki/platform/platform.hpp"
 
-#include "erika/plugins/renderer.hpp"
+#include "plugins/plugin_types.hpp"
+#include "plugins/renderer.hpp"
 
 namespace erika::plugins {
 
-Plugin_Manager::Plugin_Manager()
-  : m_active_renderer(nullptr)
+Plugin_Manager::~Plugin_Manager()
 {
+    for (const auto& plugin : m_loaded_plugins) {
+        yuki::platform::Platform::free_shared_library(plugin);
+    }
+}
+
+void
+Plugin_Manager::initialize()
+{
+    const auto plugin_types = magic_enum::enum_entries<Plugin_Type>();
+    for (const auto& plugin_type : plugin_types) {
+        if (plugin_type.first == Plugin_Type::Unknown) {
+            continue;
+        }
+
+        std::string plugin_type_dir{ plugin_type.second };
+        std::transform(plugin_type_dir.begin(), plugin_type_dir.end(), plugin_type_dir.begin(), ::tolower);
+
+        if (!std::filesystem::exists(plugin_type_dir)) {
+            continue;
+        }
+
+        for (const auto& file : std::filesystem::directory_iterator{ plugin_type_dir }) {
+            if (!file.is_regular_file() || file.path().extension() != ".dll") {
+                continue;
+            }
+
+            const auto plugin_name = file.path().filename().string();
+
+            yuki::platform::Library_Handle plugin_lib;
+            try {
+                plugin_lib = yuki::platform::Platform::load_shared_library(file.path().string());
+
+                if (plugin_lib.internal_state == nullptr) {
+                    throw std::runtime_error("Failed to load library file");
+                }
+
+                const auto plugin_load = yuki::platform::Platform::load_library_function<void(erika::plugins::Plugin_Manager&)>(
+                    plugin_lib, "registerPlugin"
+                );
+
+                if (plugin_load == nullptr) {
+                    throw std::runtime_error("Failed to find registerPlugin() function");
+                }
+
+                plugin_load(*this);
+                yuki::debug::Logger::debug("Loaded %s plugin %s", plugin_type.second.begin(), plugin_name.c_str());
+            }
+            catch (const std::exception& e) {
+                yuki::platform::Platform::free_shared_library(plugin_lib);
+                yuki::debug::Logger::error("Failed to load plugin %s with error %s", file.path().string().c_str(), e.what());
+                continue;
+            }
+        }
+    }
 }
 
 void
@@ -75,5 +131,4 @@ Plugin_Manager::get_active_renderer() const
 {
     return m_active_renderer;
 }
-
 }

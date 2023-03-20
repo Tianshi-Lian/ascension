@@ -13,8 +13,8 @@ namespace erika::plugins {
 class Renderer : public Plugin {
 
   public:
-    explicit Renderer(std::string name)
-      : Plugin(Plugin_Type::Renderer, std::move(name))
+    explicit Renderer()
+      : Plugin(Plugin_Type::Renderer)
     {
     }
 

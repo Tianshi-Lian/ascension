@@ -17,11 +17,6 @@ class OpenGL_Renderer_Factory : public Renderer_Plugin_Factory {
     OpenGL_Renderer_Factory& operator=(OpenGL_Renderer_Factory&&) = delete;
 };
 
-OpenGL_Renderer::OpenGL_Renderer()
-  : erika::plugins::Renderer("OpenGL_Renderer")
-{
-}
-
 void
 OpenGL_Renderer::initialize()
 {

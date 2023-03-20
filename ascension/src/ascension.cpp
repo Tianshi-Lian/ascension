@@ -2,11 +2,10 @@
 
 #include <unordered_map>
 
+#include "erika/plugins/renderer.hpp"
 #include "yuki/debug/logger.hpp"
-#include "yuki/platform/platform.hpp"
 
 #include "erika/plugins/plugin_manager.hpp"
-#include "erika/plugins/renderer/d3d11/d3d11.hpp"
 
 namespace ascension {
 
@@ -65,17 +64,7 @@ Ascension::on_initialize()
         // TODO: Remove, temporary test.
         Plugin_Manager plugin_manager;
 
-        const auto libd3d11 = yuki::platform::Platform::load_shared_library("libd3d11.dll");
-        const auto d3d11_load =
-            yuki::platform::Platform::load_library_function<void(erika::plugins::Plugin_Manager&)>(libd3d11, "registerPlugin");
-
-        d3d11_load(plugin_manager);
-
-        const auto libopengl = yuki::platform::Platform::load_shared_library("libopengl.dll");
-        const auto opengl_load =
-            yuki::platform::Platform::load_library_function<void(erika::plugins::Plugin_Manager&)>(libopengl, "registerPlugin");
-
-        opengl_load(plugin_manager);
+        plugin_manager.initialize();
 
         const auto renderer_plugins_available = plugin_manager.get_registered_renderers();
         yuki::debug::Logger::debug("Renderer plugin: %s", renderer_plugins_available.at(0).c_str());

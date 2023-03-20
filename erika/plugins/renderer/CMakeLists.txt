@@ -13,7 +13,8 @@ add_library(${LIB_NAME} INTERFACE)
 set(ERIKA_BASE_PLUGIN_INC include/erika/plugins/renderer)
 
 add_subdirectory(d3d11)
+add_subdirectory(opengl)
 
-target_link_libraries(${LIB_NAME} INTERFACE d3d11)
+target_link_libraries(${LIB_NAME} INTERFACE d3d11 opengl)
 
 message("  (erika) Finished ${LIB_NAME}")

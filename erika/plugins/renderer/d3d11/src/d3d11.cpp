@@ -49,6 +49,8 @@ D3D11_Renderer::end_scene()
 std::shared_ptr<Renderer>
 D3D11_Renderer_Factory::create()
 {
+    yuki::debug::Logger::initialize("logs/renderer.log", yuki::debug::Log_Level::DEBUG, true, true);
+
     yuki::debug::Logger::debug("erika > D3D11_Renderer_Factory::create()");
     return std::make_shared<D3D11_Renderer>();
 }
@@ -58,9 +60,6 @@ D3D11_Renderer_Factory::create()
 void
 registerPlugin(erika::plugins::Plugin_Manager& plugin_manager)
 {
-    yuki::debug::Logger::initialize("logs/renderer.log", yuki::debug::Log_Level::DEBUG, true, true);
-    yuki::debug::Logger::debug("erika > D3D11_Renderer::registerPlugin()");
-
     plugin_manager.register_renderer(
         "D3D11_Renderer", std::make_shared<erika::plugins::renderer::d3d11::D3D11_Renderer_Factory>()
     );

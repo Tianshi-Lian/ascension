@@ -45,8 +45,10 @@ if(ENABLE_PCH)
 	)
 endif()
 
+add_subdirectory(libs/glad)
+
 target_link_libraries(${LIB_NAME}
-	PRIVATE project_options project_warnings erika yuki
+	PRIVATE project_options project_warnings yuki erika glad
 )
 
 message("    (plugins) Finished ${LIB_NAME}")

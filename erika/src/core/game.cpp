@@ -37,4 +37,10 @@ Game::set_window_title(std::string value)
     m_window_title = std::move(value);
 }
 
+void
+Game::set_platform_state(const std::shared_ptr<yuki::platform::Platform_State>& platform_state)
+{
+    m_platform_state = platform_state;
+}
+
 }

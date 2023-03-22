@@ -1,5 +1,7 @@
 #include "ascension.hpp"
 
+#include <algorithm>
+#include <iostream>
 #include <unordered_map>
 
 #include "erika/plugins/renderer.hpp"
@@ -64,19 +66,27 @@ Ascension::on_initialize()
         // TODO: Remove, temporary test.
         Plugin_Manager plugin_manager;
 
-        plugin_manager.initialize();
+        plugin_manager.initialize(m_platform_state);
 
-        const auto renderer_plugins_available = plugin_manager.get_registered_renderers();
-        yuki::debug::Logger::debug("Renderer plugin: %s", renderer_plugins_available.at(0).c_str());
+        // const auto renderer_plugins_available = plugin_manager.get_registered_renderers();
 
-        plugin_manager.change_active_renderer(renderer_plugins_available.at(0));
+        // u32 plugin_index = 1;
+        // std::for_each(
+        //     renderer_plugins_available.begin(),
+        //     renderer_plugins_available.end(),
+        //     [&plugin_index](const auto& plugin) { std::cout << plugin_index++ << ". " << plugin << "\n"; }
+        // );
+
+        // std::cout << "Renderer plugin: ";
+        // std::cin >> plugin_index;
+        // --plugin_index;
+
+        yuki::debug::Logger::debug("Renderer plugin: OpenGL_Renderer");
+        plugin_manager.change_active_renderer("OpenGL_Renderer");
 
         auto renderer = plugin_manager.get_active_renderer();
         renderer->begin_scene();
         renderer->end_scene();
-
-        // We're leaking without freeing but this needs to be handled after any registered factories have been destroyed.
-        // yuki::platform::Platform::free_shared_library(libd3d11);
     }
 
     return true;

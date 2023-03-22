@@ -1,5 +1,9 @@
 #pragma once
 
+namespace yuki::platform {
+struct Platform_State;
+}
+
 namespace erika {
 
 /**
@@ -46,10 +50,17 @@ class Game {
      */
     void set_window_title(std::string value);
 
+    /**
+     * @brief The created platform state which can be used to access platform-specific methods.
+     */
+    std::shared_ptr<yuki::platform::Platform_State> m_platform_state;
+
   private:
     bool initialize();
     void update(f32 delta_time);
     void render(f32 delta_time);
+
+    void set_platform_state(const std::shared_ptr<yuki::platform::Platform_State>& platform_state);
 
     std::string m_window_title;
 };

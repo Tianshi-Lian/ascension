@@ -32,15 +32,7 @@ main(int /*argc*/, char** /*args*/) // NOLINT
         return 1;
     }
 
-    engine.run(game);
-    // TODO: Move the game loop inside of the engine.run()
-    u64 milliseconds_elapsed = 0;
-    while (milliseconds_elapsed < 3000) {
-        yuki::platform::Platform::process_messages(state);
-        yuki::platform::Platform::sleep(50);
-        milliseconds_elapsed += 50;
-    }
-    yuki::platform::Platform::shutdown(state);
+    engine.run(state, game);
 
     PROFILE_END_SESSION();
     return 0;

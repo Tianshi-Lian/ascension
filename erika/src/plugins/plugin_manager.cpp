@@ -19,8 +19,10 @@ Plugin_Manager::~Plugin_Manager()
 }
 
 void
-Plugin_Manager::initialize()
+Plugin_Manager::initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state)
 {
+    m_platform_state = platform_state;
+
     const auto plugin_types = magic_enum::enum_entries<Plugin_Type>();
     for (const auto& plugin_type : plugin_types) {
         if (plugin_type.first == Plugin_Type::Unknown) {
@@ -114,7 +116,7 @@ Plugin_Manager::change_active_renderer(const std::string& name)
         m_active_renderer.reset();
     }
 
-    new_plugin->initialize();
+    new_plugin->initialize(m_platform_state);
     m_active_renderer = new_plugin;
 }
 

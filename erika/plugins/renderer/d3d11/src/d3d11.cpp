@@ -18,7 +18,7 @@ class D3D11_Renderer_Factory : public Renderer_Plugin_Factory {
 };
 
 void
-D3D11_Renderer::initialize()
+D3D11_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>&)
 {
     yuki::debug::Logger::debug("erika > D3D11_Renderer::initialize()");
 }

@@ -9,7 +9,7 @@ class D3D11_Renderer : public erika::plugins::Renderer {
     D3D11_Renderer() = default;
     ~D3D11_Renderer() override = default;
 
-    void initialize() override;
+    void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state) override;
     void shutdown() override;
 
     void begin_scene() override;

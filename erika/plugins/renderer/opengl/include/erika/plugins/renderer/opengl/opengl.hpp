@@ -9,7 +9,7 @@ class OpenGL_Renderer : public erika::plugins::Renderer {
     OpenGL_Renderer() = default;
     ~OpenGL_Renderer() override = default;
 
-    void initialize() override;
+    void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state) override;
     void shutdown() override;
 
     void begin_scene() override;

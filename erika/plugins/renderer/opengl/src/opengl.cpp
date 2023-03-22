@@ -18,7 +18,7 @@ class OpenGL_Renderer_Factory : public Renderer_Plugin_Factory {
 };
 
 void
-OpenGL_Renderer::initialize()
+OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>&)
 {
     yuki::debug::Logger::debug("erika > OpenGL_Renderer::initialize()");
 }

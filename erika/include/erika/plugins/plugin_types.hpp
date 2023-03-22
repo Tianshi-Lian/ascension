@@ -27,10 +27,6 @@ class Plugin {
     virtual ~Plugin() = default;
 
     /**
-     * @brief Initialize this plugin.
-     */
-    virtual void initialize() = 0;
-    /**
      * @brief Shutdown this plugin.
      */
     virtual void shutdown() = 0;

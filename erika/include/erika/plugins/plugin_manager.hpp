@@ -23,8 +23,10 @@ class Plugin_Manager {
     /**
      * @brief Initialize the plugin manager, registering found plugins.
      * This will attempt to call an exported registerPlugin() in each shared library.
+     *
+     * @param   platform_state    a shared pointer to the current platform state; used for platform-specific contexts
      */
-    void initialize();
+    void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state);
 
     /**
      * @brief Register a renderer plugin with the manager.
@@ -60,6 +62,8 @@ class Plugin_Manager {
     Plugin_Manager& operator=(Plugin_Manager&&) = delete;
 
   private:
+    std::shared_ptr<yuki::platform::Platform_State> m_platform_state;
+
     std::vector<yuki::platform::Library_Handle> m_loaded_plugins;
 
     // NOTE: We use vector<pairs> here because the vectors should be so small that it will be more efficient

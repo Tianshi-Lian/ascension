@@ -2,6 +2,10 @@
 
 #include "erika/plugins/plugin_types.hpp"
 
+namespace yuki::platform {
+struct Platform_State;
+}
+
 namespace erika::plugins {
 
 /**
@@ -17,6 +21,8 @@ class Renderer : public Plugin {
       : Plugin(Plugin_Type::Renderer)
     {
     }
+
+    virtual void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state) = 0;
 
     ~Renderer() override = default;
 

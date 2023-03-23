@@ -146,7 +146,7 @@ Logger_Util::get_mutex()
 Logger_Worker::Logger_Worker()
   : m_app_log_thread(nullptr)
   , m_is_app_interrupted(false)
-  , m_severity_level(Log_Level::ERROR)
+  , m_severity_level(Severity::LOG_ERROR)
   , m_file_log_enabled(false)
   , m_console_log_enabled(false)
 {
@@ -190,7 +190,7 @@ Logger_Worker::initialize(const std::string& log_filepath)
 }
 
 void
-Logger_Worker::output_log_line(Log_Level level, const std::string& log_record)
+Logger_Worker::output_log_line(Severity level, const std::string& log_record)
 {
     std::lock_guard<std::mutex> lock(m_mutex_log_queue);
 
@@ -216,19 +216,19 @@ Logger_Worker::output_log_line(Log_Level level, const std::string& log_record)
         // dim          2  (often a dimmer shade of the same colour)
         // inverse      7  (swap foreground and background colours)
         switch (level) {
-            case Log_Level::DEBUG:
+            case Severity::LOG_DEBUG:
                 std::cout << "\033[2m" << log_record << "\033[0m" << std::endl;
                 break;
-            case Log_Level::NOTICE:
+            case Severity::LOG_NOTICE:
                 std::cout << "\033[1;32m" << log_record << "\033[0m" << std::endl;
                 break;
-            case Log_Level::WARNING:
+            case Severity::LOG_WARNING:
                 std::cout << "\033[1;33m" << log_record << "\033[0m" << std::endl;
                 break;
-            case Log_Level::ERROR:
+            case Severity::LOG_ERROR:
                 std::cout << "\033[1;31m" << log_record << "\033[0m" << std::endl;
                 break;
-            case Log_Level::CRITICAL:
+            case Severity::LOG_CRITICAL:
                 std::cout << "\033[1;7;31;47m" << log_record << "\033[0m" << std::endl;
                 break;
             default:
@@ -333,7 +333,7 @@ Logger::~Logger()
 }
 
 void
-Logger::initialize(const std::string& log_filepath, Log_Level level, bool log_to_file, bool log_to_console)
+Logger::initialize(const std::string& log_filepath, Severity level, bool log_to_file, bool log_to_console)
 {
     // TODO ?: We probably shouldn't bother with all this file setup if the user doesn't want to log to files
     // /t however this would possibly require moving things to enable_file_logging() as it could be toggled
@@ -414,7 +414,7 @@ Logger::initialize(const std::string& log_filepath, Log_Level level, bool log_to
 
     enable_file_logging(log_to_file);
     if (!log_file_just_created) {
-        Logger::log(Log_Level::MANUAL, " ");
+        Logger::log(Severity::LOG_MANUAL, " ");
     }
     enable_console_logging(log_to_console);
 
@@ -429,7 +429,7 @@ Logger::get_worker()
 }
 
 void
-Logger::set_log_severity_level(Log_Level level)
+Logger::set_log_severity_level(Severity level)
 {
     get_worker().m_severity_level = level;
 }

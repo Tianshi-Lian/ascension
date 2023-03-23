@@ -2,8 +2,6 @@
 
 #ifdef _WIN32
 
-#define NOGDI
-
 #include <windows.h>
 #include <windowsx.h>
 
@@ -199,7 +197,8 @@ Platform::load_shared_library(const std::string& filepath)
 
     auto* const h_instance{ LoadLibrary(TEXT(filepath.c_str())) };
     if (h_instance == nullptr) {
-        yuki::debug::Logger::error("Failed to load handle to library %s", filepath.c_str());
+        const auto err = GetLastError();
+        yuki::debug::Logger::error("Failed to load handle to library %s %d", filepath.c_str(), err);
         return result;
     }
 

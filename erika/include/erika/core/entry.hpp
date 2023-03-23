@@ -11,7 +11,7 @@
 int
 main(int /*argc*/, char** /*args*/) // NOLINT
 {
-    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Log_Level::DEBUG, true, true);
+    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
     PROFILE_BEGIN_SESSION("erika_profiling", "logs/timings.json");
 
     erika::Engine engine;

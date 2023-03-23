@@ -20,14 +20,14 @@ namespace yuki::debug {
  * Available log levels are:
  *   MANUAL, DEBUG, INFO, NOTICE, WARNING, ERROR, CRITICAL
  */
-enum class Log_Level {
-    MANUAL = 99,
-    DEBUG = 0,
-    INFO = 1,
-    NOTICE = 2,
-    WARNING = 3,
-    ERROR = 4,
-    CRITICAL = 5
+enum class Severity {
+    LOG_MANUAL = 99,
+    LOG_DEBUG = 0,
+    LOG_INFO = 1,
+    LOG_NOTICE = 2,
+    LOG_WARNING = 3,
+    LOG_ERROR = 4,
+    LOG_CRITICAL = 5
 };
 
 /**
@@ -239,7 +239,7 @@ class Logger_Worker {
      * @param 	log_record 	Pointer to the log record which is to be add to the
      * queue.
      */
-    void output_log_line(Log_Level level, const std::string& log_record);
+    void output_log_line(Severity level, const std::string& log_record);
 
     /**
      * @brief Pop log record from application log queue and writes to application log
@@ -265,7 +265,7 @@ class Logger_Worker {
     std::unique_ptr<std::thread> m_app_log_thread;
     volatile bool m_is_app_interrupted;
 
-    Log_Level m_severity_level;
+    Severity m_severity_level;
 
     Blocking_string_Queue log_queue;
     std::mutex m_mutex_log_queue;
@@ -299,7 +299,7 @@ class Logger {
      */
     static void initialize(
         const std::string& log_filepath,
-        Log_Level level = Log_Level::NOTICE,
+        Severity level = Severity::LOG_NOTICE,
         bool log_to_file = true,
         bool log_to_console = false
     );
@@ -309,7 +309,7 @@ class Logger {
      *
      * @param	level	the log severity level
      */
-    static void set_log_severity_level(Log_Level level);
+    static void set_log_severity_level(Severity level);
 
     /**
      * @brief Enable/disable application logging to file.
@@ -336,7 +336,7 @@ class Logger {
      *replace a format specifier in the format string.
      */
     template<typename... Args>
-    static void log(Log_Level level, const std::string& format, Args&&... args)
+    static void log(Severity level, const std::string& format, Args&&... args)
     {
         write_log(level, format, std::forward<Args>(args)...);
     }
@@ -353,7 +353,7 @@ class Logger {
     template<typename... Args>
     static void debug(const std::string& format, Args&&... args)
     {
-        write_log(Log_Level::DEBUG, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_DEBUG, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -368,7 +368,7 @@ class Logger {
     template<typename... Args>
     static void info(const std::string& format, Args&&... args)
     {
-        write_log(Log_Level::INFO, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_INFO, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -383,7 +383,7 @@ class Logger {
     template<typename... Args>
     static void notice(const std::string& format, Args&&... args)
     {
-        write_log(Log_Level::NOTICE, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_NOTICE, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -398,7 +398,7 @@ class Logger {
     template<typename... Args>
     static void warn(const std::string& format, Args&&... args)
     {
-        write_log(Log_Level::WARNING, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_WARNING, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -413,7 +413,7 @@ class Logger {
     template<typename... Args>
     static void error(const std::string& format, Args&&... args)
     {
-        write_log(Log_Level::ERROR, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_ERROR, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -428,7 +428,7 @@ class Logger {
     template<typename... Args>
     static void critical(const std::string& format, Args&&... args)
     {
-        write_log(Log_Level::CRITICAL, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_CRITICAL, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -462,7 +462,7 @@ class Logger {
      * @param	args	The variable argument list (va_list)
      */
     template<typename... Args>
-    static void write_log(Log_Level level, const std::string& format, Args&&... args)
+    static void write_log(Severity level, const std::string& format, Args&&... args)
     {
         if (level < get_worker().m_severity_level) {
             return;
@@ -473,7 +473,7 @@ class Logger {
 
         std::vector<char> string_buffer(DEFAULT_BUFFER_LENGTH);
 
-        if (level != Log_Level::MANUAL) {
+        if (level != Severity::LOG_MANUAL) {
             const auto timestamp = Logger_Util::get_time_string();
             const auto log_level = std::string(magic_enum::enum_name(level));
 

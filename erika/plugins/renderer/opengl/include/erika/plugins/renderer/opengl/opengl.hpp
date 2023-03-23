@@ -4,6 +4,9 @@
 #include "erika/plugins/renderer.hpp"
 
 namespace erika::plugins::renderer::opengl {
+
+struct OpenGL_Platform_State;
+
 class OpenGL_Renderer : public erika::plugins::Renderer {
   public:
     OpenGL_Renderer() = default;
@@ -19,6 +22,9 @@ class OpenGL_Renderer : public erika::plugins::Renderer {
     OpenGL_Renderer(OpenGL_Renderer&&) = delete;
     OpenGL_Renderer& operator=(const OpenGL_Renderer&) = default;
     OpenGL_Renderer& operator=(OpenGL_Renderer&&) = delete;
+
+  private:
+    std::shared_ptr<OpenGL_Platform_State> m_opengl_platform_state;
 };
 
 }

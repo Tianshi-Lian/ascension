@@ -5,10 +5,12 @@ message("    (plugins) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
 	src/opengl.cpp
+	src/opengl_win32.cpp
 )
 
 set(LIB_INC_FILES
 	${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}/opengl.hpp
+	${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}/opengl_platform.hpp
 )
 
 project(${LIB_NAME}
@@ -48,7 +50,7 @@ endif()
 add_subdirectory(libs/glad)
 
 target_link_libraries(${LIB_NAME}
-	PRIVATE project_options project_warnings yuki erika glad
+	PRIVATE project_options project_warnings yuki erika glad opengl32
 )
 
 message("    (plugins) Finished ${LIB_NAME}")

@@ -1,6 +1,10 @@
 #include "opengl.hpp"
 
+#include "glad/glad.h"
+
 #include "yuki/debug/logger.hpp"
+
+#include "opengl_platform.hpp"
 
 namespace erika::plugins::renderer::opengl {
 
@@ -18,9 +22,13 @@ class OpenGL_Renderer_Factory : public Renderer_Plugin_Factory {
 };
 
 void
-OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>&)
+OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state)
 {
     yuki::debug::Logger::debug("erika > OpenGL_Renderer::initialize()");
+
+    m_opengl_platform_state = std::make_shared<OpenGL_Platform_State>();
+
+    OpenGL_Platform::create_context(m_opengl_platform_state, platform_state);
 }
 
 void
@@ -33,18 +41,28 @@ void
 OpenGL_Renderer::begin_scene()
 {
     yuki::debug::Logger::debug("erika > OpenGL_Renderer::begin_scene()");
+
+    glViewport(0, 0, 1600, 900);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
+    glClearColor(1.0f, 0.0f, 0.7f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void
 OpenGL_Renderer::end_scene()
 {
     yuki::debug::Logger::debug("erika > OpenGL_Renderer::end_scene()");
+
+    OpenGL_Platform::swap_buffers(m_opengl_platform_state);
+    glFinish();
 }
 
 std::shared_ptr<Renderer>
 OpenGL_Renderer_Factory::create()
 {
-    yuki::debug::Logger::initialize("logs/renderer.log", yuki::debug::Log_Level::DEBUG, true, true);
+    yuki::debug::Logger::initialize("logs/renderer.log", yuki::debug::Severity::LOG_DEBUG, true, true);
 
     yuki::debug::Logger::debug("erika > OpenGL_Renderer_Factory::create()");
     return std::make_shared<OpenGL_Renderer>();

@@ -2,6 +2,7 @@ import os
 import shutil
 
 import _globals
+import _types
 
 
 def clean_directory(dirname):
@@ -30,4 +31,4 @@ def run():
 
 
 def get_help_description():
-    return _globals.Help_Text('Clean the project build files', '')
+    return _types.Help_Text('Clean the project build files', '')

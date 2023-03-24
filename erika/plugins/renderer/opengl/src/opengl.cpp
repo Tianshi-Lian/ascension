@@ -46,7 +46,7 @@ OpenGL_Renderer::begin_scene()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    glClearColor(1.0f, 0.0f, 0.7f, 1.0f);
+    glClearColor(0.79f, 0.94f, 0.7f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 

@@ -3,19 +3,15 @@
 #ifdef _WIN32
 
 #include <glad/glad.h>
-
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+#include <GL/wglext.h>
 
 #include "yuki/debug/instrumentor.hpp"
 #include "yuki/debug/logger.hpp"
 
 #include "yuki/platform/platform_types.hpp"
-
-#define WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
-#define WGL_CONTEXT_MINOR_VERSION_ARB 0X2092
-#define WGL_CONTEXT_FLAGS_ARB 0X2094
-#define WGL_CONTEXT_COREPROFILE_BIT_ARB 0x00000001
-#define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
 
 namespace {
 struct Platform_Internal_State {
@@ -30,12 +26,6 @@ struct OpenGL_Internal_State {
 }
 
 namespace erika::plugins::renderer::opengl {
-
-using PFNWGLCREATECONTEXTATTRIBSARBPROC = HGLRC (*)(HDC, HGLRC, const int*);
-
-using PFNWGLGETEXTENSIONSSTRINGEXTPROC = const char* (*)();
-using PFNWGLSWAPINTERVALEXTPROC = BOOL (*)(int);
-using PFNWGLGETSWAPINTERVALEXTPROC = int (*)();
 
 bool
 OpenGL_Platform::create_context(
@@ -58,9 +48,8 @@ OpenGL_Platform::create_context(
     format_descriptor.nVersion = 1;
     format_descriptor.dwFlags = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
     format_descriptor.iPixelType = PFD_TYPE_RGBA;
-    format_descriptor.cColorBits = 24;
-
     format_descriptor.cDepthBits = 32;
+    format_descriptor.cColorBits = 24;
     format_descriptor.cStencilBits = 8;
 
     int pixelFormat = ChoosePixelFormat(opengl_state->device_context, &format_descriptor);
@@ -70,18 +59,19 @@ OpenGL_Platform::create_context(
     wglMakeCurrent(opengl_state->device_context, tempRC);
 
     PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+#pragma GCC diagnostic ignored "-Wcast-function-type" // This is an ongoing issue with wgl & gcc...
     wglCreateContextAttribsARB =
         reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
 
     const std::array attrib_list = {
         WGL_CONTEXT_MAJOR_VERSION_ARB,
-        3,
+        4,
         WGL_CONTEXT_MINOR_VERSION_ARB,
-        3,
+        6,
         WGL_CONTEXT_FLAGS_ARB,
         0,
         WGL_CONTEXT_PROFILE_MASK_ARB,
-        WGL_CONTEXT_COREPROFILE_BIT_ARB,
+        WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         0,
     };
 

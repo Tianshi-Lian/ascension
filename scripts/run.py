@@ -5,6 +5,7 @@ import sys
 
 import _globals
 import _helpers
+import _types
 
 
 def run():
@@ -40,4 +41,4 @@ def run():
 
 
 def get_help_description():
-    return _globals.Help_Text('Run the project')
+    return _types.Help_Text('Run the project', '')

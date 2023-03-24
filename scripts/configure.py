@@ -1,8 +1,8 @@
 import subprocess
 import sys
 
-import _globals
 import _helpers
+import _types
 
 
 def run():
@@ -19,4 +19,4 @@ def run():
 
 
 def get_help_description():
-    return _globals.Help_Text('Configure the project', '-cc=<c_compiler> -cxx=<cpp_compiler>')
+    return _types.Help_Text('Configure the project', '-cc=<c_compiler> -cxx=<cpp_compiler>')

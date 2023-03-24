@@ -4,6 +4,7 @@ import subprocess
 import sys
 
 import _globals
+import _types
 import _helpers
 
 
@@ -39,4 +40,4 @@ def run():
 
 
 def get_help_description():
-    return _globals.Help_Text('Build the project', '-bt=<build_type>')
+    return _types.Help_Text('Build the project', '-bt=<build_type>')

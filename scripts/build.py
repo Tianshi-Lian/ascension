@@ -31,6 +31,10 @@ def run():
             ['ninja', '-C./build', f'-j{wanted_threads}', f'-fbuild-{build_type}.ninja'])
         exit_code = process.returncode
 
+    if exit_code == _globals.SUCCESS:
+        module = importlib.import_module('_post_build')
+        exit_code = module.run()
+
     return exit_code
 
 

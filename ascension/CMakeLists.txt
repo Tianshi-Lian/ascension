@@ -45,10 +45,4 @@ target_link_libraries(${APP_NAME}
 	PRIVATE project_options project_warnings erika yuki
 )
 
-# Add a post build command to copy all of erikas plugins to our output.
-add_custom_command(TARGET ${APP_NAME} POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-	"${CMAKE_BINARY_DIR}/erika/plugins/bin"
-	"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-
 message("Finished ${APP_NAME}")

@@ -1,11 +1,19 @@
 import importlib
 import os
+import subprocess
 import sys
 
 import _globals
 
 
 SCRIPTS_DIR = "scripts"
+
+def import_or_install(package):
+    try:
+        __import__(package)
+    except ImportError:
+        process = subprocess.run(
+            ['python', '-m', 'pip', 'install', '-r', f'./{SCRIPTS_DIR}/requirements.txt'])
 
 
 def run_command(commands):
@@ -14,7 +22,7 @@ def run_command(commands):
     script = "./{}/{}.py".format(SCRIPTS_DIR, commands[0])
 
     # As we just run any file specified by cmd we should at least check it's not one _we_ are ignoring
-    if script.startswith("_"):
+    if script.startswith("_") or not script.endswith('.py'):
         print("Invalid CLI command! Type `cli help` for a list of commands.")
         exit_code = -1
     else:
@@ -34,6 +42,8 @@ def run_command(commands):
 
 
 def main():
+    import_or_install('dotenv')
+
     argc = len(sys.argv)
     if argc < 2:
         print("Invalid CLI command! Type `cli help` for a list of commands.")

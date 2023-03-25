@@ -31,7 +31,7 @@ D3D11_Renderer::shutdown()
 }
 
 void
-D3D11_Renderer::begin_scene(const Clear_Colour& clear_color)
+D3D11_Renderer::begin_scene(const Clear_Color& clear_color)
 {
     yuki::debug::Logger::debug("erika > D3D11_Renderer::begin_scene()");
     (void)clear_color;

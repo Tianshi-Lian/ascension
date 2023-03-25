@@ -42,7 +42,7 @@ OpenGL_Renderer::shutdown()
 }
 
 void
-OpenGL_Renderer::begin_scene(const Clear_Colour& clear_color)
+OpenGL_Renderer::begin_scene(const Clear_Color& clear_color)
 {
     yuki::debug::Logger::debug("erika > OpenGL_Renderer::begin_scene()");
 

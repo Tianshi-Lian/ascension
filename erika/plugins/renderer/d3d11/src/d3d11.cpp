@@ -18,9 +18,10 @@ class D3D11_Renderer_Factory : public Renderer_Plugin_Factory {
 };
 
 void
-D3D11_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>&)
+D3D11_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state)
 {
     yuki::debug::Logger::debug("erika > D3D11_Renderer::initialize()");
+    (void)platform_state;
 }
 
 void
@@ -30,15 +31,24 @@ D3D11_Renderer::shutdown()
 }
 
 void
-D3D11_Renderer::begin_scene()
+D3D11_Renderer::begin_scene(const Clear_Colour& clear_color)
 {
     yuki::debug::Logger::debug("erika > D3D11_Renderer::begin_scene()");
+    (void)clear_color;
 }
 
 void
 D3D11_Renderer::end_scene()
 {
     yuki::debug::Logger::debug("erika > D3D11_Renderer::end_scene()");
+}
+
+void
+D3D11_Renderer::on_resize(const u32 width, const u32 height)
+{
+    (void)&width;
+    (void)&height;
+    throw std::runtime_error("Method not implemented.");
 }
 
 std::shared_ptr<Renderer>

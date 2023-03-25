@@ -29,6 +29,10 @@ OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State
     m_opengl_platform_state = std::make_shared<OpenGL_Platform_State>();
 
     OpenGL_Platform::create_context(m_opengl_platform_state, platform_state);
+
+    // Setup OpenGL now we have a context.
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 void
@@ -38,15 +42,12 @@ OpenGL_Renderer::shutdown()
 }
 
 void
-OpenGL_Renderer::begin_scene()
+OpenGL_Renderer::begin_scene(const Clear_Colour& clear_color)
 {
     yuki::debug::Logger::debug("erika > OpenGL_Renderer::begin_scene()");
 
-    glViewport(0, 0, 1600, 900);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-
-    glClearColor(0.79f, 0.94f, 0.7f, 1.0f);
+    glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
+    // NOLINTNEXTLINE - old opengl shenanigans.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
@@ -57,6 +58,14 @@ OpenGL_Renderer::end_scene()
 
     OpenGL_Platform::swap_buffers(m_opengl_platform_state);
     glFinish();
+}
+
+void
+OpenGL_Renderer::on_resize(const u32 width, const u32 height)
+{
+    assert(width <= INT_MAX);
+    assert(height <= INT_MAX);
+    glViewport(0, 0, static_cast<i32>(width), static_cast<i32>(height));
 }
 
 std::shared_ptr<Renderer>

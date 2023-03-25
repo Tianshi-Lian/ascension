@@ -15,21 +15,26 @@ namespace erika::plugins {
  * OpenGL etc must inherit from this base class.
  */
 class Renderer : public Plugin {
-
   public:
-    explicit Renderer()
-      : Plugin(Plugin_Type::Renderer)
-    {
-    }
+    struct Clear_Colour {
+        f32 r;
+        f32 g;
+        f32 b;
+        f32 a;
+    };
+    static constexpr Clear_Colour Default_Clear_Colour = { 0.79f, 0.94f, 0.7f, 1.0f };
+
+    explicit Renderer();
+    ~Renderer() override = default;
+
+    void set_screen_size(const u32 width, const u32 height);
 
     virtual void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state) = 0;
-
-    ~Renderer() override = default;
 
     /**
      * @brief Begin drawing a new scene.
      */
-    virtual void begin_scene() = 0;
+    virtual void begin_scene(const Clear_Colour& clear_color = Default_Clear_Colour) = 0;
     /**
      * @brief Finish drawing the current scene.
      */
@@ -39,6 +44,16 @@ class Renderer : public Plugin {
     Renderer(Renderer&&) = delete;
     Renderer& operator=(const Renderer&) = default;
     Renderer& operator=(Renderer&&) = delete;
+
+  protected:
+    [[nodiscard]] u32 get_screen_width() const;
+    [[nodiscard]] u32 get_screen_height() const;
+
+    virtual void on_resize(const u32 width, const u32 height) = 0;
+
+  private:
+    u32 m_screen_width;
+    u32 m_screen_height;
 };
 
 /**

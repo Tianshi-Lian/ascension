@@ -12,13 +12,16 @@ class D3D11_Renderer : public erika::plugins::Renderer {
     void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state) override;
     void shutdown() override;
 
-    void begin_scene() override;
+    void begin_scene(const Clear_Colour& clear_color) override;
     void end_scene() override;
 
     D3D11_Renderer(const D3D11_Renderer&) = default;
     D3D11_Renderer(D3D11_Renderer&&) = delete;
     D3D11_Renderer& operator=(const D3D11_Renderer&) = default;
     D3D11_Renderer& operator=(D3D11_Renderer&&) = delete;
+
+  protected:
+    void on_resize(const u32 width, const u32 height) override;
 };
 
 }

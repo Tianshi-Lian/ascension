@@ -1,7 +1,7 @@
 include_guard()
 
 # Set common project settings for this CMake project
-function(set_standard_project_settings)
+macro(set_standard_project_settings)
 	# Setup the build configurations for single or multi config generators
 	if(NOT SET_UP_CONFIGURATIONS_DONE)
 		set(SET_UP_CONFIGURATIONS_DONE TRUE)
@@ -61,4 +61,4 @@ function(set_standard_project_settings)
 	# Disable compiler extensions to ensure compliance with ISO C++ standards
 	set(CMAKE_CXX_STANDARD_REQUIRED ON)
 	set(CMAKE_CXX_EXTENSIONS OFF)
-endfunction()
+endmacro()

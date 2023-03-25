@@ -7,7 +7,6 @@ import _globals
 import _helpers
 import _types
 
-
 def run():
     args = _helpers.process_args(sys.argv)
 
@@ -16,7 +15,7 @@ def run():
 
     exit_code = _globals.SUCCESS
 
-    executable_dir = f'build/{_globals.BUILD_PROJECT_NAME}/bin/{build_type}'
+    executable_dir = f'build/bin/{build_type}'
     executable_ext = '.exe' if _globals.PLATFORM == 'windows' else ''
     executable = f'{executable_dir}/{_globals.BUILD_PROJECT_NAME}'
 

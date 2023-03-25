@@ -3,10 +3,7 @@ import os
 import subprocess
 import sys
 
-import _globals
-
-
-SCRIPTS_DIR = "scripts"
+SCRIPTS_DIR = "dunois"
 
 def import_or_install(package):
     try:
@@ -17,7 +14,7 @@ def import_or_install(package):
 
 
 def run_command(commands):
-    exit_code = _globals.SUCCESS
+    exit_code = 0
 
     script = "./{}/{}.py".format(SCRIPTS_DIR, commands[0])
 
@@ -60,7 +57,7 @@ def main():
                     break
 
             command_result = run_command(commands)
-            if (command_result != _globals.SUCCESS):
+            if (command_result != 0):
                 # this will stop us running any more commands if we failed one
                 sys.exit(command_result)
             i += 1

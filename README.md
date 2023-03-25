@@ -4,6 +4,7 @@ A game about ascending through the seven planes of heaven
 ## Application
 - [**ascension**](ascension/): The main application for the game
 ## Libraries
+- [**dunois**](dunois/): A simple, lightweight build system written in Python
 - [**sophia**](sophia/): A set of CMake utility files
 - [**yuki**](yuki/): A core library for development, graphics & games
 - [**erika**](erika/): A 2D game engine written in C++17
@@ -24,9 +25,9 @@ Don't forget to initialise them with `git submodule --init --recursive`
 
 The project currently builds on Windows & Linux(Ubuntu) with `g++` and `clang++` using ISO `c++17`.
 
-It's recommended to set an alias for `./scripts/dev.bat` or `./scripts/dev.sh` so you can run commands from the main project directory such as `dev build`.  
-- PowerShell: `New-Alias -Name dev -Value .\scripts\dev.bat`
-- bash: `echo alias dev='./scripts/dev.sh' >> ~/.bashrc`
+It's recommended to set an alias for `./dunois/dev.bat` or `./dunois/dev.sh` so you can run commands from the main project directory such as `dev build`.  
+- PowerShell: `New-Alias -Name dev -Value .\dunois\dev.bat`
+- bash: `echo alias dev='./dunois/dev.sh' >> ~/.bashrc`
 
 **Commands:**
 - Help: `dev help`
@@ -36,23 +37,6 @@ It's recommended to set an alias for `./scripts/dev.bat` or `./scripts/dev.sh` s
 - Run: `dev run`  
 
 Commands can also be chained as you wish, for example `dev clean build -bt=Release run -bt=Release` will clean the build files, then build the release version and finally run the release executable successively.
-
-### Configuration
-There are a small amount of configuration variables you can change to adjust the build. These can be set or changed inside the `.env` file in the root directory. Variables set in this file will always be overwritten by those passed as command line arguments, e.g. `dev build -bt=Debug`
-```bash
-# Set the project name. 
-# Must be the same as the main executable folder name.
-PROJECT_NAME=ascension
-# Set the build configuration. 
-# Options: Debug, Release, RelWithDebInfo
-BUILD_TYPE=Release
-# Set the C compiler.
-# Supported: gcc, clang
-C_COMPILER=clang
-# Set the C++ compiler.
-# Supported: g++, clang++
-CXX_COMPILER=clang++
-```
 
 ### Steps
 1. Install all the application dependencies as listed above in [Dependencies](#dependencies)

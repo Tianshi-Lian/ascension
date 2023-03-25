@@ -2,19 +2,8 @@
 
 #ifdef __linux__
 
-#include <X11/XKBlib.h>
 #include <X11/Xlib-xcb.h>
-#include <X11/Xlib.h>
-#include <X11/keysym.h>
 #include <dlfcn.h>
-#include <sys/time.h>
-#include <xcb/xcb.h>
-
-#if _POSIX_C_SOURCE >= 199309L
-#include <time.h>
-#else
-#include <unistd.h>
-#endif
 
 #include "yuki/debug/instrumentor.hpp"
 #include "yuki/debug/logger.hpp"

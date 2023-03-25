@@ -1,6 +1,7 @@
 #include "opengl.hpp"
 
-#include "glad/glad.h"
+#include <climits>
+#include <glad/glad.h>
 
 #include "yuki/debug/logger.hpp"
 

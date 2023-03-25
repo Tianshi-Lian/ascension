@@ -6,6 +6,7 @@ message("    (plugins) Configuring ${LIB_NAME}...")
 set(LIB_SRC_FILES
 	src/opengl.cpp
 	src/opengl_win32.cpp
+	src/opengl_linux.cpp
 )
 
 set(LIB_INC_FILES
@@ -50,7 +51,17 @@ endif()
 add_subdirectory(libs/glad)
 
 target_link_libraries(${LIB_NAME}
-	PRIVATE project_options project_warnings yuki erika glad opengl32
+	PRIVATE project_options project_warnings yuki erika glad
 )
+
+if(WIN32)
+	target_link_libraries(${LIB_NAME}
+		PRIVATE opengl32
+	)
+elseif(UNIX)
+	target_link_libraries(${LIB_NAME}
+		PRIVATE X11 xcb X11-xcb
+	)
+endif()
 
 message("    (plugins) Finished ${LIB_NAME}")

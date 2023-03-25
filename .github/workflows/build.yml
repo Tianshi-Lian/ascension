@@ -77,14 +77,14 @@ jobs:
     - if: ${{ runner.os == 'Linux' }}
       name: ⚙️ Configure Linux
       run: |
-        chown $(whoami) ./scripts/dev.sh
-        chmod +x ./scripts/dev.sh
+        chown $(whoami) ./dunois/dev.sh
+        chmod +x ./dunois/dev.sh
 
     - name: 🐍 Install python dependencies
-      run: pip install -r ./requirements.txt
+      run: pip install -r ./dunois/requirements.txt
 
     - name: 🔨 Build
-      run: ./scripts/dev${{ matrix.config.dev }} configure -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }} build -bt=${{ matrix.config.build_type }}
+      run: ./dunois/dev${{ matrix.config.dev }} configure -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }} build -bt=${{ matrix.config.build_type }}
 
     - name: 📤 Upload
       uses: actions/upload-artifact@v3

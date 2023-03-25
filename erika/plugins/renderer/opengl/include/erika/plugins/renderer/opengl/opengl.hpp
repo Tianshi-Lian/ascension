@@ -15,7 +15,7 @@ class OpenGL_Renderer : public erika::plugins::Renderer {
     void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state) override;
     void shutdown() override;
 
-    void begin_scene(const Clear_Colour& clear_color) override;
+    void begin_scene(const Clear_Color& clear_color) override;
     void end_scene() override;
 
     OpenGL_Renderer(const OpenGL_Renderer&) = default;

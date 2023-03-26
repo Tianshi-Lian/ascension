@@ -2,7 +2,7 @@
 
 #ifdef __linux__
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include <GL/glx.h>
 

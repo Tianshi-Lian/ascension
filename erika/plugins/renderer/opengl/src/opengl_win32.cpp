@@ -2,11 +2,12 @@
 
 #ifdef _WIN32
 
-#include <glad/glad.h>
 #define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 
-#include <GL/wglext.h>
+#include <glad/gl.h>
+#include <glad/wgl.h>
 
 #include "yuki/debug/instrumentor.hpp"
 #include "yuki/debug/logger.hpp"
@@ -15,12 +16,13 @@
 
 namespace {
 struct Platform_Internal_State {
-    HINSTANCE h_instance;
-    HWND window_handle;
+    HINSTANCE instance;
+    HWND window;
 };
 
 struct OpenGL_Internal_State {
     HDC device_context;
+    HGLRC render_context;
 };
 
 }
@@ -41,77 +43,75 @@ OpenGL_Platform::create_context(
 
     const auto& platform_state{ std::static_pointer_cast<Platform_Internal_State>(app_platform_state->internal_state) };
 
-    opengl_state->device_context = GetDC(platform_state->window_handle);
+    opengl_state->device_context = GetDC(platform_state->window);
 
-    PIXELFORMATDESCRIPTOR format_descriptor{};
-    format_descriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-    format_descriptor.nVersion = 1;
-    format_descriptor.dwFlags = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
-    format_descriptor.iPixelType = PFD_TYPE_RGBA;
-    format_descriptor.cDepthBits = 32;
-    format_descriptor.cColorBits = 24;
-    format_descriptor.cStencilBits = 8;
+    // Set the pixel format for the device context:
+    // Double buffering, opengl window, 32 bits of color.
+    PIXELFORMATDESCRIPTOR pixel_format_descriptor = {};
+    pixel_format_descriptor.nSize = sizeof(pixel_format_descriptor);
+    pixel_format_descriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+    pixel_format_descriptor.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
+    pixel_format_descriptor.iPixelType = PFD_TYPE_RGBA;
+    pixel_format_descriptor.cColorBits = 32;
+    pixel_format_descriptor.cDepthBits = 32;
+    pixel_format_descriptor.iLayerType = PFD_MAIN_PLANE;
 
-    int pixelFormat = ChoosePixelFormat(opengl_state->device_context, &format_descriptor);
-    SetPixelFormat(opengl_state->device_context, pixelFormat, &format_descriptor);
-
-    HGLRC tempRC = wglCreateContext(opengl_state->device_context);
-    wglMakeCurrent(opengl_state->device_context, tempRC);
-
-    PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
-#pragma GCC diagnostic ignored "-Wcast-function-type" // This is an ongoing issue with wgl & gcc...
-    wglCreateContextAttribsARB =
-        reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
-
-    const std::array attrib_list = {
-        WGL_CONTEXT_MAJOR_VERSION_ARB,
-        4,
-        WGL_CONTEXT_MINOR_VERSION_ARB,
-        6,
-        WGL_CONTEXT_FLAGS_ARB,
-        0,
-        WGL_CONTEXT_PROFILE_MASK_ARB,
-        WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-        0,
-    };
-
-    HGLRC hglrc = wglCreateContextAttribsARB(opengl_state->device_context, nullptr, attrib_list.begin());
-    wglMakeCurrent(nullptr, nullptr);
-
-    wglDeleteContext(tempRC);
-    wglMakeCurrent(opengl_state->device_context, hglrc);
-
-    if (gladLoadGL() == 0) {
-        yuki::debug::Logger::critical("Could not initialize GLAD");
+    int format = ChoosePixelFormat(opengl_state->device_context, &pixel_format_descriptor);
+    if (format == 0 || SetPixelFormat(opengl_state->device_context, format, &pixel_format_descriptor) == FALSE) {
+        ReleaseDC(platform_state->window, opengl_state->device_context);
+        DestroyWindow(platform_state->window);
+        yuki::debug::Logger::critical("Failed to set a compatible pixel format!");
         return false;
     }
-    else {
-        yuki::debug::Logger::debug("OpenGL Version %d.%d", GLVersion.major, GLVersion.minor);
+    // Create and enable a temporary (helper) opengl context:
+    HGLRC temp_context = wglCreateContext(opengl_state->device_context);
+    if (temp_context == nullptr) {
+        ReleaseDC(platform_state->window, opengl_state->device_context);
+        DestroyWindow(platform_state->window);
+        yuki::debug::Logger::critical("Failed to create the initial rendering context!");
+        return false;
+    }
+    wglMakeCurrent(opengl_state->device_context, temp_context);
+
+    // Load WGL Extensions:
+    gladLoaderLoadWGL(opengl_state->device_context);
+
+    int attributes[] = {
+        WGL_CONTEXT_MAJOR_VERSION_ARB,
+        4, // OpenGL MAJOR 4
+        WGL_CONTEXT_MINOR_VERSION_ARB,
+        6, // OpenGL MINOR 6
+        WGL_CONTEXT_FLAGS_ARB,
+        WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+        0 // Core profile
+    };
+
+    // Create the final opengl context and get rid of the temporary one:
+    HGLRC opengl_context = wglCreateContextAttribsARB(opengl_state->device_context, nullptr, attributes);
+    if (opengl_context == nullptr) {
+        wglDeleteContext(temp_context);
+        ReleaseDC(platform_state->window, opengl_state->device_context);
+        DestroyWindow(platform_state->window);
+        yuki::debug::Logger::critical("Failed to create the final rendering context!");
+        return false;
+    }
+    wglMakeCurrent(nullptr, nullptr);
+    wglDeleteContext(temp_context);
+    wglMakeCurrent(opengl_state->device_context, opengl_context);
+
+    // Finally initialize glad.
+    if (!gladLoaderLoadGL()) {
+        wglMakeCurrent(nullptr, nullptr);
+        wglDeleteContext(opengl_context);
+        ReleaseDC(platform_state->window, opengl_state->device_context);
+        DestroyWindow(platform_state->window);
+        yuki::debug::Logger::critical("Glad Loader failed!");
+        return false;
     }
 
-    UpdateWindow(platform_state->window_handle);
-
-    // TODO: Support vsync?
-    // PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT =
-    //     reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGEXTPROC>(wglGetProcAddress("wglGetExtensionsStringEXT"));
-    // bool swapControlSupported = strstr(_wglGetExtensionsStringEXT(), "WGL_EXT_swap_control") != 0;
-    // int vsync = 0;
-
-    // if (swapControlSupported) {
-    //     PFNWGLSWAPINTERVALEXTPROC wglSwapInternalEXT =
-    //         reinterpret_cast<PFNWGLSWAPINTERVALEXTPROC>(wglGetProcAddress("wglSwapIntervalEXT"));
-    //     PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT =
-    //         reinterpret_cast<PFNWGLGETSWAPINTERVALEXTPROC>(wglGetProcAddress("wglGetSwapIntervalEXT"));
-    //     if (wglSwapInternalEXT(1) != 0) {
-    //         std::cout << "VSynch enabled \n";
-    //     }
-    //     else {
-    //         std::cout << "Could not enable VSynch";
-    //     }
-    // }
-    // else {
-    //     std::cout << "WGL_EXT_swap_control not supported \n";
-    // }
+    // Show & Update the main window:
+    ShowWindow(platform_state->window, SW_SHOW);
+    UpdateWindow(platform_state->window);
 
     return true;
 }

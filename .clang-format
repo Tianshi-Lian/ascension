@@ -6,7 +6,6 @@ AccessModifierOffset: -2
 ColumnLimit: 128
 UseTab: Never
 UseCRLF: false
-LineEnding: LF
 
 AlignAfterOpenBracket: BlockIndent
 AllowShortEnumsOnASingleLine: false

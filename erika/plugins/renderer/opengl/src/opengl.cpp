@@ -1,11 +1,96 @@
 #include "opengl.hpp"
 
 #include <climits>
-#include <glad/glad.h>
+
+#include <glad/gl.h>
 
 #include "yuki/debug/logger.hpp"
 
 #include "opengl_platform.hpp"
+
+// #define GL_SANDBOX
+
+namespace {
+#ifdef GL_SANDBOX
+[[maybe_unused]] void
+sandbox()
+{
+    constexpr auto vertex_shader_source = R"(
+    #version 330 core
+    layout (location = 0) in vec3 aPos;
+    void main()
+    {
+       gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    }
+        )";
+
+    u32 vertex_shader;
+    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
+    glCompileShader(vertex_shader);
+
+    constexpr auto fragment_shader_source = R"(
+    #version 330 core
+    out vec4 FragColor;
+
+    void main()
+    {
+        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    }
+        )";
+
+    u32 fragment_shader;
+    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &fragment_shader_source, nullptr);
+    glCompileShader(fragment_shader);
+
+    u32 shader_program;
+    shader_program = glCreateProgram();
+    glAttachShader(shader_program, vertex_shader);
+    glAttachShader(shader_program, fragment_shader);
+    glLinkProgram(shader_program);
+
+    glDeleteShader(vertex_shader);
+    glDeleteShader(fragment_shader);
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f, // bl
+        0.5f,  -0.5f, 0.0f, // br
+        0.5f,  0.5f,  0.0f, // tr
+        -0.5f, 0.5f,  0.0f, // tl
+    };
+
+    unsigned int indices[] = {
+        0, 1, 2, // br
+        2, 3, 0  // tl
+    };
+
+    u32 vertex_array;
+    glGenVertexArrays(1, &vertex_array);
+    glBindVertexArray(vertex_array);
+
+    u32 vertex_buffer;
+    glGenBuffers(1, &vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    u32 element_buffer;
+    glGenBuffers(1, &element_buffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), static_cast<void*>(0));
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    glUseProgram(shader_program);
+    glBindVertexArray(vertex_array);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+}
+#endif
+}
 
 namespace erika::plugins::renderer::opengl {
 
@@ -45,8 +130,6 @@ OpenGL_Renderer::shutdown()
 void
 OpenGL_Renderer::begin_scene(const Clear_Color& clear_color)
 {
-    yuki::debug::Logger::debug("erika > OpenGL_Renderer::begin_scene()");
-
     glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
     // NOLINTNEXTLINE - old opengl shenanigans.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -55,10 +138,11 @@ OpenGL_Renderer::begin_scene(const Clear_Color& clear_color)
 void
 OpenGL_Renderer::end_scene()
 {
-    yuki::debug::Logger::debug("erika > OpenGL_Renderer::end_scene()");
+#ifdef GL_SANDBOX
+    sandbox();
+#endif
 
     OpenGL_Platform::swap_buffers(m_opengl_platform_state);
-    glFinish();
 }
 
 void

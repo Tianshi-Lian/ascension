@@ -4,16 +4,21 @@ set(LIB_NAME glad)
 message("  (erika) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
-	"src/glad.c"
+	"src/gl.c"
+	"src/wgl.c"
 )
 set(LIB_INC_FILES
-	"include/${LIB_NAME}/glad.h"
+	"include/${LIB_NAME}/gl.h"
+	"include/${LIB_NAME}/wgl.h"
 )
 
 project(${LIB_NAME}
 	VERSION "2.0.4"
 	HOMEPAGE_URL "https://github.com/Dav1dde/glad"
-	DESCRIPTION "Multi-Language Vulkan/GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs."
+	DESCRIPTION "
+		Multi-Language Vulkan/GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
+		Generated from: https://gen.glad.sh/
+		Permalink: https://tinyurl.com/yc7uth4y"
 	LANGUAGES CXX
 )
 

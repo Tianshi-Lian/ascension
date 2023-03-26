@@ -12,7 +12,7 @@
 namespace {
 
 struct Internal_State {
-    HINSTANCE h_instance;
+    HINSTANCE instance;
     HWND window_handle;
 };
 
@@ -93,21 +93,20 @@ Platform::initialize(
     platform_state->internal_state = std::make_shared<Internal_State>();
     const auto& state{ std::static_pointer_cast<Internal_State>(platform_state->internal_state) };
 
-    state->h_instance = GetModuleHandleA(nullptr);
+    state->instance = GetModuleHandleA(nullptr);
 
     const std::string wnd_class_name = "yuki_platform_win32_wnd_class";
 
-    auto* const icon{ LoadIcon(state->h_instance, IDI_APPLICATION) };
-    WNDCLASS wnd_class{};
-    wnd_class.style = CS_DBLCLKS;
-    wnd_class.lpfnWndProc = win32_process_messages;
-    wnd_class.hInstance = state->h_instance;
-    wnd_class.hIcon = icon;
-    wnd_class.hCursor = LoadCursorA(nullptr, IDC_ARROW);
-    wnd_class.hbrBackground = nullptr;
-    wnd_class.lpszClassName = wnd_class_name.c_str();
+    WNDCLASSEX wnd_class_ex = {};
+    wnd_class_ex.cbSize = sizeof(WNDCLASSEX);
+    wnd_class_ex.style = CS_HREDRAW | CS_VREDRAW;
+    wnd_class_ex.lpfnWndProc = win32_process_messages;
+    wnd_class_ex.hInstance = state->instance;
+    wnd_class_ex.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wnd_class_ex.hbrBackground = nullptr; // (HBRUSH) (COLOR_WINDOW + 1);
+    wnd_class_ex.lpszClassName = wnd_class_name.c_str();
 
-    if (!RegisterClass(&wnd_class)) {
+    if (RegisterClassEx(&wnd_class_ex) == 0) {
         MessageBox(nullptr, "Window registration failed.", "Error", MB_ICONEXCLAMATION | MB_OK);
         return false;
     }
@@ -142,7 +141,7 @@ Platform::initialize(
         window_height,
         nullptr,
         nullptr,
-        state->h_instance,
+        state->instance,
         nullptr
     );
 
@@ -153,8 +152,6 @@ Platform::initialize(
         return false;
     }
     state->window_handle = handle;
-
-    ShowWindow(state->window_handle, SW_SHOW);
 
     yuki::debug::Logger::notice("yuki > Windows platform layer initialized.");
 

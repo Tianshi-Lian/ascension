@@ -4,6 +4,9 @@
 
 #include <glad/gl.h>
 
+#include <raylib/rlgl.hpp>
+#include <raylib/rlmath.hpp>
+
 #include "yuki/debug/logger.hpp"
 
 #include "opengl_platform.hpp"
@@ -116,9 +119,31 @@ OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State
 
     OpenGL_Platform::create_context(m_opengl_platform_state, platform_state);
 
-    // Setup OpenGL now we have a context.
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    // Setup OpenGL through RayLib now we have a context.
+    rlLoadExtensions(nullptr);
+    rlglInit(1600, 900);
+
+    yuki::debug::Logger::debug("GL: OpenGL device information:");
+    yuki::debug::Logger::debug("    > Vendor:   %s", glGetString(GL_VENDOR));
+    yuki::debug::Logger::debug("    > Renderer: %s", glGetString(GL_RENDERER));
+    yuki::debug::Logger::debug("    > Version:  %s", glGetString(GL_VERSION));
+    yuki::debug::Logger::debug("    > GLSL:     %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    rlClearColor(
+        static_cast<u8>(Renderer::Default_Clear_Color.r * 255),
+        static_cast<u8>(Renderer::Default_Clear_Color.g * 255),
+        static_cast<u8>(Renderer::Default_Clear_Color.b * 255),
+        static_cast<u8>(Renderer::Default_Clear_Color.a * 255)
+    );
+    rlEnableDepthTest();
+
+    // Initialize viewport and internal projection/modelview matrices
+    rlViewport(0, 0, 1600, 900);
+    rlMatrixMode(RL_PROJECTION);        // Switch to PROJECTION matrix
+    rlLoadIdentity();                   // Reset current matrix (PROJECTION)
+    rlOrtho(0, 1600, 900, 0, 0.0, 1.0); // Orthographic projection with top-left corner at (0,0)
+    rlMatrixMode(RL_MODELVIEW);         // Switch back to MODELVIEW matrix
+    rlLoadIdentity();                   // Reset current matrix (MODELVIEW)
 }
 
 void
@@ -130,9 +155,10 @@ OpenGL_Renderer::shutdown()
 void
 OpenGL_Renderer::begin_scene(const Clear_Color& clear_color)
 {
-    glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
-    // NOLINTNEXTLINE - old opengl shenanigans.
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    (void)clear_color;
+
+    rlClearScreenBuffers();
+    rlLoadIdentity(); // Reset internal modelview matrix
 }
 
 void
@@ -141,7 +167,22 @@ OpenGL_Renderer::end_scene()
 #ifdef GL_SANDBOX
     sandbox();
 #endif
+    Vector2 position{ 10.0f, 10.0f };
+    Vector2 size{ 780.0f, 20.0f };
 
+    rlBegin(RL_TRIANGLES);
+    rlColor4ub(80, 80, 80, 255);
+
+    rlVertex2f(position.x, position.y);
+    rlVertex2f(position.x, position.y + size.y);
+    rlVertex2f(position.x + size.x, position.y + size.y);
+
+    rlVertex2f(position.x, position.y);
+    rlVertex2f(position.x + size.x, position.y + size.y);
+    rlVertex2f(position.x + size.x, position.y);
+    rlEnd();
+
+    rlDrawRenderBatchActive();
     OpenGL_Platform::swap_buffers(m_opengl_platform_state);
 }
 
@@ -150,7 +191,12 @@ OpenGL_Renderer::on_resize(const u32 width, const u32 height)
 {
     assert(width <= INT_MAX);
     assert(height <= INT_MAX);
-    glViewport(0, 0, static_cast<i32>(width), static_cast<i32>(height));
+    rlViewport(0, 0, static_cast<i32>(width), static_cast<i32>(height));
+    rlMatrixMode(RL_PROJECTION);            // Switch to PROJECTION matrix
+    rlLoadIdentity();                       // Reset current matrix (PROJECTION)
+    rlOrtho(0, width, height, 0, 0.0, 1.0); // Orthographic projection with top-left corner at (0,0)
+    rlMatrixMode(RL_MODELVIEW);             // Switch back to MODELVIEW matrix
+    rlLoadIdentity();                       // Reset current matrix (MODELVIEW)
 }
 
 std::shared_ptr<Renderer>

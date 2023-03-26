@@ -104,10 +104,14 @@
  *
  **********************************************************************************************/
 
+#pragma GCC system_header
+
 #ifndef RLGL_H
 #define RLGL_H
 
 #define RLGL_VERSION "4.5"
+
+#include "rltypes.hpp"
 
 // Function specifiers in case library is build/used as a shared library (Windows)
 // NOTE: Microsoft specifiers to tell compiler that symbols are imported/exported from a .dll
@@ -119,29 +123,10 @@
 #endif
 #endif
 
-// Function specifiers definition
-#ifndef RLAPI
-#define RLAPI // Functions defined as 'extern' by default (implicit specifiers)
-#endif
-
 // Support TRACELOG macros
 #ifndef TRACELOG
 #define TRACELOG(level, ...) (void)0
 #define TRACELOGD(...) (void)0
-#endif
-
-// Allow custom memory allocators
-#ifndef RL_MALLOC
-#define RL_MALLOC(sz) malloc(sz)
-#endif
-#ifndef RL_CALLOC
-#define RL_CALLOC(n, sz) calloc(n, sz)
-#endif
-#ifndef RL_REALLOC
-#define RL_REALLOC(n, sz) realloc(n, sz)
-#endif
-#ifndef RL_FREE
-#define RL_FREE(p) free(p)
 #endif
 
 // Security check in case no GRAPHICS_API_OPENGL_* defined
@@ -321,17 +306,6 @@ typedef enum bool {
     false = 0,
     true = !false
 } bool;
-#endif
-
-#if !defined(RL_MATRIX_TYPE)
-// Matrix, 4x4 components, column major, OpenGL style, right handed
-typedef struct Matrix {
-    float m0, m4, m8, m12;  // Matrix first row (4 components)
-    float m1, m5, m9, m13;  // Matrix second row (4 components)
-    float m2, m6, m10, m14; // Matrix third row (4 components)
-    float m3, m7, m11, m15; // Matrix fourth row (4 components)
-} Matrix;
-#define RL_MATRIX_TYPE
 #endif
 
 // Dynamic vertex buffers (position + texcoords + colors + indices arrays)

@@ -6,6 +6,7 @@
 
 #include <raylib/rlgl.hpp>
 #include <raylib/rlmath.hpp>
+#include <raylib/rlshapes.hpp>
 
 #include "yuki/debug/logger.hpp"
 
@@ -170,17 +171,7 @@ OpenGL_Renderer::end_scene()
     Vector2 position{ 10.0f, 10.0f };
     Vector2 size{ 780.0f, 20.0f };
 
-    rlBegin(RL_TRIANGLES);
-    rlColor4ub(80, 80, 80, 255);
-
-    rlVertex2f(position.x, position.y);
-    rlVertex2f(position.x, position.y + size.y);
-    rlVertex2f(position.x + size.x, position.y + size.y);
-
-    rlVertex2f(position.x, position.y);
-    rlVertex2f(position.x + size.x, position.y + size.y);
-    rlVertex2f(position.x + size.x, position.y);
-    rlEnd();
+    DrawRectangleV(position, size, DARKBLUE);
 
     rlDrawRenderBatchActive();
     OpenGL_Platform::swap_buffers(m_opengl_platform_state);

@@ -44,18 +44,10 @@
  *
  **********************************************************************************************/
 
+#pragma GCC system_header
+
 #ifndef RAYMATH_H
 #define RAYMATH_H
-
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-field-initializers"
-#pragma clang diagnostic ignored "-Wold-style-cast"
-#elif __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
 
 #if defined(RAYMATH_IMPLEMENTATION) && defined(RAYMATH_STATIC_INLINE)
 #error "Specifying both RAYMATH_IMPLEMENTATION and RAYMATH_STATIC_INLINE is contradictory"
@@ -80,94 +72,7 @@
 #endif
 #endif
 
-//----------------------------------------------------------------------------------
-// Defines and Macros
-//----------------------------------------------------------------------------------
-#ifndef PI
-#define PI 3.14159265358979323846f
-#endif
-
-#ifndef EPSILON
-#define EPSILON 0.000001f
-#endif
-
-#ifndef DEG2RAD
-#define DEG2RAD (PI / 180.0f)
-#endif
-
-#ifndef RAD2DEG
-#define RAD2DEG (180.0f / PI)
-#endif
-
-// Get float vector for Matrix
-#ifndef MatrixToFloat
-#define MatrixToFloat(mat) (MatrixToFloatV(mat).v)
-#endif
-
-// Get float vector for Vector3
-#ifndef Vector3ToFloat
-#define Vector3ToFloat(vec) (Vector3ToFloatV(vec).v)
-#endif
-
-//----------------------------------------------------------------------------------
-// Types and Structures Definition
-//----------------------------------------------------------------------------------
-#if !defined(RL_VECTOR2_TYPE)
-// Vector2 type
-typedef struct Vector2 {
-    float x;
-    float y;
-} Vector2;
-#define RL_VECTOR2_TYPE
-#endif
-
-#if !defined(RL_VECTOR3_TYPE)
-// Vector3 type
-typedef struct Vector3 {
-    float x;
-    float y;
-    float z;
-} Vector3;
-#define RL_VECTOR3_TYPE
-#endif
-
-#if !defined(RL_VECTOR4_TYPE)
-// Vector4 type
-typedef struct Vector4 {
-    float x;
-    float y;
-    float z;
-    float w;
-} Vector4;
-#define RL_VECTOR4_TYPE
-#endif
-
-#if !defined(RL_QUATERNION_TYPE)
-// Quaternion type
-typedef Vector4 Quaternion;
-#define RL_QUATERNION_TYPE
-#endif
-
-#if !defined(RL_MATRIX_TYPE)
-// Matrix type (OpenGL style 4x4 - right handed, column major)
-typedef struct Matrix {
-    float m0, m4, m8, m12;  // Matrix first row (4 components)
-    float m1, m5, m9, m13;  // Matrix second row (4 components)
-    float m2, m6, m10, m14; // Matrix third row (4 components)
-    float m3, m7, m11, m15; // Matrix fourth row (4 components)
-} Matrix;
-#define RL_MATRIX_TYPE
-#endif
-
-// NOTE: Helper types to be used instead of array return types for *ToFloat functions
-typedef struct float3 {
-    float v[3];
-} float3;
-
-typedef struct float16 {
-    float v[16];
-} float16;
-
+#include "rltypes.hpp"
 #include <math.h> // Required for: sinf(), cosf(), tan(), atan2f(), sqrtf(), floor(), fminf(), fmaxf(), fabs()
 
 //----------------------------------------------------------------------------------
@@ -2233,11 +2138,5 @@ QuaternionEquals(Quaternion p, Quaternion q)
 
     return result;
 }
-
-#ifdef __clang__
-#pragma clang diagnostic pop
-#elif __GNUC__
-#pragma GCC diagnostic pop
-#endif
 
 #endif // RAYMATH_H

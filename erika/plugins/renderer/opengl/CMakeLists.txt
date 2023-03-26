@@ -49,9 +49,10 @@ if(ENABLE_PCH)
 endif()
 
 add_subdirectory(libs/glad)
+add_subdirectory(libs/raylib)
 
 target_link_libraries(${LIB_NAME}
-	PRIVATE project_options project_warnings yuki erika glad
+	PRIVATE project_options project_warnings yuki erika glad raylib
 )
 
 if(WIN32)

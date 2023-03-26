@@ -3,7 +3,6 @@
 #ifdef _WIN32
 
 #define WIN32_LEAN_AND_MEAN
-#include <tchar.h>
 #include <windows.h>
 
 #include <glad/gl.h>

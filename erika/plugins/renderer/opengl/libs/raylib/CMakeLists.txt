@@ -5,9 +5,13 @@ message("  (erika) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
 	"src/rlgl.cpp"
+	"src/rlshapes.cpp"
 )
 set(LIB_INC_FILES
 	"include/${LIB_NAME}/rlgl.hpp"
+	"include/${LIB_NAME}/rlmath.hpp"
+	"include/${LIB_NAME}/rlshapes.hpp"
+	"include/${LIB_NAME}/rltypes.hpp"
 )
 
 project(${LIB_NAME}

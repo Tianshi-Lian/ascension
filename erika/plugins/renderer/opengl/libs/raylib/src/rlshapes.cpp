@@ -1,4 +1,4 @@
-#include "raylib/rlshapes.hpp"
+#include "rlshapes.hpp"
 
 #include <cfloat>  // Required for: FLT_EPSILON
 #include <cmath>   // Required for: sinf(), asinf(), cosf(), acosf(), sqrtf(), fabsf()

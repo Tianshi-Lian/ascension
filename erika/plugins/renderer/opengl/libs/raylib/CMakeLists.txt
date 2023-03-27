@@ -6,12 +6,18 @@ message("  (erika) Configuring ${LIB_NAME}...")
 set(LIB_SRC_FILES
 	"src/rlgl.cpp"
 	"src/rlshapes.cpp"
+	"src/rltext.cpp"
+	"src/rltextures.cpp"
+	"src/rlutils.cpp"
 )
 set(LIB_INC_FILES
+	"include/${LIB_NAME}/rltypes.hpp"
 	"include/${LIB_NAME}/rlgl.hpp"
 	"include/${LIB_NAME}/rlmath.hpp"
 	"include/${LIB_NAME}/rlshapes.hpp"
-	"include/${LIB_NAME}/rltypes.hpp"
+	"include/${LIB_NAME}/rltext.hpp"
+	"include/${LIB_NAME}/rltextures.hpp"
+	"include/${LIB_NAME}/rlutils.hpp"
 )
 
 project(${LIB_NAME}
@@ -28,6 +34,7 @@ add_library(${LIB_NAME}
 target_compile_features(${LIB_NAME} INTERFACE cxx_std_17)
 
 target_include_directories(${LIB_NAME} PRIVATE
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libs>
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
 	$<INSTALL_INTERFACE:include/${LIB_NAME}>
 )

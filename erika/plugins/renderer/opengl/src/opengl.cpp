@@ -7,6 +7,7 @@
 #include <raylib/rlgl.hpp>
 #include <raylib/rlmath.hpp>
 #include <raylib/rlshapes.hpp>
+#include <raylib/rltext.hpp>
 
 #include "yuki/debug/logger.hpp"
 
@@ -145,6 +146,8 @@ OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State
     rlOrtho(0, 1600, 900, 0, 0.0, 1.0); // Orthographic projection with top-left corner at (0,0)
     rlMatrixMode(RL_MODELVIEW);         // Switch back to MODELVIEW matrix
     rlLoadIdentity();                   // Reset current matrix (MODELVIEW)
+
+    rlLoadFontDefault();
 }
 
 void
@@ -172,6 +175,7 @@ OpenGL_Renderer::end_scene()
     Vector2 size{ 780.0f, 20.0f };
 
     DrawRectangleV(position, size, DARKBLUE);
+    DrawText("OpenGL Raylib", 10, 40, 16, RED);
 
     rlDrawRenderBatchActive();
     OpenGL_Platform::swap_buffers(m_opengl_platform_state);

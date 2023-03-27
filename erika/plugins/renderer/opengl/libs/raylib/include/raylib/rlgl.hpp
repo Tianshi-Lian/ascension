@@ -123,12 +123,6 @@
 #endif
 #endif
 
-// Support TRACELOG macros
-#ifndef TRACELOG
-#define TRACELOG(level, ...) (void)0
-#define TRACELOGD(...) (void)0
-#endif
-
 // Security check in case no GRAPHICS_API_OPENGL_* defined
 #if !defined(GRAPHICS_API_OPENGL_11) && !defined(GRAPHICS_API_OPENGL_21) && !defined(GRAPHICS_API_OPENGL_33) &&                \
     !defined(GRAPHICS_API_OPENGL_43) && !defined(GRAPHICS_API_OPENGL_ES2)

@@ -20,12 +20,12 @@ A game about ascending through the seven planes of heaven
 - [**WinLibs**](https://winlibs.com/#download-release) (Optional/Windows): I personally use this for Windows development, using the `GCC + LLVM + MinGW-w64 (UCRT)` version. It conveniently contains all of the needed tools for building ISO C++ on Windows. Just extract somewhere add the `bin` folder to your PATH.
 
 ## Build
-All libraries and dependencies are either included in this repository or added as submodules in the respective libs directories.  
+All libraries and dependencies are either included in this repository or added as submodules in the respective libs directories.
 Don't forget to initialise them with `git submodule --init --recursive`
 
 The project currently builds on Windows & Linux(Ubuntu) with `g++` and `clang++` using ISO `c++17`.
 
-It's recommended to set an alias for `./dunois/dev.bat` or `./dunois/dev.sh` so you can run commands from the main project directory such as `dev build`.  
+It's recommended to set an alias for `./dunois/dev.bat` or `./dunois/dev.sh` so you can run commands from the main project directory such as `dev build`.
 - PowerShell: `New-Alias -Name dev -Value .\dunois\dev.bat`
 - bash: `echo alias dev='./dunois/dev.sh' >> ~/.bashrc`
 
@@ -34,7 +34,7 @@ It's recommended to set an alias for `./dunois/dev.bat` or `./dunois/dev.sh` so 
 - Build: `dev build`
 - Configure CMake: `dev config`
 - Clean: `dev clean`
-- Run: `dev run`  
+- Run: `dev run`
 
 Commands can also be chained as you wish, for example `dev clean build -bt=Release run -bt=Release` will clean the build files, then build the release version and finally run the release executable successively.
 

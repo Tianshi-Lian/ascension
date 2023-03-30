@@ -1,5 +1,5 @@
 # Erika
-A 2D game engine written in C++17 
+A 2D game engine written in C++17
 
 ## Dependencies
 - [**sophia**](../sophia): A set of CMake utility files

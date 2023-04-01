@@ -73,7 +73,7 @@
 #endif
 
 #include "rltypes.hpp"
-#include <math.h> // Required for: sinf(), cosf(), tan(), atan2f(), sqrtf(), floor(), fminf(), fmaxf(), fabs()
+#include <cmath> // Required for: sinf(), cosf(), tan(), atan2f(), sqrtf(), floor(), fminf(), fmaxf(), fabs()
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition - Utils math
@@ -85,8 +85,9 @@ Clamp(float value, float min, float max)
 {
     float result = (value < min) ? min : value;
 
-    if (result > max)
+    if (result > max) {
         result = max;
+    }
 
     return result;
 }
@@ -142,7 +143,7 @@ FloatEquals(float x, float y)
 
 // Vector with components value 0.0f
 RMAPI Vector2
-Vector2Zero(void)
+Vector2Zero()
 {
     Vector2 result = { 0.0f, 0.0f };
 
@@ -151,7 +152,7 @@ Vector2Zero(void)
 
 // Vector with components value 1.0f
 RMAPI Vector2
-Vector2One(void)
+Vector2One()
 {
     Vector2 result = { 1.0f, 1.0f };
 
@@ -466,7 +467,7 @@ Vector2Equals(Vector2 p, Vector2 q)
 
 // Vector with components value 0.0f
 RMAPI Vector3
-Vector3Zero(void)
+Vector3Zero()
 {
     Vector3 result = { 0.0f, 0.0f, 0.0f };
 
@@ -475,7 +476,7 @@ Vector3Zero(void)
 
 // Vector with components value 1.0f
 RMAPI Vector3
-Vector3One(void)
+Vector3One()
 {
     Vector3 result = { 1.0f, 1.0f, 1.0f };
 
@@ -1177,7 +1178,7 @@ MatrixInvert(Matrix mat)
 
 // Get identity matrix
 RMAPI Matrix
-MatrixIdentity(void)
+MatrixIdentity()
 {
     Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 
@@ -1671,7 +1672,7 @@ QuaternionSubtractValue(Quaternion q, float sub)
 
 // Get identity quaternion
 RMAPI Quaternion
-QuaternionIdentity(void)
+QuaternionIdentity()
 {
     Quaternion result = { 0.0f, 0.0f, 0.0f, 1.0f };
 

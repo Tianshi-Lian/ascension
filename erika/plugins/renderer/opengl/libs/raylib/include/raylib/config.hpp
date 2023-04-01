@@ -39,6 +39,12 @@
 #define SUPPORT_MODULE_RTEXT 1 // WARNING: It requires SUPPORT_MODULE_RTEXTURES to load sprite font textures
 
 //------------------------------------------------------------------------------------
+// Module: rlgl - Configuration Flags
+//------------------------------------------------------------------------------------
+// Use OpenGL 4.3
+#define GRAPHICS_API_OPENGL_43 1
+
+//------------------------------------------------------------------------------------
 // Module: rshapes - Configuration Flags
 //------------------------------------------------------------------------------------
 // Use QUADS instead of TRIANGLES for drawing when possible

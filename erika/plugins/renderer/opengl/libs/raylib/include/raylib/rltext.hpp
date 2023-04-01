@@ -56,29 +56,36 @@
 #include "config.hpp" // Defines module configuration flags
 #endif
 
-#include "rltypes.hpp" // Declares module functions
-
 #if defined(SUPPORT_MODULE_RTEXT)
 
+#include "rltypes.hpp" // Declares module functions
+
+// Font type, defines generation method
+enum rlFontType {
+    RL_FONT_DEFAULT = 0, // Default font generation, anti-aliased
+    RL_FONT_BITMAP,      // Bitmap font generation, no anti-aliasing
+    RL_FONT_SDF          // SDF font generation, requires external shader
+};
+
 #if defined(SUPPORT_DEFAULT_FONT)
-RLAPI void
-rlLoadFontDefault(void);
-RLAPI void
-rlUnloadFontDefault(void);
+void
+rlLoadFontDefault();
+void
+rlUnloadFontDefault();
 #endif
 
 // Font loading/unloading functions
-RLAPI Font
-GetFontDefault(void); // Get the default Font
-RLAPI Font
+Font
+GetFontDefault(); // Get the default Font
+Font
 LoadFont(const char* fileName); // Load font from file into GPU memory (VRAM)
-RLAPI Font
+Font
 LoadFontEx(const char* fileName, int fontSize, int* fontChars, int glyphCount); // Load font from file with extended parameters,
                                                                                 // use NULL for fontChars and 0 for glyphCount
                                                                                 // to load the default character set
-RLAPI Font
+Font
 LoadFontFromImage(Image image, Color key, int firstChar); // Load font from Image (XNA style)
-RLAPI Font
+Font
 LoadFontFromMemory(
     const char* fileType,
     const unsigned char* fileData,
@@ -87,9 +94,9 @@ LoadFontFromMemory(
     int* fontChars,
     int glyphCount
 ); // Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
-RLAPI bool
+bool
 IsFontReady(Font font); // Check if a font is ready
-RLAPI GlyphInfo*
+GlyphInfo*
 LoadFontData(
     const unsigned char* fileData,
     int dataSize,
@@ -98,7 +105,7 @@ LoadFontData(
     int glyphCount,
     int type
 ); // Load font data for further use
-RLAPI Image
+Image
 GenImageFontAtlas(
     const GlyphInfo* chars,
     Rectangle** recs,
@@ -107,19 +114,19 @@ GenImageFontAtlas(
     int padding,
     int packMethod
 ); // Generate image font atlas using chars info
-RLAPI void
+void
 UnloadFontData(GlyphInfo* chars, int glyphCount); // Unload font chars info data (RAM)
-RLAPI void
+void
 UnloadFont(Font font); // Unload font from GPU memory (VRAM)
-RLAPI bool
+bool
 ExportFontAsCode(Font font, const char* fileName); // Export font as code file, returns true on success
 
 // Text drawing functions
-RLAPI void
+void
 DrawFPS(int posX, int posY); // Draw current FPS
-RLAPI void
+void
 DrawText(const char* text, int posX, int posY, int fontSize, Color color); // Draw text (using default font)
-RLAPI void
+void
 DrawTextEx(
     Font font,
     const char* text,
@@ -128,7 +135,7 @@ DrawTextEx(
     float spacing,
     Color tint
 ); // Draw text using font and additional parameters
-RLAPI void
+void
 DrawTextPro(
     Font font,
     const char* text,
@@ -139,9 +146,9 @@ DrawTextPro(
     float spacing,
     Color tint
 ); // Draw text using Font and pro parameters (rotation)
-RLAPI void
+void
 DrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint); // Draw one character (codepoint)
-RLAPI void
+void
 DrawTextCodepoints(
     Font font,
     const int* codepoints,
@@ -153,56 +160,56 @@ DrawTextCodepoints(
 ); // Draw multiple character (codepoint)
 
 // Text font info functions
-RLAPI int
+int
 MeasureText(const char* text, int fontSize); // Measure string width for default font
-RLAPI Vector2
+Vector2
 MeasureTextEx(Font font, const char* text, float fontSize, float spacing); // Measure string size for Font
-RLAPI int
+int
 GetGlyphIndex(
     Font font,
     int codepoint
 ); // Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
-RLAPI GlyphInfo
+GlyphInfo
 GetGlyphInfo(
     Font font,
     int codepoint
 ); // Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
-RLAPI Rectangle
+Rectangle
 GetGlyphAtlasRec(
     Font font,
     int codepoint
 ); // Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
 
 // Text codepoints management functions (unicode characters)
-RLAPI char*
+char*
 LoadUTF8(const int* codepoints, int length); // Load UTF-8 text encoded from codepoints array
-RLAPI void
+void
 UnloadUTF8(char* text); // Unload UTF-8 text encoded from codepoints array
-RLAPI int*
+int*
 LoadCodepoints(
     const char* text,
     int* count
 ); // Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
-RLAPI void
+void
 UnloadCodepoints(int* codepoints); // Unload codepoints data from memory
-RLAPI int
+int
 GetCodepointCount(const char* text); // Get total number of codepoints in a UTF-8 encoded string
-RLAPI int
+int
 GetCodepoint(
     const char* text,
     int* codepointSize
 ); // Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-RLAPI int
+int
 GetCodepointNext(
     const char* text,
     int* codepointSize
 ); // Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-RLAPI int
+int
 GetCodepointPrevious(
     const char* text,
     int* codepointSize
 ); // Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-RLAPI const char*
+const char*
 CodepointToUTF8(
     int codepoint,
     int* utf8Size
@@ -210,35 +217,35 @@ CodepointToUTF8(
 
 // Text strings management functions (no UTF-8 strings, only byte chars)
 // NOTE: Some strings allocate memory internally for returned strings, just be careful!
-RLAPI int
+int
 TextCopy(char* dst, const char* src); // Copy one string to another, returns bytes copied
-RLAPI bool
+bool
 TextIsEqual(const char* text1, const char* text2); // Check if two text string are equal
-RLAPI unsigned int
+unsigned int
 TextLength(const char* text); // Get text length, checks for '\0' ending
-RLAPI const char*
+const char*
 TextFormat(const char* text, ...); // Text formatting with variables (sprintf() style)
-RLAPI const char*
+const char*
 TextSubtext(const char* text, int position, int length); // Get a piece of a text string
-RLAPI char*
-TextReplace(char* text, const char* replace, const char* by); // Replace text string (WARNING: memory must be freed!)
-RLAPI char*
+char*
+TextReplace(char* text, const char* replace, const char* with); // Replace text string (WARNING: memory must be freed!)
+char*
 TextInsert(const char* text, const char* insert, int position); // Insert text in a position (WARNING: memory must be freed!)
-RLAPI const char*
+const char*
 TextJoin(const char** textList, int count, const char* delimiter); // Join text strings with delimiter
-RLAPI const char**
+const char**
 TextSplit(const char* text, char delimiter, int* count); // Split text into multiple strings
-RLAPI void
+void
 TextAppend(char* text, const char* append, int* position); // Append text at specific position and move cursor!
-RLAPI int
+int
 TextFindIndex(const char* text, const char* find); // Find first text occurrence within a string
-RLAPI const char*
+const char*
 TextToUpper(const char* text); // Get upper case version of provided string
-RLAPI const char*
+const char*
 TextToLower(const char* text); // Get lower case version of provided string
-RLAPI const char*
+const char*
 TextToPascal(const char* text); // Get Pascal case notation version of provided string
-RLAPI int
+int
 TextToInteger(const char* text); // Get integer value from text (negative values not supported)
 
 #endif // SUPPORT_MODULE_RTEXT

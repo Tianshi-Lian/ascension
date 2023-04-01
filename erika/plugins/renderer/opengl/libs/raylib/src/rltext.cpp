@@ -153,7 +153,7 @@ rlLoadFontDefault(void)
                      .width = 128,
                      .height = 128,
                      .mipmaps = 1,
-                     .format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA };
+                     .format = RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA };
 
     // Fill image.data with defaultFontData (convert from bit to pixel!)
     for (int i = 0, counter = 0; i < imFont.width * imFont.height; i += 32) {
@@ -287,7 +287,7 @@ LoadFont(const char* fileName)
         font = GetFontDefault();
     }
     else {
-        SetTextureFilter(font.texture, TEXTURE_FILTER_POINT); // By default, we set point filter (the best performance)
+        SetTextureFilter(font.texture, RL_TEXTURE_FILTER_POINT); // By default, we set point filter (the best performance)
         TRACELOG(
             LOG_INFO,
             "FONT: Data loaded successfully (%i pixel size | %i glyphs)",
@@ -414,9 +414,11 @@ LoadFontFromImage(Image image, Color key, int firstChar)
             pixels[i] = BLANK;
 
     // Create a new image with the processed color data (key color replaced by BLANK)
-    Image fontClear = {
-        .data = pixels, .width = image.width, .height = image.height, .mipmaps = 1, .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
-    };
+    Image fontClear = { .data = pixels,
+                        .width = image.width,
+                        .height = image.height,
+                        .mipmaps = 1,
+                        .format = RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
 
     // Set font with all data parsed from image
     font.texture = LoadTextureFromImage(fontClear); // Convert processed image to OpenGL texture
@@ -471,7 +473,7 @@ LoadFontFromMemory(
         font.baseSize = fontSize;
         font.glyphCount = (glyphCount > 0) ? glyphCount : 95;
         font.glyphPadding = 0;
-        font.glyphs = LoadFontData(fileData, dataSize, font.baseSize, fontChars, font.glyphCount, FONT_DEFAULT);
+        font.glyphs = LoadFontData(fileData, dataSize, font.baseSize, fontChars, font.glyphCount, RL_FONT_DEFAULT);
 
         if (font.glyphs != NULL) {
             font.glyphPadding = FONT_TTF_DEFAULT_CHARS_PADDING;
@@ -580,7 +582,7 @@ LoadFontData(const unsigned char* fileData, int dataSize, int fontSize, int* fon
                 //      stbtt_GetCodepointBitmapBox()        -- how big the bitmap must be
                 //      stbtt_MakeCodepointBitmap()          -- renders into bitmap you provide
 
-                if (type != FONT_SDF)
+                if (type != RL_FONT_SDF)
                     chars[i].image.data = stbtt_GetCodepointBitmap(
                         &fontInfo, scaleFactor, scaleFactor, ch, &chw, &chh, &chars[i].offsetX, &chars[i].offsetY
                     );
@@ -607,7 +609,7 @@ LoadFontData(const unsigned char* fileData, int dataSize, int fontSize, int* fon
                 chars[i].image.width = chw;
                 chars[i].image.height = chh;
                 chars[i].image.mipmaps = 1;
-                chars[i].image.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+                chars[i].image.format = RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
 
                 chars[i].offsetY += (int)((float)ascent * scaleFactor);
 
@@ -617,12 +619,12 @@ LoadFontData(const unsigned char* fileData, int dataSize, int fontSize, int* fon
                                       .width = chars[i].advanceX,
                                       .height = fontSize,
                                       .mipmaps = 1,
-                                      .format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE };
+                                      .format = RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE };
 
                     chars[i].image = imSpace;
                 }
 
-                if (type == FONT_BITMAP) {
+                if (type == RL_FONT_BITMAP) {
                     // Aliased bitmap (black & white) font generation, avoiding anti-aliasing
                     // NOTE: For optimum results, bitmap font should be generated at base pixel size
                     for (int p = 0; p < chw * chh; p++) {
@@ -697,7 +699,7 @@ GenImageFontAtlas(const GlyphInfo* chars, Rectangle** charRecs, int glyphCount, 
     atlas.width = imageSize;                                               // Atlas bitmap width
     atlas.height = imageSize;                                              // Atlas bitmap height
     atlas.data = (unsigned char*)RL_CALLOC(1, atlas.width * atlas.height); // Create a bitmap to store characters (8 bpp)
-    atlas.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+    atlas.format = RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
     atlas.mipmaps = 1;
 
     // DEBUG: We can see padding in the generated image setting a gray background...
@@ -804,7 +806,7 @@ GenImageFontAtlas(const GlyphInfo* chars, Rectangle** charRecs, int glyphCount, 
 
     RL_FREE(atlas.data);
     atlas.data = dataGrayAlpha;
-    atlas.format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA;
+    atlas.format = RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA;
 
     *charRecs = recs;
 
@@ -917,12 +919,12 @@ ExportFontAsCode(Font font, const char* fileName)
     // Support font export and initialization
     // NOTE: This mechanism is highly coupled to raylib
     Image image = LoadImageFromTexture(font.texture);
-    if (image.format != PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA)
+    if (image.format != RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA)
         TRACELOG(LOG_WARNING, "Font export as code: Font image format is not GRAY+ALPHA!");
     int imageDataSize = GetPixelDataSize(image.width, image.height, image.format);
 
     // Image data is usually GRAYSCALE + ALPHA and can be reduced to GRAYSCALE
-    // ImageFormat(&image, PIXELFORMAT_UNCOMPRESSED_GRAYSCALE);
+    // ImageFormat(&image, RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE);
 
 #define SUPPORT_COMPRESSED_FONT_ATLAS
 #if defined(SUPPORT_COMPRESSED_FONT_ATLAS)
@@ -2153,13 +2155,13 @@ LoadBMFont(const char* fileName)
 
     Image imFont = LoadImage(imPath);
 
-    if (imFont.format == PIXELFORMAT_UNCOMPRESSED_GRAYSCALE) {
+    if (imFont.format == RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE) {
         // Convert image to GRAYSCALE + ALPHA, using the mask as the alpha channel
         Image imFontAlpha = { .data = RL_CALLOC(imFont.width * imFont.height, 2),
                               .width = imFont.width,
                               .height = imFont.height,
                               .mipmaps = 1,
-                              .format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA };
+                              .format = RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA };
 
         for (int p = 0, i = 0; p < (imFont.width * imFont.height * 2); p += 2, i++) {
             ((unsigned char*)(imFontAlpha.data))[p] = 0xff;

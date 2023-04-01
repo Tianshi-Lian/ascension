@@ -99,10 +99,6 @@
 #endif
 #endif
 
-#ifndef RLAPI
-#define RLAPI // Functions defined as 'extern' by default (implicit specifiers)
-#endif
-
 // Support TRACELOG macros
 #ifndef TRACELOG
 #define TRACELOG(level, ...) (void)0
@@ -305,6 +301,23 @@
         245, 245, 245, 255                                                                                                     \
     } // My own White (raylib logo)
 
+// Cubemap layouts
+enum rlCubemapLayout {
+    RL_CUBEMAP_LAYOUT_AUTO_DETECT = 0,     // Automatically detect layout type
+    RL_CUBEMAP_LAYOUT_LINE_VERTICAL,       // Layout is defined by a vertical line with faces
+    RL_CUBEMAP_LAYOUT_LINE_HORIZONTAL,     // Layout is defined by a horizontal line with faces
+    RL_CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR, // Layout is defined by a 3x4 cross with cubemap faces
+    RL_CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE, // Layout is defined by a 4x3 cross with cubemap faces
+    RL_CUBEMAP_LAYOUT_PANORAMA             // Layout is defined by a panorama image (equirrectangular map)
+};
+
+// N-patch layout
+enum rlNPatchLayout {
+    RL_NPATCH_NINE_PATCH = 0,        // Npatch layout: 3x3 tiles
+    RL_NPATCH_THREE_PATCH_VERTICAL,  // Npatch layout: 1x3 tiles
+    RL_NPATCH_THREE_PATCH_HORIZONTAL // Npatch layout: 3x1 tiles
+};
+
 //----------------------------------------------------------------------------------
 // Structures Definition
 //----------------------------------------------------------------------------------
@@ -320,180 +333,180 @@ typedef enum bool {
 #endif
 
 // Vector2 type
-typedef struct Vector2 {
+struct Vector2 {
     float x;
     float y;
-} Vector2;
+};
 
 // Vector3 type
-typedef struct Vector3 {
+struct Vector3 {
     float x;
     float y;
     float z;
-} Vector3;
+};
 
 // Vector4 type
-typedef struct Vector4 {
+struct Vector4 {
     float x;
     float y;
     float z;
     float w;
-} Vector4;
+};
 
 // Quaternion type
-typedef Vector4 Quaternion;
+using Quaternion = Vector4;
 
 // Matrix type (OpenGL style 4x4 - right handed, column major)
-typedef struct Matrix {
+struct Matrix {
     float m0, m4, m8, m12;  // Matrix first row (4 components)
     float m1, m5, m9, m13;  // Matrix second row (4 components)
     float m2, m6, m10, m14; // Matrix third row (4 components)
     float m3, m7, m11, m15; // Matrix fourth row (4 components)
-} Matrix;
+};
 
 // NOTE: Helper types to be used instead of array return types for *ToFloat functions
-typedef struct float3 {
+struct float3 {
     float v[3];
-} float3;
+};
 
-typedef struct float16 {
+struct float16 {
     float v[16];
-} float16;
+};
 
 // Color, 4 components, R8G8B8A8 (32bit)
-typedef struct Color {
+struct Color {
     unsigned char r; // Color red value
     unsigned char g; // Color green value
     unsigned char b; // Color blue value
     unsigned char a; // Color alpha value
-} Color;
+};
 
 // Rectangle, 4 components
-typedef struct Rectangle {
+struct Rectangle {
     float x;      // Rectangle top-left corner position x
     float y;      // Rectangle top-left corner position y
     float width;  // Rectangle width
     float height; // Rectangle height
-} Rectangle;
+};
 
 // Image, pixel data stored in CPU memory (RAM)
-typedef struct Image {
+struct Image {
     void* data;  // Image raw data
     int width;   // Image base width
     int height;  // Image base height
     int mipmaps; // Mipmap levels, 1 by default
     int format;  // Data format (PixelFormat type)
-} Image;
+};
 
 // Texture, tex data stored in GPU memory (VRAM)
-typedef struct Texture {
+struct Texture {
     unsigned int id; // OpenGL texture id
     int width;       // Texture base width
     int height;      // Texture base height
     int mipmaps;     // Mipmap levels, 1 by default
     int format;      // Data format (PixelFormat type)
-} Texture;
+};
 
 // Texture2D, same as Texture
-typedef Texture Texture2D;
+using Texture2D = Texture;
 
 // TextureCubemap, same as Texture
-typedef Texture TextureCubemap;
+using TextureCubemap = Texture;
 
 // RenderTexture, fbo for texture rendering
-typedef struct RenderTexture {
+struct RenderTexture {
     unsigned int id; // OpenGL framebuffer object id
     Texture texture; // Color buffer attachment texture
     Texture depth;   // Depth buffer attachment texture
-} RenderTexture;
+};
 
 // RenderTexture2D, same as RenderTexture
-typedef RenderTexture RenderTexture2D;
+using RenderTexture2D = RenderTexture;
 
 // NPatchInfo, n-patch layout info
-typedef struct NPatchInfo {
+struct NPatchInfo {
     Rectangle source; // Texture source rectangle
     int left;         // Left border offset
     int top;          // Top border offset
     int right;        // Right border offset
     int bottom;       // Bottom border offset
     int layout;       // Layout of the n-patch: 3x3, 1x3 or 3x1
-} NPatchInfo;
+};
 
 // GlyphInfo, font characters glyphs info
-typedef struct GlyphInfo {
+struct GlyphInfo {
     int value;    // Character value (Unicode)
     int offsetX;  // Character offset X when drawing
     int offsetY;  // Character offset Y when drawing
     int advanceX; // Character advance position X
     Image image;  // Character image data
-} GlyphInfo;
+};
 
 // Font, font texture and GlyphInfo array data
-typedef struct Font {
+struct Font {
     int baseSize;      // Base size (default chars height)
     int glyphCount;    // Number of glyph characters
     int glyphPadding;  // Padding around the glyph characters
     Texture2D texture; // Texture atlas containing the glyphs
     Rectangle* recs;   // Rectangles in texture for the glyphs
     GlyphInfo* glyphs; // Glyphs info data
-} Font;
+};
 
 // Shader
-typedef struct Shader {
+struct Shader {
     unsigned int id; // Shader program id
     int* locs;       // Shader locations array (RL_MAX_SHADER_LOCATIONS)
-} Shader;
+};
 
 // MaterialMap
-typedef struct MaterialMap {
+struct MaterialMap {
     Texture2D texture; // Material map texture
     Color color;       // Material map color
     float value;       // Material map value
-} MaterialMap;
+};
 
 // Material, includes shader and maps
-typedef struct Material {
+struct Material {
     Shader shader;     // Material shader
     MaterialMap* maps; // Material maps array (MAX_MATERIAL_MAPS)
     float params[4];   // Material generic parameters (if required)
-} Material;
+};
 
 // Transform, vertex transformation data
-typedef struct Transform {
+struct Transform {
     Vector3 translation; // Translation
     Quaternion rotation; // Rotation
     Vector3 scale;       // Scale
-} Transform;
+};
 
 // Bone, skeletal animation bone
-typedef struct BoneInfo {
+struct BoneInfo {
     char name[32]; // Bone name
     int parent;    // Bone parent
-} BoneInfo;
+};
 
 // Ray, ray for raycasting
-typedef struct Ray {
+struct Ray {
     Vector3 position;  // Ray position (origin)
     Vector3 direction; // Ray direction
-} Ray;
+};
 
 // RayCollision, ray hit information
-typedef struct RayCollision {
+struct RayCollision {
     bool hit;       // Did the ray hit something?
     float distance; // Distance to the nearest hit
     Vector3 point;  // Point of the nearest hit
     Vector3 normal; // Surface normal of hit
-} RayCollision;
+};
 
 // BoundingBox
-typedef struct BoundingBox {
+struct BoundingBox {
     Vector3 min; // Minimum vertex box-corner
     Vector3 max; // Maximum vertex box-corner
-} BoundingBox;
+};
 
 // VrDeviceInfo, Head-Mounted-Display device parameters
-typedef struct VrDeviceInfo {
+struct VrDeviceInfo {
     int hResolution;               // Horizontal resolution in pixels
     int vResolution;               // Vertical resolution in pixels
     float hScreenSize;             // Horizontal size in meters
@@ -504,10 +517,10 @@ typedef struct VrDeviceInfo {
     float interpupillaryDistance;  // IPD (distance between pupils) in meters
     float lensDistortionValues[4]; // Lens distortion constant parameters
     float chromaAbCorrection[4];   // Chromatic aberration correction parameters
-} VrDeviceInfo;
+};
 
 // VrStereoConfig, VR stereo rendering configuration for simulator
-typedef struct VrStereoConfig {
+struct VrStereoConfig {
     Matrix projection[2];       // VR projection matrices (per eye)
     Matrix viewOffset[2];       // VR view offset matrices (per eye)
     float leftLensCenter[2];    // VR left lens center
@@ -516,153 +529,13 @@ typedef struct VrStereoConfig {
     float rightScreenCenter[2]; // VR right screen center
     float scale[2];             // VR distortion scale
     float scaleIn[2];           // VR distortion scale in
-} VrStereoConfig;
+};
 
 // File path list
-typedef struct FilePathList {
+struct FilePathList {
     unsigned int capacity; // Filepaths max entries
     unsigned int count;    // Filepaths entries count
     char** paths;          // Filepaths entries
-} FilePathList;
-
-//----------------------------------------------------------------------------------
-// Enumerators Definition
-//----------------------------------------------------------------------------------
-
-// Shader location index
-typedef enum {
-    SHADER_LOC_VERTEX_POSITION = 0, // Shader location: vertex attribute: position
-    SHADER_LOC_VERTEX_TEXCOORD01,   // Shader location: vertex attribute: texcoord01
-    SHADER_LOC_VERTEX_TEXCOORD02,   // Shader location: vertex attribute: texcoord02
-    SHADER_LOC_VERTEX_NORMAL,       // Shader location: vertex attribute: normal
-    SHADER_LOC_VERTEX_TANGENT,      // Shader location: vertex attribute: tangent
-    SHADER_LOC_VERTEX_COLOR,        // Shader location: vertex attribute: color
-    SHADER_LOC_MATRIX_MVP,          // Shader location: matrix uniform: model-view-projection
-    SHADER_LOC_MATRIX_VIEW,         // Shader location: matrix uniform: view (camera transform)
-    SHADER_LOC_MATRIX_PROJECTION,   // Shader location: matrix uniform: projection
-    SHADER_LOC_MATRIX_MODEL,        // Shader location: matrix uniform: model (transform)
-    SHADER_LOC_MATRIX_NORMAL,       // Shader location: matrix uniform: normal
-    SHADER_LOC_VECTOR_VIEW,         // Shader location: vector uniform: view
-    SHADER_LOC_COLOR_DIFFUSE,       // Shader location: vector uniform: diffuse color
-    SHADER_LOC_COLOR_SPECULAR,      // Shader location: vector uniform: specular color
-    SHADER_LOC_COLOR_AMBIENT,       // Shader location: vector uniform: ambient color
-    SHADER_LOC_MAP_ALBEDO,          // Shader location: sampler2d texture: albedo (same as: SHADER_LOC_MAP_DIFFUSE)
-    SHADER_LOC_MAP_METALNESS,       // Shader location: sampler2d texture: metalness (same as: SHADER_LOC_MAP_SPECULAR)
-    SHADER_LOC_MAP_NORMAL,          // Shader location: sampler2d texture: normal
-    SHADER_LOC_MAP_ROUGHNESS,       // Shader location: sampler2d texture: roughness
-    SHADER_LOC_MAP_OCCLUSION,       // Shader location: sampler2d texture: occlusion
-    SHADER_LOC_MAP_EMISSION,        // Shader location: sampler2d texture: emission
-    SHADER_LOC_MAP_HEIGHT,          // Shader location: sampler2d texture: height
-    SHADER_LOC_MAP_CUBEMAP,         // Shader location: samplerCube texture: cubemap
-    SHADER_LOC_MAP_IRRADIANCE,      // Shader location: samplerCube texture: irradiance
-    SHADER_LOC_MAP_PREFILTER,       // Shader location: samplerCube texture: prefilter
-    SHADER_LOC_MAP_BRDF             // Shader location: sampler2d texture: brdf
-} ShaderLocationIndex;
-
-#define SHADER_LOC_MAP_DIFFUSE SHADER_LOC_MAP_ALBEDO
-#define SHADER_LOC_MAP_SPECULAR SHADER_LOC_MAP_METALNESS
-
-// Shader uniform data type
-typedef enum {
-    SHADER_UNIFORM_FLOAT = 0, // Shader uniform type: float
-    SHADER_UNIFORM_VEC2,      // Shader uniform type: vec2 (2 float)
-    SHADER_UNIFORM_VEC3,      // Shader uniform type: vec3 (3 float)
-    SHADER_UNIFORM_VEC4,      // Shader uniform type: vec4 (4 float)
-    SHADER_UNIFORM_INT,       // Shader uniform type: int
-    SHADER_UNIFORM_IVEC2,     // Shader uniform type: ivec2 (2 int)
-    SHADER_UNIFORM_IVEC3,     // Shader uniform type: ivec3 (3 int)
-    SHADER_UNIFORM_IVEC4,     // Shader uniform type: ivec4 (4 int)
-    SHADER_UNIFORM_SAMPLER2D  // Shader uniform type: sampler2d
-} ShaderUniformDataType;
-
-// Shader attribute data types
-typedef enum {
-    SHADER_ATTRIB_FLOAT = 0, // Shader attribute type: float
-    SHADER_ATTRIB_VEC2,      // Shader attribute type: vec2 (2 float)
-    SHADER_ATTRIB_VEC3,      // Shader attribute type: vec3 (3 float)
-    SHADER_ATTRIB_VEC4       // Shader attribute type: vec4 (4 float)
-} ShaderAttributeDataType;
-
-// Pixel formats
-// NOTE: Support depends on OpenGL version and platform
-typedef enum {
-    PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1, // 8 bit per pixel (no alpha)
-    PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA,    // 8*2 bpp (2 channels)
-    PIXELFORMAT_UNCOMPRESSED_R5G6B5,        // 16 bpp
-    PIXELFORMAT_UNCOMPRESSED_R8G8B8,        // 24 bpp
-    PIXELFORMAT_UNCOMPRESSED_R5G5B5A1,      // 16 bpp (1 bit alpha)
-    PIXELFORMAT_UNCOMPRESSED_R4G4B4A4,      // 16 bpp (4 bit alpha)
-    PIXELFORMAT_UNCOMPRESSED_R8G8B8A8,      // 32 bpp
-    PIXELFORMAT_UNCOMPRESSED_R32,           // 32 bpp (1 channel - float)
-    PIXELFORMAT_UNCOMPRESSED_R32G32B32,     // 32*3 bpp (3 channels - float)
-    PIXELFORMAT_UNCOMPRESSED_R32G32B32A32,  // 32*4 bpp (4 channels - float)
-    PIXELFORMAT_COMPRESSED_DXT1_RGB,        // 4 bpp (no alpha)
-    PIXELFORMAT_COMPRESSED_DXT1_RGBA,       // 4 bpp (1 bit alpha)
-    PIXELFORMAT_COMPRESSED_DXT3_RGBA,       // 8 bpp
-    PIXELFORMAT_COMPRESSED_DXT5_RGBA,       // 8 bpp
-    PIXELFORMAT_COMPRESSED_ETC1_RGB,        // 4 bpp
-    PIXELFORMAT_COMPRESSED_ETC2_RGB,        // 4 bpp
-    PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA,   // 8 bpp
-    PIXELFORMAT_COMPRESSED_PVRT_RGB,        // 4 bpp
-    PIXELFORMAT_COMPRESSED_PVRT_RGBA,       // 4 bpp
-    PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA,   // 8 bpp
-    PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA    // 2 bpp
-} PixelFormat;
-
-// Texture parameters: filter mode
-// NOTE 1: Filtering considers mipmaps if available in the texture
-// NOTE 2: Filter is accordingly set for minification and magnification
-typedef enum {
-    TEXTURE_FILTER_POINT = 0,       // No filter, just pixel approximation
-    TEXTURE_FILTER_BILINEAR,        // Linear filtering
-    TEXTURE_FILTER_TRILINEAR,       // Trilinear filtering (linear with mipmaps)
-    TEXTURE_FILTER_ANISOTROPIC_4X,  // Anisotropic filtering 4x
-    TEXTURE_FILTER_ANISOTROPIC_8X,  // Anisotropic filtering 8x
-    TEXTURE_FILTER_ANISOTROPIC_16X, // Anisotropic filtering 16x
-} TextureFilter;
-
-// Texture parameters: wrap mode
-typedef enum {
-    TEXTURE_WRAP_REPEAT = 0,    // Repeats texture in tiled mode
-    TEXTURE_WRAP_CLAMP,         // Clamps texture to edge pixel in tiled mode
-    TEXTURE_WRAP_MIRROR_REPEAT, // Mirrors and repeats the texture in tiled mode
-    TEXTURE_WRAP_MIRROR_CLAMP   // Mirrors and clamps to border the texture in tiled mode
-} TextureWrap;
-
-// Cubemap layouts
-typedef enum {
-    CUBEMAP_LAYOUT_AUTO_DETECT = 0,     // Automatically detect layout type
-    CUBEMAP_LAYOUT_LINE_VERTICAL,       // Layout is defined by a vertical line with faces
-    CUBEMAP_LAYOUT_LINE_HORIZONTAL,     // Layout is defined by a horizontal line with faces
-    CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR, // Layout is defined by a 3x4 cross with cubemap faces
-    CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE, // Layout is defined by a 4x3 cross with cubemap faces
-    CUBEMAP_LAYOUT_PANORAMA             // Layout is defined by a panorama image (equirrectangular map)
-} CubemapLayout;
-
-// Font type, defines generation method
-typedef enum {
-    FONT_DEFAULT = 0, // Default font generation, anti-aliased
-    FONT_BITMAP,      // Bitmap font generation, no anti-aliasing
-    FONT_SDF          // SDF font generation, requires external shader
-} FontType;
-
-// Color blending modes (pre-defined)
-typedef enum {
-    BLEND_ALPHA = 0,         // Blend textures considering alpha (default)
-    BLEND_ADDITIVE,          // Blend textures adding colors
-    BLEND_MULTIPLIED,        // Blend textures multiplying colors
-    BLEND_ADD_COLORS,        // Blend textures adding colors (alternative)
-    BLEND_SUBTRACT_COLORS,   // Blend textures subtracting colors (alternative)
-    BLEND_ALPHA_PREMULTIPLY, // Blend premultiplied textures considering alpha
-    BLEND_CUSTOM,            // Blend textures using custom src/dst factors (use rlSetBlendFactors())
-    BLEND_CUSTOM_SEPARATE    // Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendFactorsSeparate())
-} BlendMode;
-
-// N-patch layout
-typedef enum {
-    NPATCH_NINE_PATCH = 0,        // Npatch layout: 3x3 tiles
-    NPATCH_THREE_PATCH_VERTICAL,  // Npatch layout: 1x3 tiles
-    NPATCH_THREE_PATCH_HORIZONTAL // Npatch layout: 3x1 tiles
-} NPatchLayout;
+};
 
 #endif // RAYLIB_H

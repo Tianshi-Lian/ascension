@@ -143,165 +143,165 @@
 
 // Image loading functions
 // NOTE: These functions do not require GPU access
-RLAPI Image
+Image
 LoadImage(const char* fileName); // Load image from file into CPU memory (RAM)
-RLAPI Image
+Image
 LoadImageRaw(const char* fileName, int width, int height, int format, int headerSize); // Load image from RAW file data
-RLAPI Image
+Image
 LoadImageAnim(const char* fileName, int* frames); // Load image sequence from file (frames appended to image.data)
-RLAPI Image
+Image
 LoadImageFromMemory(
     const char* fileType,
     const unsigned char* fileData,
     int dataSize
 ); // Load image from memory buffer, fileType refers to extension: i.e. '.png'
-RLAPI Image
+Image
 LoadImageFromTexture(Texture2D texture); // Load image from GPU texture data
-RLAPI Image
-LoadImageFromScreen(void); // Load image from screen buffer and (screenshot)
-RLAPI bool
+Image
+LoadImageFromScreen(); // Load image from screen buffer and (screenshot)
+bool
 IsImageReady(Image image); // Check if an image is ready
-RLAPI void
+void
 UnloadImage(Image image); // Unload image from CPU memory (RAM)
-RLAPI bool
+bool
 ExportImage(Image image, const char* fileName); // Export image data to file, returns true on success
-RLAPI bool
+bool
 ExportImageAsCode(
     Image image,
     const char* fileName
 ); // Export image as code file defining an array of bytes, returns true on success
 
 // Image generation functions
-RLAPI Image
+Image
 GenImageColor(int width, int height, Color color); // Generate image: plain color
-RLAPI Image
+Image
 GenImageGradientV(int width, int height, Color top, Color bottom); // Generate image: vertical gradient
-RLAPI Image
+Image
 GenImageGradientH(int width, int height, Color left, Color right); // Generate image: horizontal gradient
-RLAPI Image
+Image
 GenImageGradientRadial(int width, int height, float density, Color inner, Color outer); // Generate image: radial gradient
-RLAPI Image
+Image
 GenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2); // Generate image: checked
-RLAPI Image
+Image
 GenImageWhiteNoise(int width, int height, float factor); // Generate image: white noise
-RLAPI Image
+Image
 GenImagePerlinNoise(int width, int height, int offsetX, int offsetY, float scale); // Generate image: perlin noise
-RLAPI Image
+Image
 GenImageCellular(int width, int height, int tileSize); // Generate image: cellular algorithm, bigger tileSize means bigger cells
-RLAPI Image
+Image
 GenImageText(int width, int height, const char* text); // Generate image: grayscale image from text data
 
 // Image manipulation functions
-RLAPI Image
+Image
 ImageCopy(Image image); // Create an image duplicate (useful for transformations)
-RLAPI Image
+Image
 ImageFromImage(Image image, Rectangle rec); // Create an image from another image piece
-RLAPI Image
+Image
 ImageText(const char* text, int fontSize, Color color); // Create an image from text (default font)
-RLAPI Image
+Image
 ImageTextEx(Font font, const char* text, float fontSize, float spacing, Color tint); // Create an image from text (custom sprite
                                                                                      // font)
-RLAPI void
+void
 ImageFormat(Image* image, int newFormat); // Convert image data to desired format
-RLAPI void
+void
 ImageToPOT(Image* image, Color fill); // Convert image to POT (power-of-two)
-RLAPI void
+void
 ImageCrop(Image* image, Rectangle crop); // Crop an image to a defined rectangle
-RLAPI void
+void
 ImageAlphaCrop(Image* image, float threshold); // Crop image depending on alpha value
-RLAPI void
+void
 ImageAlphaClear(Image* image, Color color, float threshold); // Clear alpha channel to desired color
-RLAPI void
+void
 ImageAlphaMask(Image* image, Image alphaMask); // Apply alpha mask to image
-RLAPI void
+void
 ImageAlphaPremultiply(Image* image); // Premultiply alpha channel
-RLAPI void
+void
 ImageBlurGaussian(Image* image, int blurSize); // Apply Gaussian blur using a box blur approximation
-RLAPI void
+void
 ImageResize(Image* image, int newWidth, int newHeight); // Resize image (Bicubic scaling algorithm)
-RLAPI void
+void
 ImageResizeNN(Image* image, int newWidth, int newHeight); // Resize image (Nearest-Neighbor scaling algorithm)
-RLAPI void
+void
 ImageResizeCanvas(Image* image, int newWidth, int newHeight, int offsetX, int offsetY, Color fill); // Resize canvas and fill
                                                                                                     // with color
-RLAPI void
+void
 ImageMipmaps(Image* image); // Compute all mipmap levels for a provided image
-RLAPI void
+void
 ImageDither(Image* image, int rBpp, int gBpp, int bBpp, int aBpp); // Dither image data to 16bpp or lower (Floyd-Steinberg
                                                                    // dithering)
-RLAPI void
+void
 ImageFlipVertical(Image* image); // Flip image vertically
-RLAPI void
+void
 ImageFlipHorizontal(Image* image); // Flip image horizontally
-RLAPI void
+void
 ImageRotateCW(Image* image); // Rotate image clockwise 90deg
-RLAPI void
+void
 ImageRotateCCW(Image* image); // Rotate image counter-clockwise 90deg
-RLAPI void
+void
 ImageColorTint(Image* image, Color color); // Modify image color: tint
-RLAPI void
+void
 ImageColorInvert(Image* image); // Modify image color: invert
-RLAPI void
+void
 ImageColorGrayscale(Image* image); // Modify image color: grayscale
-RLAPI void
+void
 ImageColorContrast(Image* image, float contrast); // Modify image color: contrast (-100 to 100)
-RLAPI void
+void
 ImageColorBrightness(Image* image, int brightness); // Modify image color: brightness (-255 to 255)
-RLAPI void
+void
 ImageColorReplace(Image* image, Color color, Color replace); // Modify image color: replace color
-RLAPI Color*
+Color*
 LoadImageColors(Image image); // Load color data from image as a Color array (RGBA - 32bit)
-RLAPI Color*
+Color*
 LoadImagePalette(
     Image image,
     int maxPaletteSize,
     int* colorCount
 ); // Load colors palette from image as a Color array (RGBA - 32bit)
-RLAPI void
+void
 UnloadImageColors(Color* colors); // Unload color data loaded with LoadImageColors()
-RLAPI void
+void
 UnloadImagePalette(Color* colors); // Unload colors palette loaded with LoadImagePalette()
-RLAPI Rectangle
+Rectangle
 GetImageAlphaBorder(Image image, float threshold); // Get image alpha border rectangle
-RLAPI Color
-GetImageColor(Image image, int x, int y); // Get image pixel color at (x, y) position
+Color
+GetImageColor(Image image, int posX, int posY); // Get image pixel color at (x, y) position
 
 // Image drawing functions
 // NOTE: Image software-rendering functions (CPU)
-RLAPI void
+void
 ImageClearBackground(Image* dst, Color color); // Clear image background with given color
-RLAPI void
+void
 ImageDrawPixel(Image* dst, int posX, int posY, Color color); // Draw pixel within an image
-RLAPI void
+void
 ImageDrawPixelV(Image* dst, Vector2 position, Color color); // Draw pixel within an image (Vector version)
-RLAPI void
+void
 ImageDrawLine(Image* dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color); // Draw line within an image
-RLAPI void
+void
 ImageDrawLineV(Image* dst, Vector2 start, Vector2 end, Color color); // Draw line within an image (Vector version)
-RLAPI void
+void
 ImageDrawCircle(Image* dst, int centerX, int centerY, int radius, Color color); // Draw a filled circle within an image
-RLAPI void
+void
 ImageDrawCircleV(Image* dst, Vector2 center, int radius, Color color); // Draw a filled circle within an image (Vector version)
-RLAPI void
+void
 ImageDrawCircleLines(Image* dst, int centerX, int centerY, int radius, Color color); // Draw circle outline within an image
-RLAPI void
+void
 ImageDrawCircleLinesV(Image* dst, Vector2 center, int radius, Color color); // Draw circle outline within an image (Vector
                                                                             // version)
-RLAPI void
+void
 ImageDrawRectangle(Image* dst, int posX, int posY, int width, int height, Color color); // Draw rectangle within an image
-RLAPI void
+void
 ImageDrawRectangleV(Image* dst, Vector2 position, Vector2 size, Color color); // Draw rectangle within an image (Vector version)
-RLAPI void
+void
 ImageDrawRectangleRec(Image* dst, Rectangle rec, Color color); // Draw rectangle within an image
-RLAPI void
+void
 ImageDrawRectangleLines(Image* dst, Rectangle rec, int thick, Color color); // Draw rectangle lines within an image
-RLAPI void
+void
 ImageDraw(Image* dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint); // Draw a source image within a destination
                                                                                   // image (tint applied to source)
-RLAPI void
+void
 ImageDrawText(Image* dst, const char* text, int posX, int posY, int fontSize, Color color); // Draw text (using default font)
                                                                                             // within an image (destination)
-RLAPI void
+void
 ImageDrawTextEx(
     Image* dst,
     Font font,
@@ -314,47 +314,47 @@ ImageDrawTextEx(
 
 // Texture loading functions
 // NOTE: These functions require GPU access
-RLAPI Texture2D
+Texture2D
 LoadTexture(const char* fileName); // Load texture from file into GPU memory (VRAM)
-RLAPI Texture2D
+Texture2D
 LoadTextureFromImage(Image image); // Load texture from image data
-RLAPI TextureCubemap
+TextureCubemap
 LoadTextureCubemap(Image image, int layout); // Load cubemap from image, multiple image cubemap layouts supported
-RLAPI RenderTexture2D
+RenderTexture2D
 LoadRenderTexture(int width, int height); // Load texture for rendering (framebuffer)
-RLAPI bool
+bool
 IsTextureReady(Texture2D texture); // Check if a texture is ready
-RLAPI void
+void
 UnloadTexture(Texture2D texture); // Unload texture from GPU memory (VRAM)
-RLAPI bool
+bool
 IsRenderTextureReady(RenderTexture2D target); // Check if a render texture is ready
-RLAPI void
+void
 UnloadRenderTexture(RenderTexture2D target); // Unload render texture from GPU memory (VRAM)
-RLAPI void
+void
 UpdateTexture(Texture2D texture, const void* pixels); // Update GPU texture with new data
-RLAPI void
+void
 UpdateTextureRec(Texture2D texture, Rectangle rec, const void* pixels); // Update GPU texture rectangle with new data
 
 // Texture configuration functions
-RLAPI void
+void
 GenTextureMipmaps(Texture2D* texture); // Generate GPU mipmaps for a texture
-RLAPI void
+void
 SetTextureFilter(Texture2D texture, int filter); // Set texture scaling filter mode
-RLAPI void
+void
 SetTextureWrap(Texture2D texture, int wrap); // Set texture wrapping mode
 
 // Texture drawing functions
-RLAPI void
+void
 DrawTexture(Texture2D texture, int posX, int posY, Color tint); // Draw a Texture2D
-RLAPI void
+void
 DrawTextureV(Texture2D texture, Vector2 position, Color tint); // Draw a Texture2D with position defined as Vector2
-RLAPI void
+void
 DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint); // Draw a Texture2D with extended
                                                                                              // parameters
-RLAPI void
+void
 DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint); // Draw a part of a texture defined by a
                                                                                    // rectangle
-RLAPI void
+void
 DrawTexturePro(
     Texture2D texture,
     Rectangle source,
@@ -363,7 +363,7 @@ DrawTexturePro(
     float rotation,
     Color tint
 ); // Draw a part of a texture defined by a rectangle with 'pro' parameters
-RLAPI void
+void
 DrawTextureNPatch(
     Texture2D texture,
     NPatchInfo nPatchInfo,
@@ -374,35 +374,35 @@ DrawTextureNPatch(
 ); // Draws a texture (or part of it) that stretches or shrinks nicely
 
 // Color/pixel related functions
-RLAPI Color
+Color
 Fade(Color color, float alpha); // Get color with alpha applied, alpha goes from 0.0f to 1.0f
-RLAPI int
+int
 ColorToInt(Color color); // Get hexadecimal value for a Color
-RLAPI Vector4
+Vector4
 ColorNormalize(Color color); // Get Color normalized as float [0..1]
-RLAPI Color
+Color
 ColorFromNormalized(Vector4 normalized); // Get Color from normalized values [0..1]
-RLAPI Vector3
+Vector3
 ColorToHSV(Color color); // Get HSV values for a Color, hue [0..360], saturation/value [0..1]
-RLAPI Color
+Color
 ColorFromHSV(float hue, float saturation, float value); // Get a Color from HSV values, hue [0..360], saturation/value [0..1]
-RLAPI Color
+Color
 ColorTint(Color color, Color tint); // Get color multiplied with another color
-RLAPI Color
+Color
 ColorBrightness(Color color, float factor); // Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
-RLAPI Color
+Color
 ColorContrast(Color color, float contrast); // Get color with contrast correction, contrast values between -1.0f and 1.0f
-RLAPI Color
+Color
 ColorAlpha(Color color, float alpha); // Get color with alpha applied, alpha goes from 0.0f to 1.0f
-RLAPI Color
+Color
 ColorAlphaBlend(Color dst, Color src, Color tint); // Get src alpha-blended into dst color with tint
-RLAPI Color
+Color
 GetColor(unsigned int hexValue); // Get Color structure from hexadecimal value
-RLAPI Color
+Color
 GetPixelColor(void* srcPtr, int format); // Get Color from a source pixel pointer of certain format
-RLAPI void
+void
 SetPixelColor(void* dstPtr, Color color, int format); // Set color formatted into destination pixel pointer
-RLAPI int
+int
 GetPixelDataSize(int width, int height, int format); // Get pixel data size in bytes for certain format
 
 #endif // SUPPORT_MODULE_RTEXTURES

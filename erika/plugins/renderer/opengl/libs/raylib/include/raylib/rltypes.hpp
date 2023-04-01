@@ -81,6 +81,8 @@
 #ifndef RAYLIB_H
 #define RAYLIB_H
 
+#include <array>
+
 #define RAYLIB_VERSION_MAJOR 4
 #define RAYLIB_VERSION_MINOR 6
 #define RAYLIB_VERSION_PATCH 0
@@ -97,12 +99,6 @@
 #elif defined(USE_LIBTYPE_SHARED)
 #define RLAPI __declspec(dllimport) // We are using the library as a Win32 shared library (.dll)
 #endif
-#endif
-
-// Support TRACELOG macros
-#ifndef TRACELOG
-#define TRACELOG(level, ...) (void)0
-#define TRACELOGD(...) (void)0
 #endif
 
 //----------------------------------------------------------------------------------
@@ -130,6 +126,12 @@
 // Get float vector for Vector3
 #ifndef Vector3ToFloat
 #define Vector3ToFloat(vec) (Vector3ToFloatV(vec).v)
+#endif
+
+// Support TRACELOG macros
+#ifndef TRACELOG
+#define TRACELOG(level, ...) (void)0
+#define TRACELOGD(...) (void)0
 #endif
 
 // Allow custom memory allocators
@@ -366,11 +368,11 @@ struct Matrix {
 
 // NOTE: Helper types to be used instead of array return types for *ToFloat functions
 struct float3 {
-    float v[3];
+    std::array<float, 3> v;
 };
 
 struct float16 {
-    float v[16];
+    std::array<float, 16> v; // NOLINT
 };
 
 // Color, 4 components, R8G8B8A8 (32bit)
@@ -467,9 +469,9 @@ struct MaterialMap {
 
 // Material, includes shader and maps
 struct Material {
-    Shader shader;     // Material shader
-    MaterialMap* maps; // Material maps array (MAX_MATERIAL_MAPS)
-    float params[4];   // Material generic parameters (if required)
+    Shader shader;               // Material shader
+    MaterialMap* maps;           // Material maps array (MAX_MATERIAL_MAPS)
+    std::array<float, 4> params; // Material generic parameters (if required)
 };
 
 // Transform, vertex transformation data
@@ -481,8 +483,8 @@ struct Transform {
 
 // Bone, skeletal animation bone
 struct BoneInfo {
-    char name[32]; // Bone name
-    int parent;    // Bone parent
+    std::array<char, 32> name; // NOLINT Bone name
+    int parent;                // Bone parent
 };
 
 // Ray, ray for raycasting
@@ -507,28 +509,28 @@ struct BoundingBox {
 
 // VrDeviceInfo, Head-Mounted-Display device parameters
 struct VrDeviceInfo {
-    int hResolution;               // Horizontal resolution in pixels
-    int vResolution;               // Vertical resolution in pixels
-    float hScreenSize;             // Horizontal size in meters
-    float vScreenSize;             // Vertical size in meters
-    float vScreenCenter;           // Screen center in meters
-    float eyeToScreenDistance;     // Distance between eye and display in meters
-    float lensSeparationDistance;  // Lens separation distance in meters
-    float interpupillaryDistance;  // IPD (distance between pupils) in meters
-    float lensDistortionValues[4]; // Lens distortion constant parameters
-    float chromaAbCorrection[4];   // Chromatic aberration correction parameters
+    int hResolution;                           // Horizontal resolution in pixels
+    int vResolution;                           // Vertical resolution in pixels
+    float hScreenSize;                         // Horizontal size in meters
+    float vScreenSize;                         // Vertical size in meters
+    float vScreenCenter;                       // Screen center in meters
+    float eyeToScreenDistance;                 // Distance between eye and display in meters
+    float lensSeparationDistance;              // Lens separation distance in meters
+    float interpupillaryDistance;              // IPD (distance between pupils) in meters
+    std::array<float, 4> lensDistortionValues; // Lens distortion constant parameters
+    std::array<float, 4> chromaAbCorrection;   // Chromatic aberration correction parameters
 };
 
 // VrStereoConfig, VR stereo rendering configuration for simulator
 struct VrStereoConfig {
-    Matrix projection[2];       // VR projection matrices (per eye)
-    Matrix viewOffset[2];       // VR view offset matrices (per eye)
-    float leftLensCenter[2];    // VR left lens center
-    float rightLensCenter[2];   // VR right lens center
-    float leftScreenCenter[2];  // VR left screen center
-    float rightScreenCenter[2]; // VR right screen center
-    float scale[2];             // VR distortion scale
-    float scaleIn[2];           // VR distortion scale in
+    std::array<Matrix, 2> projection;       // VR projection matrices (per eye)
+    std::array<Matrix, 2> viewOffset;       // VR view offset matrices (per eye)
+    std::array<float, 2> leftLensCenter;    // VR left lens center
+    std::array<float, 2> rightLensCenter;   // VR right lens center
+    std::array<float, 2> leftScreenCenter;  // VR left screen center
+    std::array<float, 2> rightScreenCenter; // VR right screen center
+    std::array<float, 2> scale;             // VR distortion scale
+    std::array<float, 2> scaleIn;           // VR distortion scale in
 };
 
 // File path list

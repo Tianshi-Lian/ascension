@@ -84,7 +84,7 @@ GetDirectoryPath(const char* filePath); // Get full path for a given fileName wi
 const char*
 GetPrevDirectoryPath(const char* dirPath); // Get previous directory path for a given path (uses static string)
 const char*
-GetWorkingDirectory(void); // Get current working directory (uses static string)
+GetWorkingDirectory(); // Get current working directory (uses static string)
 // const char*
 // GetApplicationDirectory(void); // Get the directory if the running application (uses static string)
 bool
@@ -129,9 +129,9 @@ DecodeDataBase64(const unsigned char* data, int* outputSize); // Decode Base64 s
 
 // Callbacks to hook some internal functions
 // WARNING: These callbacks are intended for advance users
-typedef unsigned char* (*LoadFileDataCallback)(const char* fileName, unsigned int* bytesRead);     // FileIO: Load binary data
-typedef bool (*SaveFileDataCallback)(const char* fileName, void* data, unsigned int bytesToWrite); // FileIO: Save binary data
-typedef char* (*LoadFileTextCallback)(const char* fileName);                                       // FileIO: Load text data
-typedef bool (*SaveFileTextCallback)(const char* fileName, char* text);                            // FileIO: Save text data
+using LoadFileDataCallback = unsigned char* (*)(const char*, unsigned int*); // FileIO: Load binary data
+using SaveFileDataCallback = bool (*)(const char*, void*, unsigned int);     // FileIO: Save binary data
+using LoadFileTextCallback = char* (*)(const char*);                         // FileIO: Load text data
+using SaveFileTextCallback = bool (*)(const char*, char*);                   // FileIO: Save text data
 
 #endif

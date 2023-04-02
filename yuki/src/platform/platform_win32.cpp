@@ -6,8 +6,9 @@
 #include <windows.h>
 #include <windowsx.h>
 
-#include "yuki/debug/instrumentor.hpp"
-#include "yuki/debug/logger.hpp"
+#include "debug/instrumentor.hpp"
+#include "debug/logger.hpp"
+#include "input/input.hpp"
 
 namespace {
 
@@ -41,19 +42,42 @@ win32_process_messages(HWND window_handle, u32 message, WPARAM w_param, LPARAM l
         case WM_SYSKEYDOWN:
         case WM_KEYUP:
         case WM_SYSKEYUP: {
-            [[maybe_unused]] bool pressed = (message == WM_KEYDOWN || message == WM_SYSKEYDOWN);
-            // TODO: Process input.
+            const bool pressed = (message == WM_KEYDOWN || message == WM_SYSKEYDOWN);
+            auto key = static_cast<yuki::input::Key>(static_cast<u32>(w_param));
+
+            const bool is_extended = (HIWORD(l_param) & KF_EXTENDED) == KF_EXTENDED;
+
+            // Keypress only determines if _any_ alt/ctrl/shift key is pressed. Determine which one if so.
+            if (w_param == VK_MENU) {
+                key = is_extended ? yuki::input::Key::RALT : yuki::input::Key::LALT;
+            }
+            else if (w_param == VK_SHIFT) {
+                // Annoyingly, KF_EXTENDED is not set for shift keys.
+                u32 left_shift = MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
+                u32 scancode = ((l_param & (0xFF << 16)) >> 16);
+                key = scancode == left_shift ? yuki::input::Key::LSHIFT : yuki::input::Key::RSHIFT;
+            }
+            else if (w_param == VK_CONTROL) {
+                key = is_extended ? yuki::input::Key::RCONTROL : yuki::input::Key::LCONTROL;
+            }
+
+            yuki::input::Input::process_key(key, pressed);
+
+            // Return 0 to prevent default window behaviour for some keypresses, such as alt.
+            return 0;
         } break;
         case WM_MOUSEMOVE: {
-            [[maybe_unused]] i32 mouse_x = GET_X_LPARAM(l_param);
-            [[maybe_unused]] i32 mouse_y = GET_Y_LPARAM(l_param);
-            // TODO: Process input.
+            i32 x_position = GET_X_LPARAM(l_param);
+            i32 y_position = GET_Y_LPARAM(l_param);
+
+            yuki::input::Input::process_mouse_move(x_position, y_position);
         } break;
         case WM_MOUSEHWHEEL: {
-            [[maybe_unused]] i32 z_delta = GET_WHEEL_DELTA_WPARAM(w_param);
+            i32 z_delta = GET_WHEEL_DELTA_WPARAM(w_param);
             if (z_delta != 0) {
+                // Flatten the input to an OS-independent (-1, 1)
                 z_delta = (z_delta < 0) ? -1 : 1;
-                // TODO: Process input.
+                yuki::input::Input::process_mouse_scroll(z_delta);
             }
         } break;
         case WM_LBUTTONDOWN:
@@ -62,9 +86,29 @@ win32_process_messages(HWND window_handle, u32 message, WPARAM w_param, LPARAM l
         case WM_LBUTTONUP:
         case WM_MBUTTONUP:
         case WM_RBUTTONUP: {
-            [[maybe_unused]] bool pressed =
-                (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_RBUTTONDOWN);
-            // TODO: Process input.
+            bool pressed = (message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN || message == WM_MBUTTONDOWN);
+            yuki::input::Mouse_Button button = yuki::input::Mouse_Button::MAX_BUTTONS;
+            switch (message) {
+                case WM_LBUTTONDOWN:
+                case WM_LBUTTONUP:
+                    button = yuki::input::Mouse_Button::LEFT;
+                    break;
+                case WM_MBUTTONDOWN:
+                case WM_MBUTTONUP:
+                    button = yuki::input::Mouse_Button::MIDDLE;
+                    break;
+                case WM_RBUTTONDOWN:
+                case WM_RBUTTONUP:
+                    button = yuki::input::Mouse_Button::RIGHT;
+                    break;
+                default:
+                    break;
+            }
+
+            // Pass over to the input subsystem.
+            if (button != yuki::input::Mouse_Button::MAX_BUTTONS) {
+                yuki::input::Input::process_mouse_button(button, pressed);
+            }
         } break;
         default:
             return DefWindowProc(window_handle, message, w_param, l_param);
@@ -172,6 +216,8 @@ Platform::shutdown(const std::shared_ptr<Platform_State>& platform_state)
 bool
 Platform::process_messages(const std::shared_ptr<Platform_State>& /*platform_state*/)
 {
+    yuki::input::Input::clear_state();
+
     MSG message;
     while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
         TranslateMessage(&message);

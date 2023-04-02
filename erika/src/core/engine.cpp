@@ -3,6 +3,7 @@
 #include "yuki/debug/instrumentor.hpp"
 #include "yuki/debug/logger.hpp"
 
+#include "yuki/input/input.hpp"
 #include "yuki/platform/platform.hpp"
 
 #include "core/game.hpp"
@@ -38,6 +39,10 @@ Engine::run(const std::shared_ptr<yuki::platform::Platform_State>& platform_stat
         milliseconds_elapsed += 50;
         game->update(0.16f);
         game->render(0.16f);
+
+        if (yuki::input::Input::was_key_down(yuki::input::Key::ESCAPE)) {
+            milliseconds_elapsed = 3001;
+        }
     }
     yuki::platform::Platform::shutdown(platform_state);
 }

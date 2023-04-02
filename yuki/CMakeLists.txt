@@ -10,6 +10,7 @@ set(LIB_INC_FILES
 
 # Pull in our source dirs
 include(src/debug/sources.cmake)
+include(src/input/sources.cmake)
 include(src/platform/sources.cmake)
 
 project(${LIB_NAME}

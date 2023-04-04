@@ -10,24 +10,94 @@ class Platform;
 
 namespace yuki::input {
 
+/**
+ * @class Input
+ *
+ * @brief Class which handles basic input state.
+ */
 class Input {
     friend class yuki::platform::Platform;
 
   public:
+    /**
+     * @brief Clears the current state, assigning it to the previous state.
+     */
     static void clear_state();
 
+    /**
+     * @brief Check if a key is currently down.
+     *
+     * @param     key   the key to check
+     *
+     * @return    true is returned if the specified key is currently pressed down
+     */
     static bool is_key_down(Key key);
+    /**
+     * @brief Check if a key was previously down.
+     *
+     * @param     key   the key to check
+     *
+     * @return    true is returned if the specified key was previously pressed down
+     */
     static bool was_key_down(Key key);
+    /**
+     * @brief Check if a key was previously up.
+     *
+     * @param     key   the key to check
+     *
+     * @return    true is returned if the specified key was previously not pressed down
+     */
     static bool was_key_up(Key key);
 
+    /**
+     * @brief Check if a mouse button is currently down.
+     *
+     * @param     button   the mouse button to check
+     *
+     * @return    true is returned if the specified mouse button is currently pressed down
+     */
     static bool is_mouse_button_down(Mouse_Button button);
+    /**
+     * @brief Check if a mouse button was previously down.
+     *
+     * @param     button   the mouse button to check
+     *
+     * @return    true is returned if the specified mouse button was previously pressed down
+     */
     static bool was_mouse_button_down(Mouse_Button button);
+    /**
+     * @brief Check if a mouse button was previously up.
+     *
+     * @param     button   the mouse button to check
+     *
+     * @return    true is returned if the specified mouse button was previously not pressed down
+     */
     static bool was_mouse_button_up(Mouse_Button button);
 
+    /**
+     * @brief Get the current window-relative x position of the mouse cursor.
+     *
+     * @return    i32 specifying the current x position
+     */
     static i32 get_mouse_x_position();
+    /**
+     * @brief Get the current window-relative y position of the mouse cursor.
+     *
+     * @return    i32 specifying the current y position
+     */
     static i32 get_mouse_y_position();
 
+    /**
+     * @brief Get the previous window-relative x movement of the mouse cursor.
+     *
+     * @return    i32 specifying the difference in x position between now and the previous clear.
+     */
     static i32 get_mouse_x_delta();
+    /**
+     * @brief Get the previous window-relative y movement of the mouse cursor.
+     *
+     * @return    i32 specifying the difference in y position between now and the previous clear.
+     */
     static i32 get_mouse_y_delta();
 
     static void process_key(Key key, bool is_down);

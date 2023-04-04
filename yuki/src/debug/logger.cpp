@@ -13,17 +13,8 @@ template<typename... Args>
 void
 write_direct_log(const std::string& format, Args&&... args)
 {
-    std::vector<char> format_buffer(DEFAULT_BUFFER_LENGTH);
-    int ret = snprintf(format_buffer.data(), format_buffer.size(), format.c_str(), std::forward<Args>(args)...);
-
-    if (ret != -1) {
-        std::vector<char> string_buffer(DEFAULT_BUFFER_LENGTH);
-        ret = snprintf(string_buffer.data(), string_buffer.size(), "%s", format_buffer.data());
-        if (ret > 0) {
-            std::string str(string_buffer.data());
-            std::cout << str << std::endl;
-        }
-    }
+    std::string formatted_message = fmt::format(format, std::forward<Args>(args)...);
+    std::cout << formatted_message << std::endl;
 }
 
 } // namespace
@@ -98,11 +89,7 @@ Logger_Util::has_permissions_for_file(const std::string& filepath)
     {
         std::ifstream file(filepath, std::ifstream::in | std::ifstream::app | std::ifstream::binary);
         if (!file.good()) {
-            write_direct_log(
-                "LoggerUtil::HasPermissions() the path(%s) is not "
-                "readable (access denied)",
-                filepath.c_str()
-            );
+            write_direct_log("LoggerUtil::HasPermissions() the path({}) is not readable (access denied)", filepath);
             return false;
         }
     }
@@ -111,11 +98,7 @@ Logger_Util::has_permissions_for_file(const std::string& filepath)
     {
         std::ofstream file(filepath, std::ofstream::out | std::ofstream::app | std::ofstream::binary);
         if (!file.good()) {
-            write_direct_log(
-                "LoggerUtil::HasPermissions() the path(%s) is not "
-                "write-able (access denied)",
-                filepath.c_str()
-            );
+            write_direct_log("LoggerUtil::HasPermissions() the path({}) is not write-able (access denied)", filepath);
             return false;
         }
     }
@@ -173,18 +156,16 @@ Logger_Worker::initialize(const std::string& log_filepath)
         m_is_app_interrupted = false;
     }
     catch (const std::exception& e) {
-        write_direct_log("Failed to create logger threads(%s)", e.what());
+        write_direct_log("Failed to create logger threads({})", e.what());
         throw Logger_Exception(
             Log_Exception_Type::INIT,
-            Logger_Util::str_format("LoggerWorker::Init(): failed to create logger threads(%s)", e.what())
+            Logger_Util::str_format("LoggerWorker::Init(): failed to create logger threads({})", e.what())
         );
     }
     catch (...) {
         write_direct_log("Failed to create logger threads(unknown exception)");
         throw Logger_Exception(
-            Log_Exception_Type::INIT,
-            "LoggerWorker::Init(): failed to create logger "
-            "threads(unknown exception)"
+            Log_Exception_Type::INIT, "LoggerWorker::Init(): failed to create logger threads(unknown exception)"
         );
     }
 }
@@ -268,27 +249,17 @@ Logger_Worker::write_to_log_file()
             }
         }
         catch (std::exception& ex) {
-            write_direct_log(
-                "LoggerWorker::WriteToAplFile() failed to write to "
-                "application log file(%s)",
-                ex.what()
-            );
+            write_direct_log("LoggerWorker::WriteToAplFile() failed to write to application log file({})", ex.what());
             throw Logger_Exception(
                 Log_Exception_Type::STREAM,
-                Logger_Util::str_format(
-                    "LoggerWorker::WriteToAplFile() failed to "
-                    "write to application log file(%s)",
-                    ex.what()
-                )
+                Logger_Util::str_format("LoggerWorker::WriteToAplFile() failed to write to application log file({})", ex.what())
             );
         }
         catch (...) {
-            write_direct_log("LoggerWorker::WriteToAplFile() failed to write to "
-                             "application log file(unknown exception)");
+            write_direct_log("LoggerWorker::WriteToAplFile() failed to write to application log file(unknown exception)");
             throw Logger_Exception(
                 Log_Exception_Type::STREAM,
-                "LoggerWorker::WriteToAplFile() failed to write "
-                "to application log file(unknown exception)"
+                "LoggerWorker::WriteToAplFile() failed to write to application log file(unknown exception)"
             );
         }
     }
@@ -348,9 +319,7 @@ Logger::initialize(const std::string& log_filepath, Severity level, bool log_to_
     if (log_filepath.empty() || log_filepath[0] == '\0' || log_filepath[0] == ' ') {
         filepath = LOG_PATH_DEFAULT;
         write_direct_log(
-            "Logger::initialize() application log file path is not "
-            "valid, setting to default value (%s)",
-            log_filepath.c_str()
+            "Logger::initialize() application log file path is not valid, setting to default value ({})", log_filepath
         );
     }
 
@@ -361,18 +330,12 @@ Logger::initialize(const std::string& log_filepath, Severity level, bool log_to_
         std::cout << "Creating directory" << std::endl;
         if (!success) {
             write_direct_log(
-                "Logger::initialize() failed to create log file "
-                "directory (%s). Error (%d)",
-                dir_path.c_str(),
-                error
+                "Logger::initialize() failed to create log file directory ({}). Error ({})", dir_path, error.value()
             );
             throw Logger_Exception(
                 Log_Exception_Type::INIT,
                 Logger_Util::str_format(
-                    "initialize::Init() failed to create log "
-                    "file directory (%s). Error (%d)",
-                    dir_path.c_str(),
-                    error
+                    "initialize::Init() failed to create log file directory ({}). Error ({})", dir_path, error.value()
                 )
             );
         }
@@ -391,18 +354,15 @@ Logger::initialize(const std::string& log_filepath, Severity level, bool log_to_
     const auto has_file_permissions = Logger_Util::has_permissions_for_file(log_filepath);
     if (!has_file_permissions) {
         write_direct_log(
-            "Logger::initialize() failed to validate application log "
-            "file (%s) permissions. Error (%d)",
-            log_filepath.c_str(),
+            "Logger::initialize() failed to validate application log file ({}) permissions. Error ({})",
+            log_filepath,
             has_file_permissions
         );
         throw Logger_Exception(
             Log_Exception_Type::PERMISSION,
             Logger_Util::str_format(
-                "Logger::initialize() failed to validate application log file "
-                "(%s) "
-                "permissions. Error (%d)",
-                log_filepath.c_str(),
+                "Logger::initialize() failed to validate application log file ({}) permissions. Error ({})",
+                log_filepath,
                 has_file_permissions
             )
         );
@@ -414,11 +374,11 @@ Logger::initialize(const std::string& log_filepath, Severity level, bool log_to_
 
     enable_file_logging(log_to_file);
     if (!log_file_just_created) {
-        Logger::log(Severity::LOG_MANUAL, " ");
+        Logger::log(Severity::LOG_MANUAL, "yuki", "");
     }
     enable_console_logging(log_to_console);
 
-    Logger::notice("yuki > Logger initialized: %s.", filepath.c_str());
+    Logger::notice("yuki", "Logger initialized: {}", filepath);
 }
 
 Logger_Worker&
@@ -456,10 +416,9 @@ Logger::drop_all()
         get_worker().drop_all();
     }
     catch (Logger_Exception& le) {
-        write_direct_log("Logger::DropAll() error closing stream (%s)", le.get_message().c_str());
+        write_direct_log("Logger::DropAll() error closing stream ({})", le.get_message());
         throw Logger_Exception(
-            Log_Exception_Type::EXIT,
-            Logger_Util::str_format("Logger::DropAll() error closing stream (%s)", le.get_message().c_str())
+            Log_Exception_Type::EXIT, Logger_Util::str_format("Logger::DropAll() error closing stream ({})", le.get_message())
         );
     }
 }

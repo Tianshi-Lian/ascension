@@ -35,7 +35,7 @@ OpenGL_Platform::create_context(
 )
 {
     PROFILE_FUNCTION();
-    yuki::debug::Logger::info("erika > Creating Win32 OpenGL context...");
+    yuki::debug::Logger::info("erika", "Creating Win32 OpenGL context...");
 
     opengl_platform_state->internal_state = std::make_shared<OpenGL_Internal_State>();
     const auto& opengl_state{ std::static_pointer_cast<OpenGL_Internal_State>(opengl_platform_state->internal_state) };
@@ -59,7 +59,7 @@ OpenGL_Platform::create_context(
     if (format == 0 || SetPixelFormat(opengl_state->device_context, format, &pixel_format_descriptor) == FALSE) {
         ReleaseDC(platform_state->window, opengl_state->device_context);
         DestroyWindow(platform_state->window);
-        yuki::debug::Logger::critical("Failed to set a compatible pixel format!");
+        yuki::debug::Logger::critical("erika", "Failed to set a compatible pixel format!");
         return false;
     }
     // Create and enable a temporary (helper) opengl context:
@@ -67,7 +67,7 @@ OpenGL_Platform::create_context(
     if (temp_context == nullptr) {
         ReleaseDC(platform_state->window, opengl_state->device_context);
         DestroyWindow(platform_state->window);
-        yuki::debug::Logger::critical("Failed to create the initial rendering context!");
+        yuki::debug::Logger::critical("erika", "Failed to create the initial rendering context!");
         return false;
     }
     wglMakeCurrent(opengl_state->device_context, temp_context);
@@ -91,7 +91,7 @@ OpenGL_Platform::create_context(
         wglDeleteContext(temp_context);
         ReleaseDC(platform_state->window, opengl_state->device_context);
         DestroyWindow(platform_state->window);
-        yuki::debug::Logger::critical("Failed to create the final rendering context!");
+        yuki::debug::Logger::critical("erika", "Failed to create the final rendering context!");
         return false;
     }
     wglMakeCurrent(nullptr, nullptr);
@@ -104,7 +104,7 @@ OpenGL_Platform::create_context(
         wglDeleteContext(opengl_context);
         ReleaseDC(platform_state->window, opengl_state->device_context);
         DestroyWindow(platform_state->window);
-        yuki::debug::Logger::critical("Glad Loader failed!");
+        yuki::debug::Logger::critical("erika", "Glad Loader failed!");
         return false;
     }
 

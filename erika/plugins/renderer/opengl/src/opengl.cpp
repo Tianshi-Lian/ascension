@@ -115,7 +115,7 @@ class OpenGL_Renderer_Factory : public Renderer_Plugin_Factory {
 void
 OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state)
 {
-    yuki::debug::Logger::debug("erika > OpenGL_Renderer::initialize()");
+    yuki::debug::Logger::debug("erika", "OpenGL_Renderer::initialize()");
 
     m_opengl_platform_state = std::make_shared<OpenGL_Platform_State>();
 
@@ -125,11 +125,14 @@ OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State
     rlLoadExtensions(nullptr);
     rlglInit(1600, 900);
 
-    yuki::debug::Logger::debug("GL: OpenGL device information:");
-    yuki::debug::Logger::debug("    > Vendor:   %s", glGetString(GL_VENDOR));
-    yuki::debug::Logger::debug("    > Renderer: %s", glGetString(GL_RENDERER));
-    yuki::debug::Logger::debug("    > Version:  %s", glGetString(GL_VERSION));
-    yuki::debug::Logger::debug("    > GLSL:     %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    yuki::debug::Logger::debug("erika", "GL: OpenGL device information:");
+    // NOLINTNEXTLINE - I hate opengl
+    yuki::debug::Logger::debug("     ", "Vendor:   {}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+    yuki::debug::Logger::debug("     ", "Renderer: {}", reinterpret_cast<const char*>(glGetString(GL_RENDERER))); // NOLINT
+    yuki::debug::Logger::debug("     ", "Version:  {}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));  // NOLINT
+    yuki::debug::Logger::debug(
+        "     ", "GLSL:     {}", reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) // NOLINT
+    );
 
     rlClearColor(
         static_cast<u8>(Renderer::Default_Clear_Color.r * 255),
@@ -153,7 +156,7 @@ OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State
 void
 OpenGL_Renderer::shutdown()
 {
-    yuki::debug::Logger::debug("erika > OpenGL_Renderer::shutdown()");
+    yuki::debug::Logger::debug("erika", "OpenGL_Renderer::shutdown()");
 }
 
 void
@@ -199,7 +202,7 @@ OpenGL_Renderer_Factory::create()
 {
     yuki::debug::Logger::initialize("logs/renderer.log", yuki::debug::Severity::LOG_DEBUG, true, true);
 
-    yuki::debug::Logger::debug("erika > OpenGL_Renderer_Factory::create()");
+    yuki::debug::Logger::debug("erika", "OpenGL_Renderer_Factory::create()");
     return std::make_shared<OpenGL_Renderer>();
 }
 

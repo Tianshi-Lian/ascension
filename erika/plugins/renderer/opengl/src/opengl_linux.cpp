@@ -41,7 +41,7 @@ OpenGL_Platform::create_context(
 )
 {
     PROFILE_FUNCTION();
-    yuki::debug::Logger::info("erika > Creating Linux OpenGL context...");
+    yuki::debug::Logger::info("erika", "Creating Linux OpenGL context...");
 
     opengl_platform_state->internal_state = std::make_shared<OpenGL_Internal_State>();
     const auto& opengl_state{ std::static_pointer_cast<OpenGL_Internal_State>(opengl_platform_state->internal_state) };

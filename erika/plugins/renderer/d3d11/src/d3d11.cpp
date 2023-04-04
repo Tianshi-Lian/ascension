@@ -20,27 +20,27 @@ class D3D11_Renderer_Factory : public Renderer_Plugin_Factory {
 void
 D3D11_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state)
 {
-    yuki::debug::Logger::debug("erika > D3D11_Renderer::initialize()");
+    yuki::debug::Logger::debug("erika", "D3D11_Renderer::initialize()");
     (void)platform_state;
 }
 
 void
 D3D11_Renderer::shutdown()
 {
-    yuki::debug::Logger::debug("erika > D3D11_Renderer::shutdown()");
+    yuki::debug::Logger::debug("erika", "D3D11_Renderer::shutdown()");
 }
 
 void
 D3D11_Renderer::begin_scene(const Clear_Color& clear_color)
 {
-    yuki::debug::Logger::debug("erika > D3D11_Renderer::begin_scene()");
+    yuki::debug::Logger::debug("erika", "D3D11_Renderer::begin_scene()");
     (void)clear_color;
 }
 
 void
 D3D11_Renderer::end_scene()
 {
-    yuki::debug::Logger::debug("erika > D3D11_Renderer::end_scene()");
+    yuki::debug::Logger::debug("erika", "D3D11_Renderer::end_scene()");
 }
 
 void
@@ -56,7 +56,7 @@ D3D11_Renderer_Factory::create()
 {
     yuki::debug::Logger::initialize("logs/renderer.log", yuki::debug::Severity::LOG_DEBUG, true, true);
 
-    yuki::debug::Logger::debug("erika > D3D11_Renderer_Factory::create()");
+    yuki::debug::Logger::debug("erika", "D3D11_Renderer_Factory::create()");
     return std::make_shared<D3D11_Renderer>();
 }
 

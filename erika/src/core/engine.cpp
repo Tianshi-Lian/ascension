@@ -14,9 +14,9 @@ void
 Engine::initialize()
 {
     PROFILE_FUNCTION();
-    yuki::debug::Logger::info("erika > Initializing game engine...");
+    yuki::debug::Logger::info("erika", "Initializing game engine...");
 
-    yuki::debug::Logger::notice("erika > Initialized game engine.");
+    yuki::debug::Logger::notice("erika", "Initialized game engine.");
 }
 
 void
@@ -24,9 +24,9 @@ Engine::run(const std::shared_ptr<yuki::platform::Platform_State>& platform_stat
 {
     PROFILE_FUNCTION();
     if (!game) {
-        yuki::debug::Logger::critical("Engine::run() failed to run: invalid game!");
+        yuki::debug::Logger::critical("erika", "Engine::run() failed to run: invalid game!");
     }
-    yuki::debug::Logger::debug("erika > Engine::run() starting game %s", game->get_window_title().c_str());
+    yuki::debug::Logger::debug("erika", "Engine::run() starting game {}", game->get_window_title());
 
     game->set_platform_state(platform_state);
     game->initialize();

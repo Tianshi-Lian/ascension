@@ -63,11 +63,11 @@ Plugin_Manager::initialize(const std::shared_ptr<yuki::platform::Platform_State>
                 }
 
                 plugin_load(*this);
-                yuki::debug::Logger::debug("Loaded %s plugin %s", plugin_type.second.begin(), plugin_name.c_str());
+                yuki::debug::Logger::debug("erika", "Loaded {} plugin {}", plugin_type.second.begin(), plugin_name);
             }
             catch (const std::exception& e) {
                 yuki::platform::Platform::free_shared_library(plugin_lib);
-                yuki::debug::Logger::error("Failed to load plugin %s with error %s", file.path().string().c_str(), e.what());
+                yuki::debug::Logger::error("erika", "Failed to load plugin {}} with error {}", file.path(), e.what());
                 continue;
             }
         }
@@ -83,9 +83,7 @@ Plugin_Manager::register_renderer(std::string name, const std::shared_ptr<Render
         });
 
     if (factory_exists != m_registered_renderers.end()) {
-        yuki::debug::Logger::error(
-            "erika > Plugin_Manager attempting to register renderer factory %s more than once.", name.c_str()
-        );
+        yuki::debug::Logger::error("erika", "Plugin_Manager attempting to register renderer factory {} more than once.", name);
         return;
     }
 
@@ -101,13 +99,13 @@ Plugin_Manager::change_active_renderer(const std::string& name)
         });
 
     if (factory_exists == m_registered_renderers.end()) {
-        yuki::debug::Logger::error("erika > Plugin_Manager attempting to create unrecognised renderer %s.", name.c_str());
+        yuki::debug::Logger::error("erika", "Plugin_Manager attempting to create unrecognised renderer {}.", name);
         return;
     }
 
     auto new_plugin = factory_exists->second->create();
     if (!new_plugin) {
-        yuki::debug::Logger::error("erika > Plugin_Manager failed to create renderer plugin %s.", name.c_str());
+        yuki::debug::Logger::error("erika", "Plugin_Manager failed to create renderer plugin {}.", name);
         return;
     }
 

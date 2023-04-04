@@ -5,7 +5,12 @@
 #include <queue>
 #include <thread>
 
-#include "magic_enum/magic_enum.hpp"
+#include <fmt/chrono.h>
+#include <fmt/format.h>
+#include <fmt/ranges.h>
+#include <fmt/std.h>
+
+#include <magic_enum/magic_enum.hpp>
 
 #define SLEEP_IN_MS 100
 #define LOG_PATH_DEFAULT "logs/app.log"
@@ -191,17 +196,7 @@ class Logger_Util {
     template<typename... Args>
     static std::string str_format(const std::string& format, Args&&... args)
     {
-        std::vector<char> format_buffer(DEFAULT_BUFFER_LENGTH);
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
-#pragma GCC diagnostic ignored "-Wformat-security"
-        int ret = snprintf(format_buffer.data(), format_buffer.size(), format.c_str(), std::forward<Args>(args)...);
-
-        std::string result;
-        if (ret != -1) {
-            result = std::string(format_buffer.data());
-        }
-
-        return result;
+        return fmt::format(format, std::forward<Args>(args)...);
     }
 
   private:
@@ -336,9 +331,9 @@ class Logger {
      *replace a format specifier in the format string.
      */
     template<typename... Args>
-    static void log(Severity level, const std::string& format, Args&&... args)
+    static void log(Severity level, const std::string& source, const std::string& format, Args&&... args)
     {
-        write_log(level, format, std::forward<Args>(args)...);
+        write_log(level, source, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -351,9 +346,9 @@ class Logger {
      *replace a format specifier in the format string.
      */
     template<typename... Args>
-    static void debug(const std::string& format, Args&&... args)
+    static void debug(const std::string& source, const std::string& format, Args&&... args)
     {
-        write_log(Severity::LOG_DEBUG, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_DEBUG, source, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -366,9 +361,9 @@ class Logger {
      *replace a format specifier in the format string.
      */
     template<typename... Args>
-    static void info(const std::string& format, Args&&... args)
+    static void info(const std::string& source, const std::string& format, Args&&... args)
     {
-        write_log(Severity::LOG_INFO, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_INFO, source, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -381,9 +376,9 @@ class Logger {
      *replace a format specifier in the format string.
      */
     template<typename... Args>
-    static void notice(const std::string& format, Args&&... args)
+    static void notice(const std::string& source, const std::string& format, Args&&... args)
     {
-        write_log(Severity::LOG_NOTICE, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_NOTICE, source, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -396,9 +391,9 @@ class Logger {
      *replace a format specifier in the format string.
      */
     template<typename... Args>
-    static void warn(const std::string& format, Args&&... args)
+    static void warn(const std::string& source, const std::string& format, Args&&... args)
     {
-        write_log(Severity::LOG_WARNING, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_WARNING, source, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -411,9 +406,9 @@ class Logger {
      *replace a format specifier in the format string.
      */
     template<typename... Args>
-    static void error(const std::string& format, Args&&... args)
+    static void error(const std::string& source, const std::string& format, Args&&... args)
     {
-        write_log(Severity::LOG_ERROR, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_ERROR, source, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -426,9 +421,9 @@ class Logger {
      *replace a format specifier in the format string.
      */
     template<typename... Args>
-    static void critical(const std::string& format, Args&&... args)
+    static void critical(const std::string& source, const std::string& format, Args&&... args)
     {
-        write_log(Severity::LOG_CRITICAL, format, std::forward<Args>(args)...);
+        write_log(Severity::LOG_CRITICAL, source, format, std::forward<Args>(args)...);
     }
 
     /**
@@ -462,36 +457,26 @@ class Logger {
      * @param	args	The variable argument list (va_list)
      */
     template<typename... Args>
-    static void write_log(Severity level, const std::string& format, Args&&... args)
+    static void write_log(Severity level, const std::string& source, const std::string& format, Args&&... args)
     {
         if (level < get_worker().m_severity_level) {
             return;
         }
 
-        std::vector<char> format_buffer(DEFAULT_BUFFER_LENGTH);
-        int ret = snprintf(format_buffer.data(), format_buffer.size(), format.c_str(), std::forward<Args>(args)...);
+        std::string formatted_message = fmt::format(format, std::forward<Args>(args)...);
 
-        std::vector<char> string_buffer(DEFAULT_BUFFER_LENGTH);
-
+        std::string log_string;
         if (level != Severity::LOG_MANUAL) {
             const auto timestamp = Logger_Util::get_time_string();
             const auto log_level = std::string(magic_enum::enum_name(level));
-
-            ret = snprintf(
-                string_buffer.data(),
-                string_buffer.size(),
-                "%s [%-6s] %s",
-                timestamp.c_str(),
-                log_level.c_str(),
-                format_buffer.data()
-            );
+            log_string = fmt::format("{} [{}] {} > {}", timestamp, log_level, source, formatted_message);
         }
         else {
-            ret = snprintf(string_buffer.data(), string_buffer.size(), "%s", format_buffer.data());
+            log_string = formatted_message;
         }
 
-        if (ret > 0) {
-            get_worker().output_log_line(level, string_buffer.data());
+        if (!log_string.empty()) {
+            get_worker().output_log_line(level, log_string);
         }
     }
 };

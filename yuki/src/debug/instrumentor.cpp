@@ -25,9 +25,7 @@ Instrumentor::begin_session(const std::string& name, const std::string& filepath
     std::lock_guard lock(m_mutex);
     if (!m_current_session.empty()) {
         Logger::error(
-            "yuki > Instrumentor::begin_session called with session %s when session %s already open.",
-            name.c_str(),
-            m_current_session.c_str()
+            "yuki", "Instrumentor::begin_session called with session {} when session {} already open.", name, m_current_session
         );
         internal_end_session();
     }
@@ -41,7 +39,7 @@ Instrumentor::begin_session(const std::string& name, const std::string& filepath
         m_output_stream.flush();
     }
     else {
-        Logger::error("yuki > Instrumentor::begin_session failed to open result files %s", filepath.c_str());
+        Logger::error("yuki", "Instrumentor::begin_session failed to open result files {}", filepath);
     }
 }
 

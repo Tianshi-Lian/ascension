@@ -3,6 +3,8 @@
 namespace yuki::input {
 
 /**
+ * @enum Mouse_Button
+ *
  * @brief Represents available mouse buttons.
  */
 enum class Mouse_Button : u32 {
@@ -13,6 +15,8 @@ enum class Mouse_Button : u32 {
 };
 
 /**
+ * @enum Key
+ *
  * @brief Represents available keyboard keys.
  */
 enum class Key : u32 {

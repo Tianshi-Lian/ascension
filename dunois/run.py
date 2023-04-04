@@ -12,10 +12,13 @@ def run():
 
     build_type = _helpers.get_arg_value(
         args, ['build-type', 'bt'], _globals.BUILD_TYPE)
+    app_name = _helpers.get_arg_value(
+        args, ['name', 'n'], _globals.BUILD_PROJECT_NAME)
 
     exit_code = _globals.SUCCESS
 
-    executable_dir = f'build/bin/{build_type}'
+    libs_dir = f'build/bin/libs/{build_type}'
+    executable_dir = f'build/bin/{app_name}/{build_type}'
     executable_ext = '.exe' if _globals.PLATFORM == 'windows' else ''
     executable = f'{executable_dir}/{_globals.BUILD_PROJECT_NAME}'
 
@@ -29,11 +32,11 @@ def run():
         return exit_code
 
     if _globals.PLATFORM == 'windows':
-        process = subprocess.run([executable], cwd=executable_dir)
+        process = subprocess.run([executable], cwd=libs_dir)
         exit_code = process.returncode
     elif _globals.PLATFORM == 'linux':
         process = subprocess.run(
-            [f'./{_globals.BUILD_PROJECT_NAME}'], cwd=executable_dir)
+            [f'./{_globals.BUILD_PROJECT_NAME}'], cwd=libs_dir)
         exit_code = process.returncode
 
     return exit_code

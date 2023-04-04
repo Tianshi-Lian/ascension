@@ -3,6 +3,7 @@ A game about ascending through the seven planes of heaven
 
 ## Application
 - [**ascension**](ascension/): The main application for the game
+- [**qilian**](qilian/): A sandbox application for testing feature development
 ## Libraries
 - [**dunois**](dunois/): A simple, lightweight build system written in Python
 - [**sophia**](sophia/): A set of CMake utility files

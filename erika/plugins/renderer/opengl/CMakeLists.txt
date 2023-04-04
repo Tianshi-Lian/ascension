@@ -61,7 +61,7 @@ if(WIN32)
 	)
 elseif(UNIX)
 	target_link_libraries(${LIB_NAME}
-		PRIVATE X11 xcb X11-xcb
+		PRIVATE GL X11 xcb X11-xcb
 	)
 endif()
 

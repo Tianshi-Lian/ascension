@@ -34,7 +34,7 @@ Platform::initialize(
 )
 {
     PROFILE_FUNCTION();
-    yuki::debug::Logger::info("yuki > Initializing Windows platform layer...");
+    yuki::debug::Logger::info("yuki", "Initializing Windows platform layer...");
 
     platform_state->internal_state = std::make_shared<Internal_State>();
     const auto& state{ std::static_pointer_cast<Internal_State>(platform_state->internal_state) };
@@ -46,7 +46,7 @@ Platform::initialize(
     state->connection = XGetXCBConnection(state->display);
 
     if (xcb_connection_has_error(state->connection)) {
-        yuki::debug::Logger::critical("Failed to connect to X server via XCB.");
+        yuki::debug::Logger::critical("yuki", "Failed to connect to X server via XCB.");
         return false;
     }
 
@@ -117,11 +117,11 @@ Platform::initialize(
     // Flush the stream
     i32 stream_result = xcb_flush(state->connection);
     if (stream_result <= 0) {
-        yuki::debug::Logger::critical("An error occurred when flushing the stream: %d", stream_result);
+        yuki::debug::Logger::critical("yuki", "An error occurred when flushing the stream: {}", stream_result);
         return false;
     }
 
-    yuki::debug::Logger::notice("yuki > Windows platform layer initialized.");
+    yuki::debug::Logger::notice("yuki", "Windows platform layer initialized.");
 
     return true;
 }
@@ -214,7 +214,7 @@ Platform::load_shared_library(const std::string& filepath)
 
     auto* const handle = dlopen(filepath.c_str(), RTLD_LAZY);
     if (handle == nullptr) {
-        yuki::debug::Logger::error("Failed to load handle to library %s", filepath.c_str());
+        yuki::debug::Logger::error("yuki", "Failed to load handle to library {}", filepath);
         return result;
     }
 
@@ -236,12 +236,12 @@ std::shared_ptr<void (*)()>
 Platform::load_library_function_internal(const Library_Handle& library_handle, const std::string& function_name)
 {
     if (function_name.empty()) {
-        yuki::debug::Logger::error("Attempting to load unnamed function from library handle", function_name.c_str());
+        yuki::debug::Logger::error("yuki", "Attempting to load unnamed function from library handle");
         return nullptr;
     }
 
     if (library_handle.internal_state == nullptr) {
-        yuki::debug::Logger::error("Trying to load function %s from null library handle", function_name.c_str());
+        yuki::debug::Logger::error("yuki", "Trying to load function {} from null library handle", function_name);
         return nullptr;
     }
 
@@ -250,7 +250,7 @@ Platform::load_library_function_internal(const Library_Handle& library_handle, c
     const auto proc_address{ dlsym(library.get(), function_name.c_str()) };
     if (proc_address == nullptr) {
         yuki::debug::Logger::error(
-            "Failed to load handle to function %s from library %s", function_name.c_str(), library_handle.filepath.c_str()
+            "yuki", "Failed to load handle to function {} from library {}", function_name, library_handle.filepath
         );
         return nullptr;
     }

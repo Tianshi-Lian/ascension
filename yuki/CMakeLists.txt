@@ -44,11 +44,12 @@ if(ENABLE_PCH)
 endif()
 
 # External libs
+add_subdirectory(libs/fmt)
 add_subdirectory(libs/magic_enum)
 
 target_link_libraries(${LIB_NAME}
 	PRIVATE project_options project_warnings pthread
-	PUBLIC magic_enum
+	PUBLIC magic_enum fmt::fmt-header-only
 )
 
 if(UNIX)

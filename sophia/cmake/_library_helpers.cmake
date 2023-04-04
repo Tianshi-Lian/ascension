@@ -10,6 +10,4 @@ macro(set_lib_output_directories base subdir)
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG_PROPERTY} "${base}/${CONFIG_TYPE}/${subdir}")
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONFIG_PROPERTY} "${base}/${CONFIG_TYPE}/${subdir}")
 	endforeach()
-
-	message(STATUS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
 endmacro()

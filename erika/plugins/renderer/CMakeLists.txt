@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME erika_renderer_plugins)
 
 set_lib_output_directories(${ERIKA_BASE_PLUGIN_OUTPUT_DIR} renderer)
-message(STATUS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
 
 add_library(${LIB_NAME} INTERFACE)
 

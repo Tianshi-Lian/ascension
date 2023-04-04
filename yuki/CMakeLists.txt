@@ -4,14 +4,10 @@ set(LIB_NAME yuki)
 message("Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES "")
-set(LIB_INC_FILES
-	include/${LIB_NAME}/types.hpp
-)
+set(LIB_INC_FILES "")
 
-# Pull in our source dirs
-include(src/debug/sources.cmake)
-include(src/input/sources.cmake)
-include(src/platform/sources.cmake)
+# Pull in our source files
+include(src/sources.cmake)
 
 project(${LIB_NAME}
 	VERSION 0.0.1

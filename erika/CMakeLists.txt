@@ -6,9 +6,8 @@ message("Configuring ${LIB_NAME}...")
 set(LIB_SRC_FILES "")
 set(LIB_INC_FILES "")
 
-# Pull in our source dirs
-include(src/core/sources.cmake)
-include(src/plugins/sources.cmake)
+# Pull in our source files
+include(src/sources.cmake)
 
 project(${LIB_NAME}
 	VERSION 0.0.1

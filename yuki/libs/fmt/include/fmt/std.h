@@ -8,6 +8,8 @@
 #ifndef FMT_STD_H_
 #define FMT_STD_H_
 
+#pragma GCC system_header
+
 #include <thread>
 #include <type_traits>
 #include <utility>

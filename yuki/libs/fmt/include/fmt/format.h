@@ -33,6 +33,8 @@
 #ifndef FMT_FORMAT_H_
 #define FMT_FORMAT_H_
 
+#pragma GCC system_header
+
 #include <cmath>        // std::signbit
 #include <cstdint>      // uint32_t
 #include <cstring>      // std::memcpy

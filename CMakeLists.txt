@@ -23,3 +23,4 @@ add_subdirectory(yuki)
 
 # Applications
 add_subdirectory(ascension)
+add_subdirectory(qilian)

@@ -47,4 +47,9 @@ target_link_libraries(${APP_NAME}
 	PRIVATE project_options project_warnings yuki raylib
 )
 
+add_custom_command(TARGET ${APP_NAME} POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/${APP_NAME}/assets $<TARGET_FILE_DIR:${APP_NAME}>
+)
+
 message("Finished ${APP_NAME}")

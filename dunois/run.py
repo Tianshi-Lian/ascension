@@ -33,12 +33,12 @@ def run():
         return exit_code
 
     if _globals.PLATFORM == 'windows':
-        process = subprocess.run([executable_relative_path], cwd=libs_dir)
+        process = subprocess.run([executable_relative_path], cwd=executable_dir)
         exit_code = process.returncode
     elif _globals.PLATFORM == 'linux':
         print(f'{os.getcwd()}/{executable_relative_path}')
         process = subprocess.run(
-            [f'{os.getcwd()}/{executable_relative_path}'], cwd=f'{os.getcwd()}/{libs_dir}')
+            [f'{os.getcwd()}/{executable_relative_path}'], cwd=f'{os.getcwd()}/{executable_dir}')
         exit_code = process.returncode
 
     return exit_code

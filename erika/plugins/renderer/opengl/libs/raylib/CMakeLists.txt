@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
-set(LIB_NAME raylib)
+set(LIB_NAME mraylib)
 message("  (erika) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES

@@ -4,10 +4,10 @@
 
 #include <glad/gl.h>
 
-#include <raylib/rlgl.hpp>
-#include <raylib/rlmath.hpp>
-#include <raylib/rlshapes.hpp>
-#include <raylib/rltext.hpp>
+#include <mraylib/rlgl.hpp>
+#include <mraylib/rlmath.hpp>
+#include <mraylib/rlshapes.hpp>
+#include <mraylib/rltext.hpp>
 
 #include "yuki/debug/logger.hpp"
 

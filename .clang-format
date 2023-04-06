@@ -14,8 +14,8 @@ AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
 AlwaysBreakTemplateDeclarations : Yes
-BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Stroustrup
 ContinuationIndentWidth: 4
+InsertBraces: true
 PointerAlignment: Left
 SpaceAfterCStyleCast: false

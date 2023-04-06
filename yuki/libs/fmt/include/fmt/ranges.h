@@ -12,8 +12,6 @@
 #ifndef FMT_RANGES_H_
 #define FMT_RANGES_H_
 
-#pragma GCC system_header
-
 #include <initializer_list>
 #include <tuple>
 #include <type_traits>

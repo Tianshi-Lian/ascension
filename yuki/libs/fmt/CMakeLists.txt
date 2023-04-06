@@ -88,7 +88,7 @@ option(FMT_FUZZ "Generate the fuzz target." OFF)
 option(FMT_CUDA_TEST "Generate the cuda-test target." OFF)
 option(FMT_OS "Include core requiring OS (Windows/Posix) " ON)
 option(FMT_MODULE "Build a module instead of a traditional library." OFF)
-option(FMT_SYSTEM_HEADERS "Expose headers with marking them as system." OFF)
+option(FMT_SYSTEM_HEADERS "Expose headers with marking them as system." ON)
 
 set(FMT_CAN_MODULE OFF)
 
@@ -124,7 +124,7 @@ math(EXPR CPACK_PACKAGE_VERSION_MINOR ${CMAKE_MATCH_2})
 math(EXPR CPACK_PACKAGE_VERSION_PATCH ${CMAKE_MATCH_3})
 join(FMT_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.
 	${CPACK_PACKAGE_VERSION_PATCH})
-message("    Version: ${FMT_VERSION}")
+message("    (fmt) Version: ${FMT_VERSION}")
 
 if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

@@ -15,6 +15,9 @@ namespace {
 struct Internal_State {
     HINSTANCE instance;
     HWND window_handle;
+
+    f64 clock_frequency;
+    f64 start_time;
 };
 
 LRESULT CALLBACK
@@ -197,6 +200,11 @@ Platform::initialize(
     }
     state->window_handle = handle;
 
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+    state->clock_frequency = 1.0 / static_cast<f64>(frequency.QuadPart);
+    state->start_time = get_platform_time(platform_state);
+
     yuki::debug::Logger::notice("yuki", "Windows platform layer initialized.");
 
     return true;
@@ -225,6 +233,20 @@ Platform::process_messages(const std::shared_ptr<Platform_State>& /*platform_sta
     }
 
     return true;
+}
+
+f64
+Platform::get_platform_time(const std::shared_ptr<Platform_State>& platform_state)
+{
+    constexpr i64 time_granularity = 1000; // milliseconds
+
+    const auto& state{ std::static_pointer_cast<Internal_State>(platform_state->internal_state) };
+
+    LARGE_INTEGER now_time;
+    QueryPerformanceCounter(&now_time);
+    now_time.QuadPart *= time_granularity;
+    const auto time_ms = static_cast<f64>(now_time.QuadPart) * state->clock_frequency;
+    return time_ms;
 }
 
 void

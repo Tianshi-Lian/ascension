@@ -52,6 +52,11 @@ class Platform {
     static bool process_messages(const std::shared_ptr<Platform_State>& platform_state);
 
     /**
+     * @brief Get the time in ms since the application started
+     */
+    static f64 get_platform_time(const std::shared_ptr<Platform_State>& platform_state);
+
+    /**
      * @brief Sleep the active thread for the specific time.
      *
      * @param       milliseconds      then number of milliseconds to sleep for

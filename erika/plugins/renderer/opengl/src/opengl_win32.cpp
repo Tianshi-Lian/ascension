@@ -17,6 +17,9 @@ namespace {
 struct Platform_Internal_State {
     HINSTANCE instance;
     HWND window;
+
+    f64 clock_frequency;
+    LARGE_INTEGER start_time;
 };
 
 struct OpenGL_Internal_State {

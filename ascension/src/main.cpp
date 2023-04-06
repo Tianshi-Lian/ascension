@@ -42,7 +42,7 @@ main()
     InitWindow(screenWidth, screenHeight, "raylib [textures] example - bunnymark");
 
     // Load bunny texture
-    Texture2D texBunny = LoadTexture("resources/wabbit_alpha.png");
+    Texture2D texBunny = LoadTexture("textures/wabbit_alpha.png");
 
     std::unique_ptr<Bunny[]> bunnies = std::unique_ptr<Bunny[]>(new Bunny[MAX_BUNNIES]);
 

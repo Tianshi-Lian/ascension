@@ -20,11 +20,12 @@ def run():
     libs_dir = f'build/bin/libs/{build_type}'
     executable_dir = f'build/bin/{app_name}/{build_type}'
     executable_ext = '.exe' if _globals.PLATFORM == 'windows' else ''
-    executable = f'{executable_dir}/{_globals.BUILD_PROJECT_NAME}'
+    executable_file = f'{app_name}{executable_ext}'
+    executable_relative_path = f'{executable_dir}/{executable_file}'
 
-    if not os.path.isfile(f'{executable}{executable_ext}'):
+    if not os.path.isfile(f'{executable_relative_path}'):
         print(
-            f'Failed to find executable {executable}, attempting to build...')
+            f'Failed to find executable `{executable_relative_path}`, attempting to build...')
         module = importlib.import_module('build')
         exit_code = module.run()
 
@@ -32,11 +33,12 @@ def run():
         return exit_code
 
     if _globals.PLATFORM == 'windows':
-        process = subprocess.run([executable], cwd=libs_dir)
+        process = subprocess.run([executable_relative_path], cwd=libs_dir)
         exit_code = process.returncode
     elif _globals.PLATFORM == 'linux':
+        print(f'{os.getcwd()}/{executable_relative_path}')
         process = subprocess.run(
-            [f'./{_globals.BUILD_PROJECT_NAME}'], cwd=libs_dir)
+            [f'{os.getcwd()}/{executable_relative_path}'], cwd=f'{os.getcwd()}/{libs_dir}')
         exit_code = process.returncode
 
     return exit_code

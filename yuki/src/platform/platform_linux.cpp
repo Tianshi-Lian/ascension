@@ -4,6 +4,8 @@
 
 #include <X11/Xlib-xcb.h>
 #include <dlfcn.h>
+#include <math.h>
+#include <time.h>
 
 #include "yuki/debug/instrumentor.hpp"
 #include "yuki/debug/logger.hpp"
@@ -188,6 +190,16 @@ Platform::process_messages(const std::shared_ptr<Platform_State>& platform_state
     } while (event != 0);
 
     return !quit_flagged;
+}
+
+f64
+Platform::get_platform_time(const std::shared_ptr<Platform_State>& platform_state)
+{
+    (void)platform_state;
+
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &now);
+    return static_cast<f64>(now.tv_nsec) / 1.0e6;
 }
 
 void

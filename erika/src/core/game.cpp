@@ -12,6 +12,8 @@ Game::Game(std::string window_title)
 bool
 Game::initialize()
 {
+    m_plugin_manager.initialize(m_platform_state);
+
     return on_initialize();
 }
 

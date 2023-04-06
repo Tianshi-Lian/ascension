@@ -1,5 +1,7 @@
 #pragma once
 
+#include "erika/plugins/plugin_manager.hpp"
+
 namespace yuki::platform {
 struct Platform_State;
 }
@@ -54,6 +56,8 @@ class Game {
      * @brief The created platform state which can be used to access platform-specific methods.
      */
     std::shared_ptr<yuki::platform::Platform_State> m_platform_state;
+
+    erika::plugins::Plugin_Manager m_plugin_manager;
 
   private:
     bool initialize();

@@ -171,15 +171,6 @@ OpenGL_Renderer::begin_scene(const Clear_Color& clear_color)
 void
 OpenGL_Renderer::end_scene()
 {
-#ifdef GL_SANDBOX
-    sandbox();
-#endif
-    Vector2 position{ 10.0f, 10.0f };
-    Vector2 size{ 780.0f, 20.0f };
-
-    DrawRectangleV(position, size, DARKBLUE);
-    DrawText("OpenGL Raylib", 10, 40, 16, RED);
-
     rlDrawRenderBatchActive();
     OpenGL_Platform::swap_buffers(m_opengl_platform_state);
 }

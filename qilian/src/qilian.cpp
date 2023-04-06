@@ -1,6 +1,8 @@
+#include "qilian.hpp"
+
 #include "erika/core/entry.hpp" // IWYU pragma: keep
 
-#include "qilian.hpp"
+#include "erika/plugins/renderer.hpp"
 
 namespace qilian {
 
@@ -15,25 +17,26 @@ Qilian::on_initialize()
     PROFILE_FUNCTION();
     yuki::debug::Logger::debug("qilian", "Qilian::on_initialize()");
 
+    m_plugin_manager.change_active_renderer("OpenGL_Renderer");
+
     return true;
 }
 
 void
 Qilian::on_update(f32 delta_time)
 {
-    PROFILE_FUNCTION();
-    // yuki::debug::Logger::debug("qilian > Qilian::on_update(%f)", delta_time);
-
     (void)delta_time;
 }
 
 void
-Qilian::on_render(f32 delta_time)
+Qilian::on_render(f32 interpolation)
 {
-    PROFILE_FUNCTION();
-    // yuki::debug::Logger::debug("qilian > Qilian::on_render(%f)", delta_time);
+    (void)interpolation;
 
-    (void)delta_time;
+    auto renderer = m_plugin_manager.get_active_renderer();
+    renderer->begin_scene();
+
+    renderer->end_scene();
 }
 
 }

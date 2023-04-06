@@ -39,7 +39,7 @@ if(ENABLE_PCH)
 endif()
 
 target_link_libraries(${APP_NAME}
-	PRIVATE project_options project_warnings erika yuki opengl
+	PRIVATE project_options project_warnings erika yuki
 )
 
 message("Finished ${APP_NAME}")

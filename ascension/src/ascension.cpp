@@ -4,10 +4,8 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "erika/plugins/renderer.hpp"
+#include "yuki/debug/instrumentor.hpp"
 #include "yuki/debug/logger.hpp"
-
-#include "erika/plugins/plugin_manager.hpp"
 
 namespace ascension {
 
@@ -41,14 +39,19 @@ struct player {
 player player;
 
 Ascension::Ascension()
-  : erika::Game("Ascension")
 {
+    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
+    PROFILE_BEGIN_SESSION("ascension_profiling", "logs/timings.json");
+}
+
+Ascension::~Ascension()
+{
+    PROFILE_END_SESSION();
 }
 
 bool
 Ascension::on_initialize()
 {
-    using namespace erika::plugins;
     yuki::debug::Logger::info("ascension", "Initializing game...");
 
     player.name = "Tianshi";
@@ -61,33 +64,6 @@ Ascension::on_initialize()
     player.skills.push_back({ "Fire palm", aspect::FIRE, plane::MORTAL, skill::stage::novice, 0 });
 
     yuki::debug::Logger::notice("ascension", "Game initialized.");
-
-    {
-        // TODO: Remove, temporary test.
-        Plugin_Manager plugin_manager;
-
-        plugin_manager.initialize(m_platform_state);
-
-        // const auto renderer_plugins_available = plugin_manager.get_registered_renderers();
-
-        // u32 plugin_index = 1;
-        // std::for_each(
-        //     renderer_plugins_available.begin(),
-        //     renderer_plugins_available.end(),
-        //     [&plugin_index](const auto& plugin) { std::cout << plugin_index++ << ". " << plugin << "\n"; }
-        // );
-
-        // std::cout << "Renderer plugin: ";
-        // std::cin >> plugin_index;
-        // --plugin_index;
-
-        yuki::debug::Logger::debug("ascension", "Renderer plugin: OpenGL_Renderer");
-        plugin_manager.change_active_renderer("OpenGL_Renderer");
-
-        auto renderer = plugin_manager.get_active_renderer();
-        renderer->begin_scene();
-        renderer->end_scene();
-    }
 
     return true;
 }

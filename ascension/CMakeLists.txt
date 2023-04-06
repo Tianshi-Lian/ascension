@@ -41,8 +41,10 @@ if(ENABLE_PCH)
 	)
 endif()
 
+add_subdirectory(libs/raylib)
+
 target_link_libraries(${APP_NAME}
-	PRIVATE project_options project_warnings erika yuki
+	PRIVATE project_options project_warnings yuki raylib
 )
 
 message("Finished ${APP_NAME}")

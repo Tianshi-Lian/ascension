@@ -1,9 +1,11 @@
-#include "erika/core/entry.hpp" // IWYU pragma: keep
-
 #include "ascension.hpp"
 
-std::shared_ptr<erika::Game>
-erika::game::create()
+int
+main(int /*argc*/, char** /*args*/) // NOLINT
 {
-    return std::make_shared<ascension::Ascension>();
+    ascension::Ascension game;
+    game.on_initialize();
+    game.on_update(1 / 60);
+    game.on_render(1.0);
+    return 0;
 }

@@ -73,6 +73,7 @@ jobs:
       with:
         fetch-depth: 1
         ref: ${{ github.event.pull_request.head.sha }}
+        submodules: recursive
 
     - if: ${{ runner.os == 'Linux' }}
       name: ⚙️ Configure Linux

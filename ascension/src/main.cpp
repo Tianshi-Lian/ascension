@@ -13,6 +13,7 @@
 
 #include "raylib.h"
 
+#include <array>
 #include <cstdlib> // Required for: malloc(), free()
 
 #define MAX_BUNNIES 500000 // 50K bunnies limit
@@ -43,9 +44,9 @@ main()
     // Load bunny texture
     Texture2D texBunny = LoadTexture("resources/wabbit_alpha.png");
 
-    Bunny* bunnies = static_cast<Bunny*>(malloc(MAX_BUNNIES * sizeof(Bunny))); // Bunnies array
+    std::unique_ptr<Bunny[]> bunnies = std::unique_ptr<Bunny[]>(new Bunny[MAX_BUNNIES]);
 
-    int bunniesCount = 0; // Bunnies counter
+    size_t bunniesCount = 0; // Bunnies counter
 
     SetTargetFPS(0); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -57,7 +58,7 @@ main()
         //----------------------------------------------------------------------------------
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             // Create more bunnies
-            for (int i = 0; i < 100; i++) {
+            for (size_t i = 0; i < 100; i++) {
                 if (bunniesCount < MAX_BUNNIES) {
                     bunnies[bunniesCount].position = GetMousePosition();
                     bunnies[bunniesCount].speed.x = static_cast<float>(GetRandomValue(-250, 250)) / 60.0f;
@@ -72,16 +73,18 @@ main()
         }
 
         // Update bunnies
-        for (int i = 0; i < bunniesCount; i++) {
+        for (size_t i = 0; i < bunniesCount; i++) {
             bunnies[i].position.x += bunnies[i].speed.x;
             bunnies[i].position.y += bunnies[i].speed.y;
 
-            if (((bunnies[i].position.x + static_cast<f32>(texBunny.width / 2)) > static_cast<f32>(GetScreenWidth()))
-                || ((bunnies[i].position.x + static_cast<f32>(texBunny.width / 2)) < 0))
+            if (((bunnies[i].position.x + static_cast<f32>(texBunny.width / 2)) > static_cast<f32>(GetScreenWidth())) ||
+                ((bunnies[i].position.x + static_cast<f32>(texBunny.width / 2)) < 0)) {
                 bunnies[i].speed.x *= -1;
-            if (((bunnies[i].position.y + static_cast<f32>(texBunny.height / 2)) > static_cast<f32>(GetScreenHeight()))
-                || ((bunnies[i].position.y + static_cast<f32>(texBunny.height / 2 - 40)) < 0))
+            }
+            if (((bunnies[i].position.y + static_cast<f32>(texBunny.height / 2)) > static_cast<f32>(GetScreenHeight())) ||
+                ((bunnies[i].position.y + static_cast<f32>(texBunny.height / 2 - 40)) < 0)) {
                 bunnies[i].speed.y *= -1;
+            }
         }
         //----------------------------------------------------------------------------------
 
@@ -91,7 +94,7 @@ main()
 
         ClearBackground(RAYWHITE);
 
-        for (int i = 0; i < bunniesCount; i++) {
+        for (size_t i = 0; i < bunniesCount; i++) {
             // NOTE: When internal batch buffer limit is reached (MAX_BATCH_ELEMENTS),
             // a draw call is launched and buffer starts being filled again;
             // before issuing a draw call, updated vertex data from internal CPU buffer is send to GPU...
@@ -115,7 +118,7 @@ main()
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    free(bunnies); // Unload bunnies data array
+    // std::free(bunnies);
 
     UnloadTexture(texBunny); // Unload bunny texture
 

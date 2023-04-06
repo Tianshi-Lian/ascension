@@ -2,17 +2,19 @@
 # options: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 BasedOnStyle: Mozilla
 IndentWidth: 4
-AccessModifierOffset: -2
 ColumnLimit: 128
 UseTab: Never
 UseCRLF: false
 
+AccessModifierOffset: -2
 AlignAfterOpenBracket: BlockIndent
+AlignOperands: Align
+AlignTrailingComments: true
 AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: false
-AlignTrailingComments: true
 AllowShortIfStatementsOnASingleLine: false
 AlwaysBreakTemplateDeclarations : Yes
+BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Stroustrup
 ContinuationIndentWidth: 4
 PointerAlignment: Left

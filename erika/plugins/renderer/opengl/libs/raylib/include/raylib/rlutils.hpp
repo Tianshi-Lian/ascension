@@ -30,14 +30,8 @@
  *
  **********************************************************************************************/
 
-#pragma GCC system_header
-
 #ifndef RAYUTILS_H
 #define RAYUTILS_H
-
-#if !defined(EXTERNAL_CONFIG_FLAGS)
-#include "config.hpp" // Defines module configuration flags
-#endif
 
 // Files management functions
 unsigned char*

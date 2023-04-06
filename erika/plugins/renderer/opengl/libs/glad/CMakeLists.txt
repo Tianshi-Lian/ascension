@@ -28,11 +28,11 @@ add_library(${LIB_NAME}
 )
 target_compile_features(${LIB_NAME} INTERFACE cxx_std_17)
 
-target_include_directories(${LIB_NAME} PRIVATE
+target_include_directories(${LIB_NAME} SYSTEM PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
 	$<INSTALL_INTERFACE:include/${LIB_NAME}>
 )
-target_include_directories(${LIB_NAME} PUBLIC
+target_include_directories(${LIB_NAME} SYSTEM PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:include>
 )

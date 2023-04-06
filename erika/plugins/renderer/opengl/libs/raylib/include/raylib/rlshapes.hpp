@@ -45,8 +45,6 @@
  *
  **********************************************************************************************/
 
-#pragma GCC system_header
-
 #ifndef RAYSHAPES_H
 #define RAYSHAPES_H
 

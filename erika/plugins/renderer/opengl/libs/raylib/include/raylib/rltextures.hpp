@@ -62,8 +62,6 @@
  *
  **********************************************************************************************/
 
-#pragma GCC system_header
-
 #ifndef RAYTEXTURES_H
 #define RAYTEXTURES_H
 

@@ -49,8 +49,6 @@
  *
  **********************************************************************************************/
 
-#pragma GCC system_header
-
 // Check if config flags have been externally provided on compilation line
 #if !defined(EXTERNAL_CONFIG_FLAGS)
 #include "config.hpp" // Defines module configuration flags

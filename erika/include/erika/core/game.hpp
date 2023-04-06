@@ -39,9 +39,9 @@ class Game {
     /**
      * @brief Callback from when the game should run its render logic.
      *
-     * @param     delta_time    the time elapsed in seconds since the last render
+     * @param     interpolation    interpolation value between 0 and 1 relative to current update frames progress
      */
-    virtual void on_render(f32 delta_time) = 0;
+    virtual void on_render(f32 interpolation) = 0;
 
     /**
      * @brief Set the window title for the games application.
@@ -58,7 +58,7 @@ class Game {
   private:
     bool initialize();
     void update(f32 delta_time);
-    void render(f32 delta_time);
+    void render(f32 interpolation);
 
     void set_platform_state(const std::shared_ptr<yuki::platform::Platform_State>& platform_state);
 

@@ -1,5 +1,7 @@
 #include "core/game.hpp"
 
+#include "yuki/debug/instrumentor.hpp"
+
 namespace erika {
 
 Game::Game(std::string window_title)
@@ -16,13 +18,15 @@ Game::initialize()
 void
 Game::update(f32 delta_time)
 {
+    PROFILE_FUNCTION();
     on_update(delta_time);
 }
 
 void
-Game::render(f32 delta_time)
+Game::render(f32 interpolation)
 {
-    on_render(delta_time);
+    PROFILE_FUNCTION();
+    on_render(interpolation);
 }
 
 const std::string&

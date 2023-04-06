@@ -8,8 +8,6 @@
 #ifndef FMT_CORE_H_
 #define FMT_CORE_H_
 
-#pragma GCC system_header
-
 #include <cstddef> // std::byte
 #include <cstdio>  // std::FILE
 #include <cstring> // std::strlen

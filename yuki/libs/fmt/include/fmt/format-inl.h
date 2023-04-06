@@ -8,8 +8,6 @@
 #ifndef FMT_FORMAT_INL_H_
 #define FMT_FORMAT_INL_H_
 
-#pragma GCC system_header
-
 #include <algorithm>
 #include <cctype>
 #include <cerrno> // errno

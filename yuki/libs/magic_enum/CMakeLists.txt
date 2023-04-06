@@ -9,11 +9,12 @@ project(${LIB_NAME}
 	DESCRIPTION "A library that provides static reflection for enums, work with any enum type without any macro or boilerplate code."
 	LANGUAGES CXX
 )
+message("    (magic_enum) Version: ${PROJECT_VERSION}")
 
 add_library(${LIB_NAME} INTERFACE)
 target_compile_features(${LIB_NAME} INTERFACE cxx_std_17)
 
-target_include_directories(${LIB_NAME} INTERFACE
+target_include_directories(${LIB_NAME} SYSTEM INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:include>
 )

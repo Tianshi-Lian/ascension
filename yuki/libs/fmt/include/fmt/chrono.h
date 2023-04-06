@@ -8,8 +8,6 @@
 #ifndef FMT_CHRONO_H_
 #define FMT_CHRONO_H_
 
-#pragma GCC system_header
-
 #include <algorithm>
 #include <chrono>
 #include <cmath>   // std::isfinite

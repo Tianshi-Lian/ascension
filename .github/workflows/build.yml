@@ -85,10 +85,10 @@ jobs:
       run: pip install -r ./dunois/requirements.txt
 
     - name: 🔨 Build
-      run: ./dunois/dev${{ matrix.config.dev }} configure -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }} build -bt=${{ matrix.config.build_type }}
+      run: ./dunois/dev${{ matrix.config.dev }} configure -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }} build -bt=${{ matrix.config.build_type }} install -bt=${{ matrix.config.build_type }}
 
     - name: 📤 Upload
       uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.config.name }}-${{ matrix.config.build_type }}
-        path: build/ascension/bin/${{ matrix.config.build_type }}
+        path: build/dist

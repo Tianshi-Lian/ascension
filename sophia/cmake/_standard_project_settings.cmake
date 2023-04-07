@@ -32,16 +32,6 @@ macro(set_standard_project_settings)
 		set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -O2 -g")
 		set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O2 -g")
 		set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO}")
-
-		# Enable link time optimization by default for release builds
-		include(CheckIPOSupported)
-		check_ipo_supported(RESULT result)
-
-		if(result)
-			message(STATUS "Using LTO for release builds")
-			set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
-			set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO ON)
-		endif()
 	endif()
 
 	# Finds and activates ccache for builds

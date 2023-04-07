@@ -4,6 +4,8 @@ on:
   push:
     branches: main
   pull_request:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   build:
@@ -47,8 +49,15 @@ jobs:
             }
 
     steps:
+    - name: 🤖 Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+        ref: ${{ github.event.pull_request.head.sha }}
+        submodules: recursive
+
     - if: ${{ runner.os == 'Windows' }}
-      name: 💾 Cache WinLibs
+      name: 💾 Un-Cache WinLibs
       id: cache-winlibs
       uses: actions/cache@v3
       env:
@@ -68,12 +77,8 @@ jobs:
       run: |
         sudo apt-get install -y ninja-build libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgl-dev libglx-dev xorg-dev libglu1-mesa-dev
 
-    - name: 🤖 Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
-        ref: ${{ github.event.pull_request.head.sha }}
-        submodules: recursive
+    - name: 🐍 Install python dependencies
+      run: pip install -r ./dunois/requirements.txt
 
     - if: ${{ runner.os == 'Linux' }}
       name: ⚙️ Configure Linux
@@ -81,8 +86,10 @@ jobs:
         chown $(whoami) ./dunois/dev.sh
         chmod +x ./dunois/dev.sh
 
-    - name: 🐍 Install python dependencies
-      run: pip install -r ./dunois/requirements.txt
+    - name: 🧰 Get ccache
+      uses: hendrikmuhs/ccache-action@v1.1
+      with:
+        key: ${{ matrix.config.os }}-${{ matrix.config.build_type }}
 
     - name: 🔨 Build
       run: ./dunois/dev${{ matrix.config.dev }} configure -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }} build -bt=${{ matrix.config.build_type }} install -bt=${{ matrix.config.build_type }}

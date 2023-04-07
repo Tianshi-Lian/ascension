@@ -7,16 +7,33 @@ import _globals
 import _helpers
 import _types
 
-def check_and_run_dependency(built_executable_path, command):
+
+def check_mod_time_and_run_dependency(source_file_path, dest_file_path, command):
     exit_code = _globals.SUCCESS
 
-    if not os.path.isfile(f'{built_executable_path}'):
+    src_m_time = os.path.getmtime(source_file_path)
+    dst_m_time = os.path.getmtime(dest_file_path)
+
+    if dst_m_time < src_m_time:
         print(
-            f'Failed to find dependency `{built_executable_path}`, attempting to run {command}...')
+            f'Out of date file `{dest_file_path}`, attempting to run {command}...')
         module = importlib.import_module(command)
         exit_code = module.run()
 
     return exit_code
+
+
+def check_and_run_dependency(source_file_path, command):
+    exit_code = _globals.SUCCESS
+
+    if not os.path.isfile(f'{source_file_path}'):
+        print(
+            f'Failed to find dependency `{source_file_path}`, attempting to run {command}...')
+        module = importlib.import_module(command)
+        exit_code = module.run()
+
+    return exit_code
+
 
 def run():
     exit_code = _globals.SUCCESS
@@ -35,10 +52,14 @@ def run():
     if exit_code != _globals.SUCCESS:
         return exit_code
 
-    # TODO: check if there is a newer binary to copy too.
     dist_dir = f'build/dist'
     dist_executable_path = f'{dist_dir}/{app_name}{executable_ext}'
     exit_code = check_and_run_dependency(dist_executable_path, 'install')
+    if exit_code != _globals.SUCCESS:
+        return exit_code
+
+    exit_code = check_mod_time_and_run_dependency(
+        built_executable_path, dist_executable_path, 'install')
     if exit_code != _globals.SUCCESS:
         return exit_code
 

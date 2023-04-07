@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.18...3.25)
-cmake_policy(SET CMP0075 NEW)
-cmake_policy(SET CMP0091 NEW)
+cmake_minimum_required(VERSION 3.16...3.25)
 
 set(APP_NAME ascension)
 message("Configuring ${APP_NAME}...")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
+set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 
 project(${APP_NAME}
 	VERSION 0.0.1
@@ -15,11 +15,8 @@ project(${APP_NAME}
 
 add_executable(${APP_NAME})
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-	set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${CMAKE_PROJECT_NAME})
-	set_property(TARGET ${APP_NAME} PROPERTY WIN32_EXECUTABLE true)
-endif()
+add_subdirectory("src")
+add_subdirectory("libs")
 
 target_include_directories(${APP_NAME} PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${APP_NAME}>
@@ -33,9 +30,7 @@ set_target_properties(${APP_NAME} PROPERTIES
 
 if(ENABLE_PCH)
 	target_precompile_headers(${APP_NAME}
-		PRIVATE <algorithm> <array> <chrono> <cmath> <cstring> <exception> <fstream> <functional> <iostream>
-		PRIVATE <map> <memory> <numeric> <random> <sstream> <stdexcept> <string> <unordered_map> <unordered_set>
-		PRIVATE <vector>
+		PRIVATE <map> <memory> <string> <vector> <utility>
 	)
 endif()
 
@@ -53,8 +48,5 @@ install(
 install(
 	DIRECTORY DESTINATION ${CMAKE_BINARY_DIR}/dist
 )
-
-add_subdirectory("src")
-add_subdirectory("libs")
 
 message("Finished ${APP_NAME}")

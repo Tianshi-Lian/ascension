@@ -3,12 +3,6 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(APP_NAME qilian)
 message("Configuring ${APP_NAME}...")
 
-set(APP_SRC_FILES "")
-set(APP_INC_FILES "")
-
-# Pull in our source files
-include(src/sources.cmake)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
@@ -19,10 +13,8 @@ project(${APP_NAME}
 	LANGUAGES CXX
 )
 
-add_executable(${APP_NAME}
-	${APP_SRC_FILES}
-	${APP_INC_FILES}
-)
+add_executable(${APP_NAME})
+add_subdirectory(src)
 
 target_include_directories(${APP_NAME} PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${APP_NAME}>

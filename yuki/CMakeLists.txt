@@ -7,22 +7,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 
-set(LIB_SRC_FILES "")
-set(LIB_INC_FILES "")
-
-# Pull in our source files
-include(src/sources.cmake)
-
 project(${LIB_NAME}
 	VERSION 0.0.1
 	DESCRIPTION "A core library for C++ development, graphics & games"
 	LANGUAGES CXX
 )
 
-add_library(${LIB_NAME}
-	${LIB_SRC_FILES}
-	${LIB_INC_FILES}
-)
+add_library(${LIB_NAME})
+add_subdirectory(src)
 
 target_compile_definitions(${LIB_NAME} PUBLIC $<$<CONFIG:Debug>:YUKI_DEBUG>)
 

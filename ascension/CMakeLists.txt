@@ -14,9 +14,8 @@ project(${APP_NAME}
 )
 
 add_executable(${APP_NAME})
-
-add_subdirectory("src")
-add_subdirectory("libs")
+add_subdirectory(src)
+add_subdirectory(libs)
 
 target_include_directories(${APP_NAME} PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${APP_NAME}>

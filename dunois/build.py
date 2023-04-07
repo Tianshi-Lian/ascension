@@ -13,6 +13,9 @@ def run():
 
     build_type = _helpers.get_arg_value(
         args, ['build-type', 'bt'], _globals.BUILD_TYPE)
+    threads = _helpers.get_arg_value(
+        args, ['threads', 't'], str(int(os.cpu_count() / 1.2))
+    )
 
     exit_code = _globals.SUCCESS
     if not os.path.isfile('./build/build.ninja'):
@@ -22,14 +25,12 @@ def run():
         print('ninja: Using previous `build.ninja`')
 
     if exit_code == _globals.SUCCESS:
-        # use 80% of available threads
-        wanted_threads = str(int(os.cpu_count() / 1.2))
 
         print(
-            f'ninja: Building with config `{build_type}` using {wanted_threads} threads', flush=True)
+            f'ninja: Building with config `{build_type}` using {str(os.cpu_count()) if threads == "0" else threads} threads', flush=True)
 
         process = subprocess.run(
-            ['ninja', '-C./build', f'-j{wanted_threads}', f'-fbuild-{build_type}.ninja', f'{_globals.BUILD_PROJECT_NAME}'])
+            ['ninja', '-C./build', f'-j{threads}', f'-fbuild-{build_type}.ninja', f'{_globals.BUILD_PROJECT_NAME}'])
         exit_code = process.returncode
 
     return exit_code

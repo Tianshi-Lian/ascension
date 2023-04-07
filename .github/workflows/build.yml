@@ -89,7 +89,7 @@ jobs:
     - name: 🧰 Get ccache
       uses: hendrikmuhs/ccache-action@v1.1
       with:
-        key: ${{ matrix.config.os }}-${{ matrix.config.build_type }}
+        key: ${{ matrix.config.name }}-${{ matrix.config.build_type }}
 
     - name: 🔨 Build
       run: ./dunois/dev${{ matrix.config.dev }} configure -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }} build -bt=${{ matrix.config.build_type }} install -bt=${{ matrix.config.build_type }}

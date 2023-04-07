@@ -1,3 +1,5 @@
+from multipledispatch import dispatch
+
 from _types import Parsed_Args
 
 
@@ -18,9 +20,15 @@ def process_args(argv) -> Parsed_Args:
     return Parsed_Args(argv[0], argv, dict)
 
 
+@dispatch(Parsed_Args, list, object)
 def get_arg_value(args: Parsed_Args, names, default):
     for name in names:
         if name in args.dict:
             return args.dict[name]
 
     return default
+
+
+@dispatch(Parsed_Args, list)
+def get_arg_value(args: Parsed_Args, names):
+    return get_arg_value(args, names, None)

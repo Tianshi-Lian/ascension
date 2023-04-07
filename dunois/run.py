@@ -7,7 +7,20 @@ import _globals
 import _helpers
 import _types
 
+def check_and_run_dependency(built_executable_path, command):
+    exit_code = _globals.SUCCESS
+
+    if not os.path.isfile(f'{built_executable_path}'):
+        print(
+            f'Failed to find dependency `{built_executable_path}`, attempting to run {command}...')
+        module = importlib.import_module(command)
+        exit_code = module.run()
+
+    return exit_code
+
 def run():
+    exit_code = _globals.SUCCESS
+
     args = _helpers.process_args(sys.argv)
 
     build_type = _helpers.get_arg_value(
@@ -15,30 +28,27 @@ def run():
     app_name = _helpers.get_arg_value(
         args, ['name', 'n'], _globals.BUILD_PROJECT_NAME)
 
-    exit_code = _globals.SUCCESS
-
-    libs_dir = f'build/bin/libs/{build_type}'
-    executable_dir = f'build/bin/{app_name}/{build_type}'
     executable_ext = '.exe' if _globals.PLATFORM == 'windows' else ''
-    executable_file = f'{app_name}{executable_ext}'
-    executable_relative_path = f'{executable_dir}/{executable_file}'
 
-    if not os.path.isfile(f'{executable_relative_path}'):
-        print(
-            f'Failed to find executable `{executable_relative_path}`, attempting to build...')
-        module = importlib.import_module('build')
-        exit_code = module.run()
+    built_executable_path = f'build/{app_name}/bin/{build_type}/{app_name}{executable_ext}'
+    exit_code = check_and_run_dependency(built_executable_path, 'build')
+    if exit_code != _globals.SUCCESS:
+        return exit_code
 
+    # TODO: check if there is a newer binary to copy too.
+    dist_dir = f'build/dist'
+    dist_executable_path = f'{dist_dir}/{app_name}{executable_ext}'
+    exit_code = check_and_run_dependency(dist_executable_path, 'install')
     if exit_code != _globals.SUCCESS:
         return exit_code
 
     if _globals.PLATFORM == 'windows':
-        process = subprocess.run([executable_relative_path], cwd=executable_dir)
+        process = subprocess.run([dist_executable_path], cwd=dist_dir)
         exit_code = process.returncode
     elif _globals.PLATFORM == 'linux':
-        print(f'{os.getcwd()}/{executable_relative_path}')
+        print(f'{os.getcwd()}/{dist_executable_path}')
         process = subprocess.run(
-            [f'{os.getcwd()}/{executable_relative_path}'], cwd=f'{os.getcwd()}/{executable_dir}')
+            [f'{os.getcwd()}/{dist_executable_path}'], cwd=f'{os.getcwd()}/{dist_dir}')
         exit_code = process.returncode
 
     return exit_code

@@ -12,7 +12,8 @@ def import_or_install(package):
         process = subprocess.run(
             ['python', '-m', 'pip', 'install', '-r', f'./{SCRIPTS_DIR}/requirements.txt'])
 
-
+# TODO: setup some awareness of "command chains/dependencies" where we can register command dependencies and ensure
+# /t    all of the dependencies run before trying to execute that command. E.g. configure -> build -> install -> run.
 def run_command(commands):
     exit_code = 0
 

@@ -29,7 +29,7 @@ def run():
             f'ninja: Building with config `{build_type}` using {wanted_threads} threads', flush=True)
 
         process = subprocess.run(
-            ['ninja', '-C./build', f'-j{wanted_threads}', f'-fbuild-{build_type}.ninja'])
+            ['ninja', '-C./build', f'-j{wanted_threads}', f'-fbuild-{build_type}.ninja', f'{_globals.BUILD_PROJECT_NAME}'])
         exit_code = process.returncode
 
     return exit_code

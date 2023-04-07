@@ -9,7 +9,7 @@ set(APP_INC_FILES "")
 # Pull in our source files
 include(src/sources.cmake)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${APP_NAME})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
 project(${APP_NAME}
 	VERSION 0.0.1
@@ -40,6 +40,17 @@ endif()
 
 target_link_libraries(${APP_NAME}
 	PRIVATE project_options project_warnings erika yuki
+)
+
+install(
+	TARGETS ${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/dist
+)
+install(
+	DIRECTORY ${CMAKE_BINARY_DIR}/erika/plugins/bin/$<CONFIG>/
+	DESTINATION ${CMAKE_BINARY_DIR}/dist
+)
+install(
+	DIRECTORY DESTINATION ${CMAKE_BINARY_DIR}/dist
 )
 
 message("Finished ${APP_NAME}")

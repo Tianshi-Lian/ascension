@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
 set(LIB_NAME d3d11)
-message("    (plugins) Configuring ${LIB_NAME}...")
+message("      (renderer) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
 	src/d3d11.cpp
@@ -49,4 +49,4 @@ target_link_libraries(${LIB_NAME}
 	PRIVATE project_options project_warnings erika yuki
 )
 
-message("    (plugins) Finished ${LIB_NAME}")
+message("      (renderer) Finished ${LIB_NAME}")

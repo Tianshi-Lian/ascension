@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
 set(LIB_NAME glad)
-message("  (erika) Configuring ${LIB_NAME}...")
+message("        (opengl) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
 	"src/gl.c"
@@ -42,4 +42,4 @@ set_target_properties(${LIB_NAME} PROPERTIES
 	COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
 )
 
-message("  (erika) Finished ${LIB_NAME}")
+message("        (opengl) Finished ${LIB_NAME}")

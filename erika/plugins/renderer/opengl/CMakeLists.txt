@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
 set(LIB_NAME opengl)
-message("    (plugins) Configuring ${LIB_NAME}...")
+message("      (renderer) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
 	src/opengl.cpp
@@ -65,4 +65,4 @@ elseif(UNIX)
 	)
 endif()
 
-message("    (plugins) Finished ${LIB_NAME}")
+message("      (renderer) Finished ${LIB_NAME}")

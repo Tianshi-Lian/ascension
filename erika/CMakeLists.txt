@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME erika)
 message("Configuring ${LIB_NAME}...")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+
 set(LIB_SRC_FILES "")
 set(LIB_INC_FILES "")
 

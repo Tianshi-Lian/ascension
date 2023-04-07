@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
 set(LIB_NAME mraylib)
-message("  (erika) Configuring ${LIB_NAME}...")
+message("        (opengl) Configuring ${LIB_NAME}...")
 
 set(LIB_SRC_FILES
 	"src/rlgl.cpp"
@@ -52,4 +52,4 @@ target_link_libraries(${LIB_NAME}
 	PRIVATE glad
 )
 
-message("  (erika) Finished ${LIB_NAME}")
+message("        (opengl) Finished ${LIB_NAME}")

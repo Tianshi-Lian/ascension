@@ -19,36 +19,40 @@ jobs:
               icon: "🟦", name: "Windows-GCC",
               os: windows-latest,
               build_type: "Release",
-              tools_dir: "C:/mingw64/bin/",
               cc: "gcc.exe",
               cxx: "g++.exe",
+              cache: "sccache",
+              tools_dir: "C:/mingw64/bin/",
               dev: ".bat"
             }
           - {
               icon: "🟦", name: "Windows-Clang",
               os: windows-latest,
               build_type: "Release",
-              tools_dir: "C:/mingw64/bin/",
               cc: "clang.exe",
               cxx: "clang++.exe",
+              cache: "sccache",
+              tools_dir: "C:/mingw64/bin/",
               dev: ".bat"
             }
           - {
               icon: "🟧", name: "Ubuntu-GCC",
               os: ubuntu-latest,
               build_type: "Release",
-              tools_dir: "",
               cc: "gcc",
               cxx: "g++",
+              cache: "ccache",
+              tools_dir: "",
               dev: ".sh"
             }
           - {
               icon: "🟧", name: "Ubuntu-Clang",
               os: ubuntu-latest,
               build_type: "Release",
-              tools_dir: "",
               cc: "clang",
               cxx: "clang++",
+              cache: "ccache",
+              tools_dir: "",
               dev: ".sh"
             }
 
@@ -68,7 +72,7 @@ jobs:
         cache-name: cache-winlibs-tools
       with:
         path: C:\mingw64
-        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        key: ${{ runner.os }}-${{ env.cache-name }}-r5
 
     - if: ${{ runner.os == 'Windows' && steps.cache-winlibs.outputs.cache-hit != 'true' }}
       name: 📥 Download Windows Dependencies
@@ -78,8 +82,10 @@ jobs:
 
     - if: ${{ runner.os == 'Linux' }}
       name: 📥 Download Linux Dependencies
-      run: |
-        sudo apt-get install -y ninja-build libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgl-dev libglx-dev xorg-dev libglu1-mesa-dev
+      uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: ninja-build libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgl-dev libglx-dev xorg-dev libglu1-mesa-dev ccache
+        version: 1.0
 
     - name: 🐍 Install python dependencies
       run: pip install -r ./dunois/requirements.txt
@@ -90,15 +96,33 @@ jobs:
         chown $(whoami) ./dunois/dev.sh
         chmod +x ./dunois/dev.sh
 
-    - name: 🧰 Get ccache
+    - name: 🧰 Cache previous build
+      id: cache-previous-build
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-previous-build
+      with:
+        path: build/
+        key: ${{ matrix.config.name }}-${{ matrix.config.build_type }}-${{ env.cache-name }}
+
+    - if: ${{ runner.os == 'Linux' }}
+      name: 🧰 Linux ccache
       uses: hendrikmuhs/ccache-action@v1.2.8
       with:
-        key: ${{ matrix.config.name }}-${{ matrix.config.build_type }}
+        variant: ccache
+        key: ${{ matrix.config.name }}-${{ matrix.config.build_type }}-ccache
+
+    - if: ${{ runner.os == 'Windows' }}
+      name: 🧰 Windows ccache
+      uses: hendrikmuhs/ccache-action@v1.2.8
+      with:
+        variant: sccache
+        key: ${{ matrix.config.name }}-${{ matrix.config.build_type }}-ccache
 
     - name: 🔨 Build
       run: >
         ./dunois/dev${{ matrix.config.dev }}
-        configure -cc=${{ matrix.config.tools_dir }}${{ matrix.config.cc }} -cxx=${{ matrix.config.tools_dir }}${{ matrix.config.cxx }} -cl=${{ matrix.config.tools_dir }}ccache -cxxl=${{ matrix.config.tools_dir }}ccache
+        configure -cc=${{ matrix.config.tools_dir }}${{ matrix.config.cc }} -cxx=${{ matrix.config.tools_dir }}${{ matrix.config.cxx }} -cl=${{ matrix.config.cache }} -cxxl=${{ matrix.config.cache }}
         build -bt=${{ matrix.config.build_type }} install -bt=${{ matrix.config.build_type }}
 
     - name: 📤 Upload

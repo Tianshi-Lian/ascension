@@ -1,5 +1,7 @@
-#include <SDL.h>
 #include <iostream>
+
+#include <SDL.h>
+#include <stb/stb_image.h>
 
 #define UNUSED_PARAM(a) (void)a
 

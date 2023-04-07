@@ -4,6 +4,7 @@ set(APP_NAME ascension)
 message("Configuring ${APP_NAME}...")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 
@@ -34,7 +35,7 @@ if(ENABLE_PCH)
 endif()
 
 target_link_libraries(${APP_NAME}
-	PRIVATE project_options project_warnings SDL2::SDL2main SDL2::SDL2-static
+	PRIVATE project_options project_warnings SDL2::SDL2main SDL2::SDL2-static libglew_static freetype pugixml-static
 )
 
 install(

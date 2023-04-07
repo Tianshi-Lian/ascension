@@ -19,22 +19,25 @@ jobs:
               icon: "🟦", name: "Windows-GCC",
               os: windows-latest,
               build_type: "Release",
-              cc: "C:/mingw64/bin/gcc.exe",
-              cxx: "C:/mingw64/bin/g++.exe",
+              tools_dir: "C:/mingw64/bin/",
+              cc: "gcc.exe",
+              cxx: "g++.exe",
               dev: ".bat"
             }
           - {
               icon: "🟦", name: "Windows-Clang",
               os: windows-latest,
               build_type: "Release",
-              cc: "C:/mingw64/bin/clang.exe",
-              cxx: "C:/mingw64/bin/clang++.exe",
+              tools_dir: "C:/mingw64/bin/",
+              cc: "clang.exe",
+              cxx: "clang++.exe",
               dev: ".bat"
             }
           - {
               icon: "🟧", name: "Ubuntu-GCC",
               os: ubuntu-latest,
               build_type: "Release",
+              tools_dir: "",
               cc: "gcc",
               cxx: "g++",
               dev: ".sh"
@@ -43,6 +46,7 @@ jobs:
               icon: "🟧", name: "Ubuntu-Clang",
               os: ubuntu-latest,
               build_type: "Release",
+              tools_dir: "",
               cc: "clang",
               cxx: "clang++",
               dev: ".sh"
@@ -92,7 +96,10 @@ jobs:
         key: ${{ matrix.config.name }}-${{ matrix.config.build_type }}
 
     - name: 🔨 Build
-      run: ./dunois/dev${{ matrix.config.dev }} configure -cc=${{ matrix.config.cc }} -cxx=${{ matrix.config.cxx }} build -bt=${{ matrix.config.build_type }} install -bt=${{ matrix.config.build_type }}
+      run: >
+        ./dunois/dev${{ matrix.config.dev }}
+        configure -cc=${{ matrix.config.tools_dir }}${{ matrix.config.cc }} -cxx=${{ matrix.config.tools_dir }}${{ matrix.config.cxx }} -cl=${{ matrix.config.tools_dir }}ccache -cxxl=${{ matrix.config.tools_dir }}ccache
+        build -bt=${{ matrix.config.build_type }} install -bt=${{ matrix.config.build_type }}
 
     - name: 📤 Upload
       uses: actions/upload-artifact@v3

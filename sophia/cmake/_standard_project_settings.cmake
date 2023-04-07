@@ -47,10 +47,14 @@ macro(set_standard_project_settings)
 	# Finds and activates ccache for builds
 	find_program(CCACHE ccache)
 
-	if(CCACHE)
-		message(STATUS "Using ccache")
-		set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
+	if(CCACHE OR CMAKE_CXX_COMPILER_LAUNCHER)
+		if(NOT CMAKE_CXX_COMPILER_LAUNCHER)
+			set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
+		endif()
+
 		set(CMAKE_CACHEFILE_DIR ${CMAKE_BINARY_DIR})
+
+		message(STATUS "Using ccache (${CMAKE_CXX_COMPILER_LAUNCHER})")
 	else()
 		message(STATUS "Could not find ccache")
 	endif()

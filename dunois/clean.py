@@ -7,7 +7,7 @@ import _helpers
 import _types
 
 
-folders_to_clean = ('bin', 'dist')
+folders_to_clean = ('ints', 'bin', 'dist')
 files_to_clean = ('.obj', '.hxx.pch')
 
 

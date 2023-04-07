@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
-project(cpp_2d_game_dev)
+project(ascension_root)
 
 add_subdirectory(sophia)
 include(helpers)

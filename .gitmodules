@@ -1,3 +1,6 @@
-[submodule "ascension/libs/raylib"]
-	path = ascension/libs/raylib
-	url = git@github.com:r-ggraham/raylib.git
+[submodule "ascension/libs/sdl"]
+	path = ascension/libs/sdl
+	url = https://github.com/r-ggraham/SDL.git
+[submodule "ascension/libs/glm"]
+	path = ascension/libs/glm
+	url = https://github.com/g-truc/glm.git

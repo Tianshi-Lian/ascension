@@ -1,18 +1,11 @@
-cmake_minimum_required(VERSION 3.16...3.25)
+cmake_minimum_required(VERSION 3.18...3.25)
+cmake_policy(SET CMP0075 NEW)
+cmake_policy(SET CMP0091 NEW)
 
 set(APP_NAME ascension)
 message("Configuring ${APP_NAME}...")
 
-set(APP_SRC_FILES
-	src/main.cpp
-	src/ascension.cpp
-)
-
-set(APP_INC_FILES
-	include/${APP_NAME}/ascension.hpp
-)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${APP_NAME})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
 project(${APP_NAME}
 	VERSION 0.0.1
@@ -20,10 +13,13 @@ project(${APP_NAME}
 	LANGUAGES CXX
 )
 
-add_executable(${APP_NAME}
-	${APP_SRC_FILES}
-	${APP_INC_FILES}
-)
+add_executable(${APP_NAME})
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+	set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${CMAKE_PROJECT_NAME})
+	set_property(TARGET ${APP_NAME} PROPERTY WIN32_EXECUTABLE true)
+endif()
 
 target_include_directories(${APP_NAME} PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${APP_NAME}>
@@ -37,19 +33,28 @@ set_target_properties(${APP_NAME} PROPERTIES
 
 if(ENABLE_PCH)
 	target_precompile_headers(${APP_NAME}
-		PRIVATE <map> <memory> <string> <vector> <utility> <yuki/types.hpp>
+		PRIVATE <algorithm> <array> <chrono> <cmath> <cstring> <exception> <fstream> <functional> <iostream>
+		PRIVATE <map> <memory> <numeric> <random> <sstream> <stdexcept> <string> <unordered_map> <unordered_set>
+		PRIVATE <vector>
 	)
 endif()
 
-add_subdirectory(libs/raylib)
-
 target_link_libraries(${APP_NAME}
-	PRIVATE project_options project_warnings yuki raylib
+	PRIVATE project_options project_warnings SDL2::SDL2main SDL2::SDL2-static
 )
 
-add_custom_command(TARGET ${APP_NAME} POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-	${CMAKE_SOURCE_DIR}/${APP_NAME}/assets $<TARGET_FILE_DIR:${APP_NAME}>
+install(
+	TARGETS ${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/dist
 )
+install(
+	DIRECTORY ${PROJECT_SOURCE_DIR}/assets
+	DESTINATION ${CMAKE_BINARY_DIR}/dist
+)
+install(
+	DIRECTORY DESTINATION ${CMAKE_BINARY_DIR}/dist
+)
+
+add_subdirectory("src")
+add_subdirectory("libs")
 
 message("Finished ${APP_NAME}")

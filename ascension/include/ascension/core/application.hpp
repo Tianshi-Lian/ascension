@@ -9,7 +9,7 @@ class Application {
     Application();
     virtual ~Application();
 
-    void setup(const std::string& app_name, glm::ivec2 window_position, glm::ivec2 window_size);
+    void setup(const std::string& app_name, v2i window_position, v2i window_size);
     i32 run();
     void quit();
 
@@ -27,8 +27,8 @@ class Application {
     bool m_should_quit;
 
     std::string m_window_title;
-    glm::ivec2 m_window_position;
-    glm::ivec2 m_window_size;
+    v2i m_window_position;
+    v2i m_window_size;
 
     std::shared_ptr<void> m_window;
     std::shared_ptr<void> m_gl_context;

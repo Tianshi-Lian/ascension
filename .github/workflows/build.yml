@@ -22,6 +22,7 @@ jobs:
               cc: "gcc.exe",
               cxx: "g++.exe",
               tools_dir: "C:/mingw64/bin/",
+              cache: "sccache",
               dev: ".bat"
             }
           - {
@@ -31,6 +32,7 @@ jobs:
               cc: "clang.exe",
               cxx: "clang++.exe",
               tools_dir: "C:/mingw64/bin/",
+              cache: "sccache",
               dev: ".bat"
             }
           - {
@@ -40,6 +42,7 @@ jobs:
               cc: "gcc",
               cxx: "g++",
               tools_dir: "",
+              cache: "ccache",
               dev: ".sh"
             }
           - {
@@ -49,6 +52,7 @@ jobs:
               cc: "clang",
               cxx: "clang++",
               tools_dir: "",
+              cache: "ccache",
               dev: ".sh"
             }
 
@@ -80,8 +84,9 @@ jobs:
       name: 📥 Download Linux Dependencies
       uses: awalsh128/cache-apt-pkgs-action@latest
       with:
-        packages: ninja-build libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgl-dev libglx-dev xorg-dev libglu1-mesa-dev ccache
-        version: 1.0
+        packages: >
+          ninja-build libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgl-dev libglx-dev xorg-dev libglu1-mesa-dev ccache lld lldb llvm-dev llvm-runtime llvm
+        version: 1.1
 
     - name: 🐍 Install python dependencies
       run: pip install -r ./dunois/requirements.txt
@@ -92,30 +97,26 @@ jobs:
         chown $(whoami) ./dunois/dev.sh
         chmod +x ./dunois/dev.sh
 
-    # - name: 🧰 Cache previous build
-    #   id: cache-previous-build
-    #   uses: actions/cache@v3
-    #   env:
-    #     cache-name: cache-previous-build
-    #   with:
-    #     path: build/
-    #     key: ${{ matrix.config.name }}-${{ matrix.config.build_type }}-${{ env.cache-name }}
+    - name: 📋 Cache libs config
+      id: cache-previous-build
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-previous-build
+      with:
+        path: |
+          build/**
+        key: ${{ matrix.config.name }}-${{ matrix.config.build_type }}-${{ env.cache-name }}-1
 
-    - if: ${{ runner.os == 'Windows' }}
-      name: 🧰 Cache Windows
-      run: |
-        ls $env:LOCALAPPDATA
-
-    - if: ${{ runner.os == 'Linux' }}
-      name: 🧰 Cache Linux
-      run: |
-        ls $HOME/ -la
-        ls $HOME/.config -la
+    - name: ✂️ CCache build
+      uses: hendrikmuhs/ccache-action@v1.2.8
+      with:
+        key: ${{ matrix.config.name }}-${{ matrix.config.os }}-${{ matrix.config.build_type }}-1
+        variant: ${{ matrix.config.cache }}
 
     - name: 🔨 Build
       run: >
-        ./dunois/dev${{ matrix.config.dev }} clean -a -y
-        configure -cc=${{ matrix.config.tools_dir }}${{ matrix.config.cc }} -cxx=${{ matrix.config.tools_dir }}${{ matrix.config.cxx }} -cl=${{ matrix.config.tools_dir }}ccache -cxxl=${{ matrix.config.tools_dir }}ccache
+        ./dunois/dev${{ matrix.config.dev }}
+        configure -cc=${{ matrix.config.tools_dir }}${{ matrix.config.cc }} -cxx=${{ matrix.config.tools_dir }}${{ matrix.config.cxx }} -cl=${{ matrix.config.cache }} -cxxl=${{ matrix.config.cache }}
         build -bt=${{ matrix.config.build_type }} -t=0 install -bt=${{ matrix.config.build_type }}
 
     - name: 📤 Upload

@@ -32,7 +32,7 @@ set_app_ito(${APP_NAME})
 
 if(ENABLE_PCH)
 	target_precompile_headers(${APP_NAME}
-		PRIVATE <map> <memory> <string> <vector> <utility> <yuki/types.hpp>
+		PRIVATE <map> <memory> <string> <vector> <utility> <core/types.hpp>
 	)
 endif()
 

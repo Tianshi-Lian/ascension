@@ -37,7 +37,7 @@ Application::~Application()
 }
 
 void
-Application::setup(const std::string& app_name, glm::ivec2 window_position, glm::ivec2 window_size)
+Application::setup(const std::string& app_name, v2i window_position, v2i window_size)
 {
     m_window_title = app_name;
     m_window_position = window_position;

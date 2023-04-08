@@ -3,7 +3,17 @@
 #include <GL/glew.h>
 #include <SDL.h>
 
-#include <yuki/debug/logger.hpp>
+#include "yuki/debug/logger.hpp"
+#include "yuki/platform/platform.hpp"
+
+namespace {
+
+constexpr f64 millisecond_per_second = 1000.0;
+constexpr i32 updates_per_second = 60;
+constexpr f64 skip_update_ms = millisecond_per_second / updates_per_second;
+constexpr i32 max_skipped_frames = 5;
+
+}
 
 namespace ascension::core {
 
@@ -70,29 +80,45 @@ Application::setup(const std::string& app_name, glm::ivec2 window_position, glm:
 i32
 Application::run()
 {
-    auto window = std::static_pointer_cast<SDL_Window>(m_window);
+    const auto window = std::static_pointer_cast<SDL_Window>(m_window);
+
+    const auto platform_state = std::make_shared<yuki::Platform_State>();
+    yuki::Platform::initialize_state(platform_state);
+
+    f64 start_time = yuki::Platform::get_platform_time(platform_state);
+    f64 next_game_tick = start_time;
+    i32 loops = 0;
 
     while (!m_should_quit) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event) != 0) {
-            switch (event.type) {
-                case SDL_WINDOWEVENT: {
-                    if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
+        start_time = yuki::Platform::get_platform_time(platform_state);
+        loops = 0;
+        while (yuki::Platform::get_platform_time(platform_state) > next_game_tick && loops < max_skipped_frames) {
+            SDL_Event event;
+            while (SDL_PollEvent(&event) != 0) {
+                switch (event.type) {
+                    case SDL_WINDOWEVENT: {
+                        if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
+                            quit();
+                        }
+                    } break;
+                    case SDL_QUIT: {
                         quit();
-                    }
-                } break;
-                case SDL_QUIT: {
-                    quit();
-                } break;
+                    } break;
+                }
             }
+
+            update(skip_update_ms);
+
+            next_game_tick += skip_update_ms;
+            loops++;
         }
 
-        update(1.0);
+        f32 interpolation = static_cast<f32>(
+            (yuki::Platform::get_platform_time(platform_state) + skip_update_ms - next_game_tick) / skip_update_ms
+        );
 
         glClear(GL_COLOR_BUFFER_BIT);
-
-        render(1.0f);
-
+        render(interpolation);
         SDL_GL_SwapWindow(window.get());
     }
 

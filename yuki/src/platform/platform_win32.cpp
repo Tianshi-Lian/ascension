@@ -12,12 +12,14 @@
 
 namespace {
 
-struct Internal_State {
-    HINSTANCE instance;
-    HWND window_handle;
+constexpr i64 ms_per_second = 1000; // milliseconds
 
-    f64 clock_frequency;
-    f64 start_time;
+struct Internal_State {
+    HINSTANCE instance{ nullptr };
+    HWND window_handle{ nullptr };
+
+    f64 clock_frequency{ 0.0 };
+    f64 start_time{ 0.0 };
 };
 
 LRESULT CALLBACK
@@ -122,7 +124,7 @@ win32_process_messages(HWND window_handle, u32 message, WPARAM w_param, LPARAM l
 
 }
 
-namespace yuki::platform {
+namespace yuki {
 
 bool
 Platform::initialize(
@@ -137,7 +139,10 @@ Platform::initialize(
     PROFILE_FUNCTION();
     yuki::debug::Logger::info("yuki", "Initializing Windows platform layer...");
 
-    platform_state->internal_state = std::make_shared<Internal_State>();
+    if (platform_state->internal_state == nullptr) {
+        initialize_state(platform_state);
+    }
+
     const auto& state{ std::static_pointer_cast<Internal_State>(platform_state->internal_state) };
 
     state->instance = GetModuleHandleA(nullptr);
@@ -200,14 +205,15 @@ Platform::initialize(
     }
     state->window_handle = handle;
 
-    LARGE_INTEGER frequency;
-    QueryPerformanceFrequency(&frequency);
-    state->clock_frequency = 1.0 / static_cast<f64>(frequency.QuadPart);
-    state->start_time = get_platform_time(platform_state);
-
     yuki::debug::Logger::notice("yuki", "Windows platform layer initialized.");
 
     return true;
+}
+
+void
+Platform::initialize_state(const std::shared_ptr<Platform_State>& platform_state)
+{
+    platform_state->internal_state = std::make_shared<Internal_State>();
 }
 
 void
@@ -235,16 +241,32 @@ Platform::process_messages(const std::shared_ptr<Platform_State>& /*platform_sta
     return true;
 }
 
-f64
-Platform::get_platform_time(const std::shared_ptr<Platform_State>& platform_state)
+void
+setup_win32_clock(const std::shared_ptr<Internal_State>& state)
 {
-    constexpr i64 time_granularity = 1000; // milliseconds
-
-    const auto& state{ std::static_pointer_cast<Internal_State>(platform_state->internal_state) };
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+    state->clock_frequency = 1.0 / static_cast<f64>(frequency.QuadPart);
 
     LARGE_INTEGER now_time;
     QueryPerformanceCounter(&now_time);
-    now_time.QuadPart *= time_granularity;
+    now_time.QuadPart *= ms_per_second;
+    const auto time_ms = static_cast<f64>(now_time.QuadPart) * state->clock_frequency;
+    state->start_time = time_ms;
+}
+
+f64
+Platform::get_platform_time(const std::shared_ptr<Platform_State>& platform_state)
+{
+    const auto& state{ std::static_pointer_cast<Internal_State>(platform_state->internal_state) };
+
+    if (state->clock_frequency == 0) {
+        setup_win32_clock(state);
+    }
+
+    LARGE_INTEGER now_time;
+    QueryPerformanceCounter(&now_time);
+    now_time.QuadPart *= ms_per_second;
     const auto time_ms = static_cast<f64>(now_time.QuadPart) * state->clock_frequency;
     return time_ms;
 }

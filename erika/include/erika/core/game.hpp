@@ -2,7 +2,7 @@
 
 #include "erika/plugins/plugin_manager.hpp"
 
-namespace yuki::platform {
+namespace yuki {
 struct Platform_State;
 }
 
@@ -55,7 +55,7 @@ class Game {
     /**
      * @brief The created platform state which can be used to access platform-specific methods.
      */
-    std::shared_ptr<yuki::platform::Platform_State> m_platform_state;
+    std::shared_ptr<yuki::Platform_State> m_platform_state;
 
     erika::plugins::Plugin_Manager m_plugin_manager;
 
@@ -64,7 +64,7 @@ class Game {
     void update(f32 delta_time);
     void render(f32 interpolation);
 
-    void set_platform_state(const std::shared_ptr<yuki::platform::Platform_State>& platform_state);
+    void set_platform_state(const std::shared_ptr<yuki::Platform_State>& platform_state);
 
     std::string m_window_title;
 };

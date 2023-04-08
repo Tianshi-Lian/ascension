@@ -26,7 +26,7 @@ class Plugin_Manager {
      *
      * @param   platform_state    a shared pointer to the current platform state; used for platform-specific contexts
      */
-    void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state);
+    void initialize(const std::shared_ptr<yuki::Platform_State>& platform_state);
 
     /**
      * @brief Register a renderer plugin with the manager.
@@ -62,9 +62,9 @@ class Plugin_Manager {
     Plugin_Manager& operator=(Plugin_Manager&&) = delete;
 
   private:
-    std::shared_ptr<yuki::platform::Platform_State> m_platform_state;
+    std::shared_ptr<yuki::Platform_State> m_platform_state;
 
-    std::vector<yuki::platform::Library_Handle> m_loaded_plugins;
+    std::vector<yuki::Library_Handle> m_loaded_plugins;
 
     // NOTE: We use vector<pairs> here because the vectors should be so small that it will be more efficient
     // than paying the overhead cost of a map. These vectors are likely to also just be all loaded into cache

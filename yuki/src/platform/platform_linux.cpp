@@ -23,7 +23,7 @@ struct Internal_State {
 
 }
 
-namespace yuki::platform {
+namespace yuki {
 
 bool
 Platform::initialize(
@@ -38,7 +38,9 @@ Platform::initialize(
     PROFILE_FUNCTION();
     yuki::debug::Logger::info("yuki", "Initializing Windows platform layer...");
 
-    platform_state->internal_state = std::make_shared<Internal_State>();
+    if (platform_state->internal_state == nullptr) {
+        initialize_state(platform_state);
+    }
     const auto& state{ std::static_pointer_cast<Internal_State>(platform_state->internal_state) };
 
     state->display = XOpenDisplay(nullptr);
@@ -126,6 +128,12 @@ Platform::initialize(
     yuki::debug::Logger::notice("yuki", "Windows platform layer initialized.");
 
     return true;
+}
+
+void
+Platform::initialize_state(const std::shared_ptr<Platform_State>& platform_state)
+{
+    platform_state->internal_state = std::make_shared<Internal_State>();
 }
 
 void

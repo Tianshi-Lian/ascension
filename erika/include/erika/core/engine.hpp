@@ -1,6 +1,6 @@
 #pragma once
 
-namespace yuki::platform {
+namespace yuki {
 struct Platform_State;
 }
 
@@ -25,7 +25,7 @@ class Engine final {
      * @param     platform_state      a shared pointer to the current platform state
      * @param     game      a shared pointer to the game to execute
      */
-    static void run(const std::shared_ptr<yuki::platform::Platform_State>& platform_state, const std::shared_ptr<Game>& game);
+    static void run(const std::shared_ptr<yuki::Platform_State>& platform_state, const std::shared_ptr<Game>& game);
 };
 
 }

@@ -20,9 +20,9 @@ Engine::initialize()
 }
 
 void
-Engine::run(const std::shared_ptr<yuki::platform::Platform_State>& platform_state, const std::shared_ptr<Game>& game)
+Engine::run(const std::shared_ptr<yuki::Platform_State>& platform_state, const std::shared_ptr<Game>& game)
 {
-    using yuki::platform::Platform;
+    using yuki::Platform;
 
     PROFILE_FUNCTION();
     if (!game) {
@@ -65,8 +65,8 @@ Engine::run(const std::shared_ptr<yuki::platform::Platform_State>& platform_stat
             ++update_frames;
         }
 
-        interpolation = static_cast<float>(Platform::get_platform_time(platform_state) + skip_update_ms - next_game_tick)
-                        / static_cast<float>(skip_update_ms);
+        interpolation = static_cast<float>(Platform::get_platform_time(platform_state) + skip_update_ms - next_game_tick) /
+                        static_cast<float>(skip_update_ms);
         game->render(interpolation);
         ++render_frames;
 
@@ -78,7 +78,7 @@ Engine::run(const std::shared_ptr<yuki::platform::Platform_State>& platform_stat
             render_frames = 0;
         }
     }
-    yuki::platform::Platform::shutdown(platform_state);
+    yuki::Platform::shutdown(platform_state);
 }
 
 }

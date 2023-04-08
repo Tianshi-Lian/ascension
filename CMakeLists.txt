@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16...3.25)
 
 project(ascension_root)
 
-add_subdirectory(sophia)
+add_subdirectory(charlotte)
 include(helpers)
 
 set_standard_project_settings()

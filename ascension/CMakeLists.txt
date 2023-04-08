@@ -32,12 +32,12 @@ set_app_ito(${APP_NAME})
 
 if(ENABLE_PCH)
 	target_precompile_headers(${APP_NAME}
-		PRIVATE <map> <memory> <string> <vector> <utility>
+		PRIVATE <map> <memory> <string> <vector> <utility> <yuki/types.hpp>
 	)
 endif()
 
 target_link_libraries(${APP_NAME}
-	PRIVATE project_options project_warnings SDL2::SDL2main SDL2::SDL2-static libglew_static freetype pugixml-static
+	PRIVATE project_options project_warnings yuki SDL2::SDL2main SDL2::SDL2-static libglew_static freetype pugixml-static
 )
 
 install(

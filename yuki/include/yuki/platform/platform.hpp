@@ -5,7 +5,7 @@
 
 #include "platform_types.hpp"
 
-namespace yuki::platform {
+namespace yuki {
 
 /**
  * @class Platform
@@ -35,6 +35,15 @@ class Platform {
         u32 width,
         u32 height
     );
+
+    /**
+     * @brief Initialize a the platform state.
+     *        Platform::initialize() will call this on it's own if internal_state is nullptr.
+     *        This allows users to initialize state and use platform functions without a full platform layer.
+     *
+     * @param       platform_state      a pointer to the current platform state
+     */
+    static void initialize_state(const std::shared_ptr<Platform_State>& platform_state);
 
     /**
      * @brief Shutdown the application layer.

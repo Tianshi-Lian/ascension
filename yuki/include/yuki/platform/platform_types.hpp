@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace yuki::platform {
+namespace yuki {
 
 /**
  * @struct Platform_State

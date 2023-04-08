@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 
-SCRIPTS_DIR = "dunois"
+SCRIPTS_DIR = "sophia"
 
 def import_or_install(package):
     try:

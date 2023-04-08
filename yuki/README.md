@@ -2,7 +2,8 @@
 A core library for C++ development, graphics & games
 
 ## Dependencies
-- [**sophia**](../sophia): A set of CMake utility files
+- [**sophia**](sophia/): A simple, lightweight build system written in Python
+- [**charlotte**](charlotte/): A set of CMake utility files
 
 ## Build
 The library currently builds on Windows & Linux(Ubuntu) with g++ and clang++ using ISO c++17.

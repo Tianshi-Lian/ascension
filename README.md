@@ -5,8 +5,8 @@ A game about ascending through the seven planes of heaven
 - [**ascension**](ascension/): The main application for the game
 - [**qilian**](qilian/): A sandbox application for testing feature development
 ## Libraries
-- [**dunois**](dunois/): A simple, lightweight build system written in Python
-- [**sophia**](sophia/): A set of CMake utility files
+- [**sophia**](sophia/): A simple, lightweight build system written in Python
+- [**charlotte**](charlotte/): A set of CMake utility files
 - [**yuki**](yuki/): A core library for development, graphics & games
 - [**erika**](erika/): A 2D game engine written in C++17
 
@@ -26,9 +26,9 @@ Don't forget to initialise them with `git submodule --init --recursive`
 
 The project currently builds on Windows & Linux(Ubuntu) with `g++` and `clang++` using ISO `c++17`.
 
-It's recommended to set an alias for `./dunois/dev.bat` or `./dunois/dev.sh` so you can run commands from the main project directory such as `dev build`.
-- PowerShell: `New-Alias -Name dev -Value .\dunois\dev.bat`
-- bash: `echo alias dev='./dunois/dev.sh' >> ~/.bashrc`
+It's recommended to set an alias for `./sophia/dev.bat` or `./sophia/dev.sh` so you can run commands from the main project directory such as `dev build`.
+- PowerShell: `New-Alias -Name dev -Value .\sophia\dev.bat`
+- bash: `echo alias dev='./sophia/dev.sh' >> ~/.bashrc`
 
 **Commands:**
 - Help: `dev help`

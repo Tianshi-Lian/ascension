@@ -1,2 +1,6 @@
-add_subdirectory(core)
-add_subdirectory(plugins)
+target_sources(${LIB_NAME} PRIVATE
+    core/game.cpp
+    core/engine.cpp
+    plugins/plugin_manager.cpp
+    plugins/renderer.cpp
+)

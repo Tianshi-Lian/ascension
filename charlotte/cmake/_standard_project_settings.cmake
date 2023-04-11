@@ -38,8 +38,6 @@ macro(set_standard_project_settings)
 	find_program(CCACHE ccache)
 
 	if(CCACHE OR CMAKE_CXX_COMPILER_LAUNCHER)
-		message(WARNING ${CMAKE_CXX_COMPILER_LAUNCHER})
-
 		if(NOT CMAKE_CXX_COMPILER_LAUNCHER)
 			set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
 		endif()

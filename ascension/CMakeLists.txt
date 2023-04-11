@@ -15,6 +15,7 @@ project(${APP_NAME}
 )
 
 add_executable(${APP_NAME})
+add_subdirectory(include/ascension)
 add_subdirectory(src)
 add_subdirectory(libs)
 

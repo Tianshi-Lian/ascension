@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-11 20:05:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:37
+ * Last Modified: 2023-04-11 20:18:16
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -38,12 +38,12 @@ namespace erika::plugins {
 Plugin_Manager::~Plugin_Manager()
 {
     for (const auto& plugin : m_loaded_plugins) {
-        yuki::platform::Platform::free_shared_library(plugin);
+        yuki::Platform::free_shared_library(plugin);
     }
 }
 
 void
-Plugin_Manager::initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state)
+Plugin_Manager::initialize(const std::shared_ptr<yuki::Platform_State>& platform_state)
 {
     m_platform_state = platform_state;
 
@@ -70,17 +70,16 @@ Plugin_Manager::initialize(const std::shared_ptr<yuki::platform::Platform_State>
 
             const auto plugin_name = file.path().filename().string();
 
-            yuki::platform::Library_Handle plugin_lib;
+            yuki::Library_Handle plugin_lib;
             try {
-                plugin_lib = yuki::platform::Platform::load_shared_library(file.path().string());
+                plugin_lib = yuki::Platform::load_shared_library(file.path().string());
 
                 if (plugin_lib.internal_state == nullptr) {
                     throw std::runtime_error("Failed to load library file");
                 }
 
-                const auto plugin_load = yuki::platform::Platform::load_library_function<void(erika::plugins::Plugin_Manager&)>(
-                    plugin_lib, "registerPlugin"
-                );
+                const auto plugin_load =
+                    yuki::Platform::load_library_function<void(erika::plugins::Plugin_Manager&)>(plugin_lib, "registerPlugin");
 
                 if (plugin_load == nullptr) {
                     throw std::runtime_error("Failed to find registerPlugin() function");
@@ -90,7 +89,7 @@ Plugin_Manager::initialize(const std::shared_ptr<yuki::platform::Platform_State>
                 yuki::debug::Logger::debug("erika", "Loaded {} plugin {}", plugin_type.second.begin(), plugin_name);
             }
             catch (const std::exception& e) {
-                yuki::platform::Platform::free_shared_library(plugin_lib);
+                yuki::Platform::free_shared_library(plugin_lib);
                 yuki::debug::Logger::error("erika", "Failed to load plugin {}} with error {}", file.path(), e.what());
                 continue;
             }

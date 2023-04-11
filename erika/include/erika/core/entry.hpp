@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-03 18:54:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:03:46
+ * Last Modified: 2023-04-11 20:18:54
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -47,12 +47,12 @@ main(int /*argc*/, char** /*args*/) // NOLINT
     constexpr static u32 default_screen_width = 1600;
     constexpr static u32 default_screen_height = 900;
 
-    const auto state = std::make_shared<yuki::platform::Platform_State>();
-    if (!yuki::platform::Platform::initialize(
+    const auto state = std::make_shared<yuki::Platform_State>();
+    if (!yuki::Platform::initialize(
             state, game->get_window_title(), default_screen_pos, default_screen_pos, default_screen_width, default_screen_height
         )) {
 
-        yuki::debug::Logger::critical("Failed to initialize platform layer for game %s", game->get_window_title().c_str());
+        yuki::debug::Logger::critical("Failed to initialize platform layer for game %s", game->get_window_title());
         return 1;
     }
 

@@ -3,27 +3,15 @@ cmake_minimum_required(VERSION 3.16...3.25)
 set(LIB_NAME opengl)
 message("      (renderer) Configuring ${LIB_NAME}...")
 
-set(LIB_SRC_FILES
-	src/opengl.cpp
-	src/opengl_win32.cpp
-	src/opengl_linux.cpp
-)
-
-set(LIB_INC_FILES
-	${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}/opengl.hpp
-	${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}/opengl_platform.hpp
-)
-
 project(${LIB_NAME}
 	VERSION 0.0.1
 	DESCRIPTION "An Erika rendering plugin for OpenGL"
 	LANGUAGES CXX
 )
 
-add_library(${LIB_NAME} SHARED
-	${LIB_SRC_FILES}
-	${LIB_INC_FILES}
-)
+add_library(${LIB_NAME} SHARED)
+
+add_subdirectory(src)
 
 target_compile_definitions(${LIB_NAME} PRIVATE ERIKA_EXPORT)
 

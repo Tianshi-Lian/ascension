@@ -14,6 +14,7 @@ project(${LIB_NAME}
 )
 
 add_library(${LIB_NAME})
+add_subdirectory(include/yuki)
 add_subdirectory(src)
 
 target_compile_definitions(${LIB_NAME} PUBLIC $<$<CONFIG:Debug>:YUKI_DEBUG>)

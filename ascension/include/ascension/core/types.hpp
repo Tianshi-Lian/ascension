@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-09 16:09:53
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:10:27
+ * Last Modified: 2023-04-12 15:16:40
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,14 +24,19 @@
 
 #pragma once
 
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 
 #include "yuki/types.hpp" // IWYU pragma: export
 
-using v1 = glm::vec1;
-using v2 = glm::vec2;
-using v3 = glm::vec3;
-using v4 = glm::vec4;
+using v1 = glm::f32vec1;
+using v2 = glm::f32vec2;
+using v3 = glm::f32vec3;
+using v4 = glm::f32vec4;
+
+using v1f = v1;
+using v2f = v2;
+using v3f = v3;
+using v4f = v4;
 
 using v1i = glm::ivec1;
 using v2i = glm::ivec2;
@@ -43,6 +48,10 @@ using v2u = glm::uvec2;
 using v3u = glm::uvec3;
 using v4u = glm::uvec4;
 
-using m2 = glm::mat2;
-using m3 = glm::mat3;
-using m4 = glm::mat4;
+using m2 = glm::f32mat2;
+using m3 = glm::f32mat3;
+using m4 = glm::f32mat4;
+
+using m2f = glm::f32mat2;
+using m3f = glm::f32mat3;
+using m4f = glm::f32mat4;

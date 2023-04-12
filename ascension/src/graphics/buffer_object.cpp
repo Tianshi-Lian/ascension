@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 15:45:35
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-12 17:04:50
+ * Last Modified: 2023-04-12 20:48:10
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -53,6 +53,8 @@ gl_draw_mode(ascension::graphics::Draw_Mode mode)
             return GL_LINES;
         case ascension::graphics::Draw_Mode::Triangles:
             return GL_TRIANGLES;
+        default:
+            return 0;
     }
 }
 

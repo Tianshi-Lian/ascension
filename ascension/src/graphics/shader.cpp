@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 20:36:05
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-11 20:53:17
+ * Last Modified: 2023-04-12 15:23:24
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,6 +27,7 @@
 #include <array>
 
 #include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "yuki/debug/logger.hpp"
 
@@ -124,6 +125,138 @@ void
 Shader::unbind()
 {
     glUseProgram(0);
+}
+
+i32
+Shader::get_uniform_location(const std::string& name)
+{
+    if (m_uniform_cache.count(name) == 0) {
+        const auto location = glGetUniformLocation(m_id, name.c_str());
+        m_uniform_cache[name] = location;
+    }
+
+    return m_uniform_cache.at(name);
+}
+
+// Shader uniform variable setters.
+
+void
+Shader::set_float(const std::string& name, f32 value, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniform1f(get_uniform_location(name), value);
+}
+void
+Shader::set_float2(const std::string& name, f32 value_1, f32 value_2, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniform2f(get_uniform_location(name), value_1, value_2);
+}
+void
+Shader::set_float3(const std::string& name, f32 value_1, f32 value_2, f32 value_3, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniform3f(get_uniform_location(name), value_1, value_2, value_3);
+}
+void
+Shader::set_float4(const std::string& name, f32 value_1, f32 value_2, f32 value_3, f32 value_4, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniform4f(get_uniform_location(name), value_1, value_2, value_3, value_4);
+}
+void
+Shader::set_vec2f(const std::string& name, const v2f& value, bool bind_shader)
+{
+    set_float2(name, value.x, value.y, bind_shader);
+}
+void
+Shader::set_vec3f(const std::string& name, const v3f& value, bool bind_shader)
+{
+    set_float3(name, value.x, value.y, value.z, bind_shader);
+}
+void
+Shader::set_vec4f(const std::string& name, const v4f& value, bool bind_shader)
+{
+    set_float4(name, value.x, value.y, value.z, value.w, bind_shader);
+}
+void
+Shader::set_int(const std::string& name, i32 value, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniform1i(get_uniform_location(name), value);
+}
+void
+Shader::set_int2(const std::string& name, i32 value_1, i32 value_2, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniform2i(get_uniform_location(name), value_1, value_2);
+}
+void
+Shader::set_int3(const std::string& name, i32 value_1, i32 value_2, i32 value_3, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniform3i(get_uniform_location(name), value_1, value_2, value_3);
+}
+void
+Shader::set_int4(const std::string& name, i32 value_1, i32 value_2, i32 value_3, i32 value_4, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniform4i(get_uniform_location(name), value_1, value_2, value_3, value_4);
+}
+void
+Shader::set_vec2i(const std::string& name, const v2i& value, bool bind_shader)
+{
+    set_int2(name, value.x, value.y, bind_shader);
+}
+void
+Shader::set_vec3i(const std::string& name, const v3i& value, bool bind_shader)
+{
+    set_int3(name, value.x, value.y, value.z, bind_shader);
+}
+void
+Shader::set_vec4i(const std::string& name, const v4i& value, bool bind_shader)
+{
+    set_int4(name, value.x, value.y, value.z, value.w, bind_shader);
+}
+void
+Shader::set_mat2f(const std::string& name, const m2f& value, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniformMatrix2fv(get_uniform_location(name), 1, 0u, glm::value_ptr(value));
+}
+void
+Shader::set_mat3f(const std::string& name, const m3f& value, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniformMatrix3fv(get_uniform_location(name), 1, 0u, glm::value_ptr(value));
+}
+void
+Shader::set_mat4f(const std::string& name, const m4f& value, bool bind_shader)
+{
+    if (bind_shader) {
+        bind();
+    }
+    glUniformMatrix4fv(get_uniform_location(name), 1, 0u, glm::value_ptr(value));
 }
 
 }

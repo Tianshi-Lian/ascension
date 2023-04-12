@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:41:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-11 20:11:54
+ * Last Modified: 2023-04-12 13:01:47
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -100,6 +100,30 @@ u32
 Texture_2D::height() const
 {
     return m_height;
+}
+
+bool
+operator==(const Texture_2D& tex_1, const Texture_2D& tex_2)
+{
+    return tex_1.m_id == tex_2.m_id;
+}
+
+bool
+operator!=(const Texture_2D& tex_1, const Texture_2D& tex_2)
+{
+    return tex_1.m_id != tex_2.m_id;
+}
+
+bool
+operator<(const Texture_2D& tex_1, const Texture_2D& tex_2)
+{
+    return tex_1.m_id < tex_2.m_id;
+}
+
+bool
+operator>(const Texture_2D& tex_1, const Texture_2D& tex_2)
+{
+    return tex_1.m_id > tex_2.m_id;
 }
 
 }

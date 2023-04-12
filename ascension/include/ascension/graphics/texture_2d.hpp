@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:35:38
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-11 20:06:17
+ * Last Modified: 2023-04-12 12:59:10
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -38,6 +38,12 @@ class Texture_2D {
     [[nodiscard]] u32 id() const;
     [[nodiscard]] u32 width() const;
     [[nodiscard]] u32 height() const;
+
+    friend bool operator==(const Texture_2D& tex_1, const Texture_2D& tex_2);
+    friend bool operator!=(const Texture_2D& tex_1, const Texture_2D& tex_2);
+
+    friend bool operator<(const Texture_2D& tex_1, const Texture_2D& tex_2);
+    friend bool operator>(const Texture_2D& tex_1, const Texture_2D& tex_2);
 
     Texture_2D(const Texture_2D&) = default;
     Texture_2D(Texture_2D&&) = delete;

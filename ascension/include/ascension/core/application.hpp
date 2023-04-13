@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:39:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:01:22
+ * Last Modified: 2023-04-13 20:15:24
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,8 +24,7 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
-
+#include "assets/asset_manager.hpp"
 namespace ascension::core {
 
 class Application {
@@ -43,11 +42,17 @@ class Application {
     Application& operator=(Application&&) = delete;
 
   protected:
-    virtual void initialize();
-    virtual void update(f64 delta_time);
-    virtual void render(f32 interpolation);
+    virtual void on_initialize() = 0;
+    virtual void on_update(f64 delta_time) = 0;
+    virtual void on_render(f32 interpolation) = 0;
+
+    assets::Asset_Manager m_asset_manager;
 
   private:
+    void initialize();
+    void update(f64 delta_time);
+    void render(f32 interpolation);
+
     bool m_should_quit;
 
     std::string m_window_title;

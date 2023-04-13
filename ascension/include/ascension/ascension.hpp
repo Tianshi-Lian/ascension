@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-02-24 19:27:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:03:11
+ * Last Modified: 2023-04-13 12:54:33
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -31,13 +31,13 @@ enum class plane {
     MORTAL,
     MARTIAL,
     IMMORTAL,
-    DIVINE,
     HEAVENLY,
+    DIVINE,
     ANCESTRAL,
     CELESTIAL
 };
 
-// The six paths which can be followed, studied and mastered within the planes
+// The seven paths which can be followed, studied and mastered within the planes
 // The martial path is the practice of cultivation and fighting
 // The path of alchemy is the practice of creating pills, medicine & poisons
 // The path of smithing is the practice of creating weapons, armour and jewellery
@@ -49,6 +49,7 @@ enum class path {
     ALCHEMY,
     SMITHING,
     FORMATION,
+    HEAVENLY,
     DIVINE,
     CELESTIAL
 };
@@ -77,6 +78,7 @@ enum class rank {
 // Fire > Ice > Wind > Earth > Lightning > Water > Fire...
 // Aether is a mysterious, unseen power from which the primal aspects emerge and return
 // Light < > Dark
+// Life < > Death
 // Time and space have no inherent strength or weakness, though are infinitely more powerful than the other elements
 enum class aspect {
     FIRE,
@@ -88,8 +90,10 @@ enum class aspect {
     AETHER,
     LIGHT,
     DARK,
+    LIFE,
+    DEATH,
     TIME,
-    SPACE
+    SPACE,
 };
 
 // Beasts can be broken down into many sub-races and include half-beasts and beasts which become humanoid
@@ -104,6 +108,15 @@ enum class creature {
     ANGEL,
     MONSTER,
     SPIRIT
+};
+
+enum class weapon {
+    GLOVES,
+    DAGGER,
+    SWORD,
+    SABER,
+    SPEAR,
+    STAFF,
 };
 
 class Ascension {

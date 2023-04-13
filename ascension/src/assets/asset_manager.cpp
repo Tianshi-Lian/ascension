@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-13 18:06:19
+ * Last Modified: 2023-04-13 20:02:16
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -46,7 +46,7 @@ parse_asset_document(const pugi::xml_document& document, const std::string& root
         if (!root.empty()) {
             asset_base_path = root + "/";
         }
-        else {
+        else if (type != ascension::assets::Asset_Type::Asset_List) {
             asset_base_path = type_str + "/";
         }
 
@@ -75,6 +75,11 @@ parse_asset_document(const pugi::xml_document& document, const std::string& root
 
 namespace ascension::assets {
 
+Asset_Manager::~Asset_Manager()
+{
+    m_asset_filepaths.clear();
+}
+
 void
 Asset_Manager::load_asset_file(const std::string& asset_file)
 {
@@ -87,6 +92,8 @@ Asset_Manager::load_asset_file(const std::string& asset_file)
     }
 
     m_asset_filepaths = parse_asset_document(document, "");
+
+    yuki::debug::Logger::info("ascension", "Loaded assets {}", m_asset_filepaths);
 }
 
 }

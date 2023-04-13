@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:03:16
+ * Last Modified: 2023-04-13 20:22:25
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -109,6 +109,8 @@ Application::run()
     const auto platform_state = std::make_shared<yuki::Platform_State>();
     yuki::Platform::initialize_state(platform_state);
 
+    initialize();
+
     f64 start_time = yuki::Platform::get_platform_time(platform_state);
     f64 next_game_tick = start_time;
     i32 loops = 0;
@@ -141,7 +143,6 @@ Application::run()
             (yuki::Platform::get_platform_time(platform_state) + skip_update_ms - next_game_tick) / skip_update_ms
         );
 
-        glClear(GL_COLOR_BUFFER_BIT);
         render(interpolation);
         SDL_GL_SwapWindow(window.get());
     }
@@ -158,18 +159,20 @@ Application::quit()
 void
 Application::initialize()
 {
+    on_initialize();
 }
 
 void
 Application::update(f64 delta_time)
 {
-    (void)delta_time;
+    on_update(delta_time);
 }
 
 void
 Application::render(f32 interpolation)
 {
-    (void)interpolation;
+    glClear(GL_COLOR_BUFFER_BIT);
+    on_render(interpolation);
 }
 
 }

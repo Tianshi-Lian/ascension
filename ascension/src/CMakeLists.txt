@@ -1,5 +1,6 @@
 target_sources(${APP_NAME} PRIVATE
     main.cpp
+    assets/asset_manager.cpp
     core/application.cpp
     graphics/buffer_object.cpp
     graphics/shader.cpp

@@ -1,4 +1,5 @@
 target_sources(${APP_NAME} PRIVATE
+    ascension.cpp
     main.cpp
     assets/asset_manager.cpp
     core/application.cpp

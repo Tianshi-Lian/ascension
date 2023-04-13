@@ -1,9 +1,9 @@
 /**
- * File: asset_manager.hpp
+ * File: ascension.cpp
  * Project: ascension
- * File Created: 2023-04-13 14:45:21
+ * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-13 19:58:26
+ * Last Modified: 2023-04-13 20:19:54
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -22,39 +22,26 @@
  * ==================
  */
 
-#pragma once
+#include "ascension.hpp"
 
-#include <unordered_map>
+namespace ascension {
 
-namespace ascension::graphics {
-class Texture_2D;
-class Shader;
+void
+Ascension::on_initialize()
+{
+    m_asset_manager.load_asset_file("assets/assets.xml");
 }
 
-namespace ascension::assets {
+void
+Ascension::on_update(f64 delta_time)
+{
+    (void)delta_time;
+}
 
-enum class Asset_Type {
-    Asset_List,
-    Texture,
-    Shader,
-};
-
-class Asset_Manager {
-  public:
-    Asset_Manager() = default;
-    ~Asset_Manager();
-
-    void load_asset_file(const std::string& asset_file);
-
-    std::shared_ptr<graphics::Texture_2D> load_texture_2d(const std::string& asset_name);
-
-    Asset_Manager(const Asset_Manager&) = default;
-    Asset_Manager(Asset_Manager&&) = delete;
-    Asset_Manager& operator=(const Asset_Manager&) = default;
-    Asset_Manager& operator=(Asset_Manager&&) = delete;
-
-  private:
-    std::unordered_map<std::string, std::string> m_asset_filepaths;
-};
+void
+Ascension::on_render(f32 interpolation)
+{
+    (void)interpolation;
+}
 
 }

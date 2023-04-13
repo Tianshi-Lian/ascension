@@ -1,5 +1,6 @@
 target_sources(${APP_NAME} PRIVATE
     ascension.hpp
+    assets/asset_manager.hpp
     core/application.hpp
     core/types.hpp
     graphics/buffer_object.hpp

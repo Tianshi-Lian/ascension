@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-14 20:25:06
+ * Last Modified: 2023-04-14 20:38:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -33,6 +33,7 @@
 
 #include "yuki/debug/logger.hpp"
 
+#include "graphics/shader.hpp"
 #include "graphics/texture_2d.hpp"
 
 namespace ascension::assets {
@@ -166,12 +167,11 @@ Asset_Manager::load_texture_2d(const std::string& asset_name)
         // TODO: Implement texture scaling.
     }
 
-    m_loaded_textures.insert({ asset_name, new_texture });
-
     if (asset.flip_on_load) {
         stbi_set_flip_vertically_on_load(0);
     }
 
+    m_loaded_textures.insert({ asset_name, new_texture });
     return new_texture;
 }
 
@@ -194,6 +194,64 @@ Asset_Manager::unload_texture_2d(const std::string& asset_name)
     }
 
     m_loaded_textures.erase(asset_name);
+}
+
+std::shared_ptr<graphics::Shader>
+Asset_Manager::load_shader(const std::string& asset_name)
+{
+    auto shader = get_shader(asset_name);
+    if (shader) {
+        return shader;
+    }
+
+    if (m_shader_filepaths.count(asset_name) == 0u) {
+        yuki::debug::Logger::warn("ascension", "Attempting to load unrecognized shader {}", asset_name);
+        return nullptr;
+    }
+
+    Shader_Asset asset = m_shader_filepaths[asset_name];
+
+    const auto vertex_filepath = asset.filepath + asset.vertex_src_file;
+    const auto fragment_filepath = asset.filepath + asset.fragment_src_file;
+
+    std::ifstream vertex_file_stream(vertex_filepath);
+    std::ifstream fragment_file_stream(fragment_filepath);
+
+    std::stringstream vertex_string_stream;
+    std::stringstream fragment_string_stream;
+
+    vertex_string_stream << vertex_file_stream.rdbuf();
+    fragment_string_stream << fragment_file_stream.rdbuf();
+
+    vertex_file_stream.close();
+    fragment_file_stream.close();
+
+    auto new_shader = std::make_shared<graphics::Shader>();
+    new_shader->create(vertex_string_stream.str(), fragment_string_stream.str());
+
+    m_loaded_shaders.insert({ asset_name, new_shader });
+    return new_shader;
+}
+
+std::shared_ptr<graphics::Shader>
+Asset_Manager::get_shader(const std::string& asset_name)
+{
+    if (m_loaded_shaders.count(asset_name) == 0) {
+        return nullptr;
+    }
+
+    return m_loaded_shaders[asset_name];
+}
+
+void
+Asset_Manager::unload_shader(const std::string& asset_name)
+{
+    const auto shader = get_shader(asset_name);
+    if (!shader) {
+        return;
+    }
+
+    m_loaded_shaders.erase(asset_name);
 }
 
 }

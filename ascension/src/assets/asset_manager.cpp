@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-14 14:58:39
+ * Last Modified: 2023-04-14 20:25:06
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,10 +24,16 @@
 
 #include "assets/asset_manager.hpp"
 
+#define STBI_NO_THREAD_LOCALS
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
 #include <magic_enum/magic_enum.hpp>
 #include <pugixml.hpp>
 
 #include "yuki/debug/logger.hpp"
+
+#include "graphics/texture_2d.hpp"
 
 namespace ascension::assets {
 
@@ -125,6 +131,69 @@ Asset_Manager::load_asset_file(const std::string& asset_file)
 
     yuki::debug::Logger::info("ascension", "Loaded {} textures", m_texture_filepaths.size());
     yuki::debug::Logger::info("ascension", "Loaded {} shaders", m_shader_filepaths.size());
+}
+
+std::shared_ptr<graphics::Texture_2D>
+Asset_Manager::load_texture_2d(const std::string& asset_name)
+{
+    auto texture = get_texture_2d(asset_name);
+    if (texture) {
+        return texture;
+    }
+
+    if (m_texture_filepaths.count(asset_name) == 0u) {
+        yuki::debug::Logger::warn("ascension", "Attempting to load unrecognized texture {}", asset_name);
+        return nullptr;
+    }
+
+    Texture_Asset asset = m_texture_filepaths[asset_name];
+
+    if (asset.flip_on_load) {
+        stbi_set_flip_vertically_on_load(1);
+    }
+
+    i32 width = 0;
+    i32 height = 0;
+    i32 channels = 0;
+    auto* const data = stbi_load(asset.filepath.c_str(), &width, &height, &channels, 0);
+
+    auto new_texture = std::make_shared<graphics::Texture_2D>();
+    new_texture->create(static_cast<u32>(width), static_cast<u32>(height), data);
+
+    stbi_image_free(data);
+
+    if (asset.scale != 1.0f) {
+        // TODO: Implement texture scaling.
+    }
+
+    m_loaded_textures.insert({ asset_name, new_texture });
+
+    if (asset.flip_on_load) {
+        stbi_set_flip_vertically_on_load(0);
+    }
+
+    return new_texture;
+}
+
+std::shared_ptr<graphics::Texture_2D>
+Asset_Manager::get_texture_2d(const std::string& asset_name)
+{
+    if (m_loaded_textures.count(asset_name) == 0) {
+        return nullptr;
+    }
+
+    return m_loaded_textures[asset_name];
+}
+
+void
+Asset_Manager::unload_texture_2d(const std::string& asset_name)
+{
+    const auto texture = get_texture_2d(asset_name);
+    if (!texture) {
+        return;
+    }
+
+    m_loaded_textures.erase(asset_name);
 }
 
 }

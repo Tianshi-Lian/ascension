@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<assets>
+    <asset name="spritebatch" type="Shader" filepath="assets/shaders/spritebatch/" >
+        <vertex>vertex.glsl</vertex>
+        <fragment>fragment.glsl</fragment>
+    </asset>
+</assets>

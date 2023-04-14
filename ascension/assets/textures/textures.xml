@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<Assets>
-    <Asset Name="wabbit_alpha" Type="Texture" Filepath="assets/textures/wabbit_alpha.png" />
-</Assets>
+<assets>
+    <asset name="wabbit_alpha" type="Texture" filepath="assets/textures/wabbit_alpha.png" >
+        <scale>1.5</scale>
+        <flip>1</flip>
+    </asset>
+</assets>

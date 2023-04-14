@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<Assets>
-    <Asset Name="textures" Type="Asset_List" Filepath="assets/textures/textures.xml" />
-</Assets>
+<assets>
+    <asset name="textures" type="Asset_List" filepath="assets/textures/textures.xml" />
+    <asset name="shaders" type="Asset_List" filepath="assets/shaders/shaders.xml" />
+</assets>

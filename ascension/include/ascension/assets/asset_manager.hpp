@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 14:45:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-13 19:58:26
+ * Last Modified: 2023-04-14 14:31:59
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,6 +26,8 @@
 
 #include <unordered_map>
 
+#include "assets/asset_types.hpp"
+
 namespace ascension::graphics {
 class Texture_2D;
 class Shader;
@@ -33,20 +35,22 @@ class Shader;
 
 namespace ascension::assets {
 
-enum class Asset_Type {
-    Asset_List,
-    Texture,
-    Shader,
-};
-
 class Asset_Manager {
   public:
     Asset_Manager() = default;
     ~Asset_Manager();
 
+    void clear();
+
     void load_asset_file(const std::string& asset_file);
 
     std::shared_ptr<graphics::Texture_2D> load_texture_2d(const std::string& asset_name);
+    std::shared_ptr<graphics::Texture_2D> get_texture_2d(const std::string& asset_name);
+    void unload_texture_2d(const std::string& asset_name);
+
+    std::shared_ptr<graphics::Shader> load_shader(const std::string& asset_name);
+    std::shared_ptr<graphics::Shader> get_shader(const std::string& asset_name);
+    void unload_shader(const std::string& asset_name);
 
     Asset_Manager(const Asset_Manager&) = default;
     Asset_Manager(Asset_Manager&&) = delete;
@@ -54,7 +58,13 @@ class Asset_Manager {
     Asset_Manager& operator=(Asset_Manager&&) = delete;
 
   private:
-    std::unordered_map<std::string, std::string> m_asset_filepaths;
+    void parse_asset_document(const std::string& document_filepath, const std::string& root_name);
+
+    std::unordered_map<std::string, Texture_Asset> m_texture_filepaths;
+    std::unordered_map<std::string, Shader_Asset> m_shader_filepaths;
+
+    std::unordered_map<std::string, std::shared_ptr<graphics::Texture_2D>> m_loaded_textures;
+    std::unordered_map<std::string, std::shared_ptr<graphics::Shader>> m_loaded_shaders;
 };
 
 }

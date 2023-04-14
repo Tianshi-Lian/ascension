@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-13 20:02:16
+ * Last Modified: 2023-04-14 14:58:39
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -29,71 +29,102 @@
 
 #include "yuki/debug/logger.hpp"
 
-namespace {
+namespace ascension::assets {
 
-std::unordered_map<std::string, std::string>
-parse_asset_document(const pugi::xml_document& document, const std::string& root) // NOLINT
+Asset_Manager::~Asset_Manager()
 {
-    std::unordered_map<std::string, std::string> loaded_assets = {};
+    clear();
+}
 
-    for (const auto& node : document.child("Assets").children("Asset")) {
-        const std::string name = node.attribute("Name").value();
-        const std::string type_str = node.attribute("Type").value();
-        const auto type = magic_enum::enum_cast<ascension::assets::Asset_Type>(type_str);
-        const std::string filepath = node.attribute("Filepath").value();
+void
+Asset_Manager::clear()
+{
+    m_texture_filepaths.clear();
+    m_shader_filepaths.clear();
+
+    m_loaded_textures.clear();
+    m_loaded_shaders.clear();
+}
+
+void
+// NOLINTNEXTLINE
+Asset_Manager::parse_asset_document(const std::string& document_filepath, const std::string& root_name)
+{
+    pugi::xml_document document;
+    pugi::xml_parse_result result = document.load_file(document_filepath.c_str());
+
+    if (!result) {
+        yuki::debug::Logger::error(
+            "ascension", "Failed to load asset file {}. Error {}", document_filepath, result.description()
+        );
+        return;
+    }
+
+    for (const auto& node : document.child("assets").children("asset")) {
+        const std::string name = node.attribute("name").value();
+        const std::string type_str = node.attribute("type").value();
+        const std::string filepath = node.attribute("filepath").value();
+
+        const auto type = magic_enum::enum_cast<Asset_Type>(type_str);
+        if (!type.has_value()) {
+            yuki::debug::Logger::error("ascension", "Unknown asset type {}", type_str);
+            return;
+        }
 
         std::string asset_base_path;
-        if (!root.empty()) {
-            asset_base_path = root + "/";
+        if (!root_name.empty()) {
+            asset_base_path = root_name + "/";
         }
         else if (type != ascension::assets::Asset_Type::Asset_List) {
             asset_base_path = type_str + "/";
         }
 
-        if (type == ascension::assets::Asset_Type::Asset_List) {
-            pugi::xml_document sub_document;
-            pugi::xml_parse_result result = sub_document.load_file(filepath.c_str());
-
-            if (!result) {
-                yuki::debug::Logger::error(
-                    "ascension", "Failed to load asset file {}. Error {}", filepath, result.description()
-                );
-                continue;
-            }
-            const auto sub_assets = parse_asset_document(sub_document, asset_base_path + name);
-            loaded_assets.insert(sub_assets.begin(), sub_assets.end());
+        if (type == Asset_Type::Asset_List) {
+            parse_asset_document(filepath, asset_base_path + name);
         }
         else {
-            loaded_assets[(asset_base_path + name)] = filepath;
+            switch (*type) {
+                case Asset_Type::Texture: {
+                    Texture_Asset asset;
+                    if (!node.child("scale").empty()) {
+                        asset.scale = std::strtof(node.child("scale").child_value(), nullptr);
+                    }
+                    if (!node.child("flip").empty()) {
+                        asset.flip_on_load = (std::stoi(node.child("flip").child_value()) != 0);
+                    }
+                    asset.name = name;
+                    asset.filepath = filepath;
+                    asset.type = Asset_Type::Texture;
+                    m_texture_filepaths[(asset_base_path + name)] = asset;
+                } break;
+                case Asset_Type::Shader: {
+                    Shader_Asset asset;
+                    if (node.child("vertex").empty() || node.child("fragment").empty()) {
+                        yuki::debug::Logger::error(
+                            "ascension", "Trying to load shader {} ({}) without fragment or vertex source.", name, filepath
+                        );
+                    }
+                    asset.vertex_src_file = node.child("vertex").child_value();
+                    asset.fragment_src_file = node.child("fragment").child_value();
+                    asset.name = name;
+                    asset.filepath = filepath;
+                    asset.type = Asset_Type::Shader;
+                    m_shader_filepaths[(asset_base_path + name)] = asset;
+                } break;
+                default:
+                    break;
+            };
         }
     }
-
-    return loaded_assets;
-}
-
-}
-
-namespace ascension::assets {
-
-Asset_Manager::~Asset_Manager()
-{
-    m_asset_filepaths.clear();
 }
 
 void
 Asset_Manager::load_asset_file(const std::string& asset_file)
 {
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(asset_file.c_str());
+    parse_asset_document(asset_file, "");
 
-    if (!result) {
-        yuki::debug::Logger::error("ascension", "Failed to load asset file {}. Error {}", asset_file, result.description());
-        return;
-    }
-
-    m_asset_filepaths = parse_asset_document(document, "");
-
-    yuki::debug::Logger::info("ascension", "Loaded assets {}", m_asset_filepaths);
+    yuki::debug::Logger::info("ascension", "Loaded {} textures", m_texture_filepaths.size());
+    yuki::debug::Logger::info("ascension", "Loaded {} shaders", m_shader_filepaths.size());
 }
 
 }

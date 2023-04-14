@@ -1,9 +1,9 @@
 /**
- * File: main.cpp
+ * File: asset_types.hpp
  * Project: ascension
- * File Created: 2023-04-06 21:17:10
+ * File Created: 2023-04-14 13:56:09
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-14 13:50:33
+ * Last Modified: 2023-04-14 14:20:57
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -22,30 +22,30 @@
  * ==================
  */
 
-#include "ascension.hpp"
+#pragma once
 
-#include <SDL.h>
+namespace ascension::assets {
 
-#include "yuki/debug/logger.hpp"
+enum class Asset_Type {
+    Asset_List,
+    Texture,
+    Shader,
+};
 
-#define UNUSED_PARAM(a) (void)a
+struct Asset {
+    std::string name;
+    std::string filepath;
+    Asset_Type type;
+};
 
-constexpr glm::vec2 Default_Window_Position{ 200, 200 };
-constexpr glm::vec2 Default_Window_Size{ 1600, 900 };
+struct Texture_Asset : public Asset {
+    float scale{ 1.0 };
+    bool flip_on_load{ false };
+};
 
-int
-main(int argc, char** argv)
-{
-    using namespace ascension;
+struct Shader_Asset : public Asset {
+    std::string vertex_src_file;
+    std::string fragment_src_file;
+};
 
-    UNUSED_PARAM(argc);
-    UNUSED_PARAM(argv);
-
-    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
-
-    Ascension game;
-    game.setup("Ascension", Default_Window_Position, Default_Window_Size);
-    game.run();
-
-    return 0;
 }

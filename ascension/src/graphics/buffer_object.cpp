@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 15:45:35
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-12 20:48:10
+ * Last Modified: 2023-04-15 15:29:22
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -86,14 +86,14 @@ Buffer_Object::~Buffer_Object()
 }
 
 void
-Buffer_Object::initialize(u32 size)
+Buffer_Object::create(u32 size)
 {
     glGenBuffers(1, &m_id);
     buffer_data(size, nullptr);
 }
 
 void
-Buffer_Object::initialize(u32 size, const void* data)
+Buffer_Object::create(u32 size, const void* data)
 {
     glGenBuffers(1, &m_id);
     bind();

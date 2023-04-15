@@ -5,6 +5,7 @@ target_sources(${APP_NAME} PRIVATE
     core/application.cpp
     graphics/buffer_object.cpp
     graphics/shader.cpp
+    graphics/sprite_batch.cpp
     graphics/texture_2d.cpp
     graphics/vertex_array_object.cpp
 )

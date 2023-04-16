@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-14 20:39:22
+ * Last Modified: 2023-04-16 15:16:56
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,12 +24,16 @@
 
 #include "ascension.hpp"
 
+#include "graphics/sprite_batch.hpp"
+
 namespace ascension {
 
 void
 Ascension::on_initialize()
 {
     m_asset_manager.load_asset_file("assets/assets.xml");
+    m_asset_manager.load_texture_2d("textures/wabbit_alpha");
+    m_asset_manager.load_shader("shaders/spritebatch");
 }
 
 void
@@ -42,6 +46,12 @@ void
 Ascension::on_render(f32 interpolation)
 {
     (void)interpolation;
+
+    graphics::Sprite_Batch batch;
+    batch.initialize(1600, 900, m_asset_manager.get_shader("shaders/spritebatch"));
+    batch.begin();
+    batch.draw(m_asset_manager.get_texture_2d("textures/wabbit_alpha"), v2f{ 0.0f, 0.0f });
+    batch.end();
 }
 
 }

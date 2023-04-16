@@ -2,7 +2,7 @@
 
 <assets>
     <asset name="spritebatch" type="Shader" filepath="assets/shaders/spritebatch/" >
-        <vertex>vertex.glsl</vertex>
-        <fragment>fragment.glsl</fragment>
+        <vertex>spritebatch.vert</vertex>
+        <fragment>spritebatch.frag</fragment>
     </asset>
 </assets>

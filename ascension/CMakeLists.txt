@@ -15,6 +15,7 @@ project(${APP_NAME}
 )
 
 add_executable(${APP_NAME})
+
 add_subdirectory(include/ascension)
 add_subdirectory(src)
 add_subdirectory(libs)
@@ -36,6 +37,8 @@ if(ENABLE_PCH)
 		PRIVATE <map> <memory> <string> <vector> <utility> <core/types.hpp>
 	)
 endif()
+
+target_compile_definitions(${APP_NAME} PUBLIC $<$<CONFIG:Debug>:AS_DEBUG>)
 
 target_link_libraries(${APP_NAME}
 	PRIVATE project_options project_warnings yuki SDL2::SDL2main SDL2::SDL2-static libglew_static freetype pugixml-static

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:37
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-15 15:29:51
+ * Last Modified: 2023-04-16 14:59:15
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -32,6 +32,33 @@ class Vertex_Array_Object;
 class Vertex_Buffer_Object;
 class Index_Buffer_Object;
 
+struct Sprite_Batch_Item {
+    Sprite_Batch_Item(const std::shared_ptr<Texture_2D>& in_texture, v2f in_position)
+      : texture(in_texture)
+      , position(in_position)
+    {
+    }
+
+    std::shared_ptr<Texture_2D> texture;
+    v2f position;
+};
+
+#pragma pack(push, 0)
+struct Sprite_Batch_Vertex {
+    Sprite_Batch_Vertex(v2f in_position, v2f in_tex_coords, v4f in_color)
+      : position(in_position)
+      , tex_coords(in_tex_coords)
+      , color(in_color)
+    {
+    }
+
+    v2f position;
+    v2f tex_coords;
+    v4f color;
+};
+
+#pragma pack(pop)
+
 class Sprite_Batch {
     static constexpr u32 DEFAULT_BATCH_SIZE = 2048;
 
@@ -39,11 +66,19 @@ class Sprite_Batch {
     Sprite_Batch();
     ~Sprite_Batch();
 
-    void initialize(u32 screen_width, u32 screen_height, u32 max_batch_size = DEFAULT_BATCH_SIZE);
+    // TODO: load the default sprite shader internally.
+    void initialize(
+        u32 screen_width,
+        u32 screen_height,
+        const std::shared_ptr<Shader>& sprite_shader,
+        u32 max_batch_size = DEFAULT_BATCH_SIZE
+    );
 
-    void begin(m4 transform);
+    void begin(m4 transform = m4{ 1.0f });
     void end();
     void clear();
+
+    void on_resize(u32 screen_width, u32 screen_height);
 
     void draw(const std::shared_ptr<Texture_2D>& texture, v2f position);
 
@@ -53,10 +88,8 @@ class Sprite_Batch {
     Sprite_Batch& operator=(Sprite_Batch&&) = delete;
 
   private:
+    void generate_quad_vertices(const Sprite_Batch_Item& item);
     void flush(const std::shared_ptr<Texture_2D>& texture);
-
-    u32 m_screen_width;
-    u32 m_screen_height;
 
     u32 m_max_batch_size;
 
@@ -65,6 +98,13 @@ class Sprite_Batch {
     std::unique_ptr<Vertex_Array_Object> m_vertex_array;
     std::shared_ptr<Vertex_Buffer_Object> m_vertex_buffer;
     std::shared_ptr<Index_Buffer_Object> m_index_buffer;
+
+    m4 m_projection;
+
+    bool m_batch_active;
+    m4 m_active_transform;
+    std::vector<Sprite_Batch_Item> m_current_batch;
+    std::vector<Sprite_Batch_Vertex> m_current_vertices;
 };
 
 }

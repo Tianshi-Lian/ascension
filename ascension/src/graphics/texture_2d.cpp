@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:41:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-12 13:01:47
+ * Last Modified: 2023-04-17 15:43:53
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -51,7 +51,7 @@ Texture_2D::create(u32 width, u32 height, u8* data)
     glGenTextures(1, &m_id);
 
     if (m_id == 0) {
-        yuki::debug::Logger::error("ascension", "Failed to create texture");
+        yuki::debug::Logger::error("ascension", "Failed to create texture with error {}", glGetError());
         return;
     }
 
@@ -75,6 +75,7 @@ Texture_2D::create(u32 width, u32 height, u8* data)
 void
 Texture_2D::bind() const
 {
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_id);
 }
 

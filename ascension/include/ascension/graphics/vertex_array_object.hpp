@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 16:52:11
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-15 15:37:14
+ * Last Modified: 2023-04-17 19:32:47
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -30,7 +30,8 @@ class Vertex_Buffer_Object;
 class Index_Buffer_Object;
 
 struct Vertex_Attrib_Floats {
-    explicit Vertex_Attrib_Floats(i32 float_count, bool should_normalize = false);
+    Vertex_Attrib_Floats() = default;
+    Vertex_Attrib_Floats(i32 float_count, bool should_normalize);
 
     i32 count;
     bool normalize;
@@ -45,6 +46,9 @@ class Vertex_Array_Object {
     void create(bool bind = false);
     void bind();
     void unbind();
+
+    std::shared_ptr<Vertex_Buffer_Object> add_vertex_buffer(u32 size, const void* data = nullptr);
+    std::shared_ptr<Index_Buffer_Object> add_index_buffer(u32 size, const void* data = nullptr);
 
     void set_vertex_buffer(const std::shared_ptr<Vertex_Buffer_Object>& vertex_buffer);
     void set_index_buffer(const std::shared_ptr<Index_Buffer_Object>& index_buffer);

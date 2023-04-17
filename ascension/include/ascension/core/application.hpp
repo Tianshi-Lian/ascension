@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:39:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-13 20:15:24
+ * Last Modified: 2023-04-17 19:52:18
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -59,8 +59,9 @@ class Application {
     v2i m_window_position;
     v2i m_window_size;
 
-    std::shared_ptr<void> m_window;
-    std::shared_ptr<void> m_gl_context;
+    // TODO: Move back to smart pointers once we work out context issues.
+    void* m_window;
+    void* m_gl_context;
 };
 
 }

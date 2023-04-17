@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 20:54:24
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-12 21:38:50
+ * Last Modified: 2023-04-17 19:39:43
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -21,6 +21,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ==================
  */
+
+#include <array>
 
 #include "graphics/vertex_array_object.hpp"
 
@@ -77,6 +79,22 @@ Vertex_Array_Object::unbind()
     m_is_bound = false;
 }
 
+std::shared_ptr<Vertex_Buffer_Object>
+Vertex_Array_Object::add_vertex_buffer(u32 size, const void* data)
+{
+    m_vertex_buffer = std::make_shared<Vertex_Buffer_Object>();
+    m_vertex_buffer->create(size, data);
+    return m_vertex_buffer;
+}
+
+std::shared_ptr<Index_Buffer_Object>
+Vertex_Array_Object::add_index_buffer(u32 size, const void* data)
+{
+    m_index_buffer = std::make_shared<Index_Buffer_Object>();
+    m_index_buffer->create(size, data);
+    return m_index_buffer;
+}
+
 void
 Vertex_Array_Object::set_vertex_buffer(const std::shared_ptr<Vertex_Buffer_Object>& vertex_buffer)
 {
@@ -92,6 +110,16 @@ Vertex_Array_Object::set_index_buffer(const std::shared_ptr<Index_Buffer_Object>
 void
 Vertex_Array_Object::set_attrib_ptr(i32 size, i32 stride, const void* offset, bool normalize)
 {
+    // TODO: Change this to use opengl 4.3 methods
+    /**
+     *  //Offset specified as integer.
+     * glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3);
+     * glVertexAttribBinding(1, 0);
+
+     * //Some later point when you're ready to provide a buffer.
+     * //Stride goes into the buffer binding.
+     * glBindVertexBuffer(0, buffer_obj, 0, sizeof(GLfloat) * 8);
+     */
     glVertexAttribPointer(m_current_attrib_index, size, GL_FLOAT, normalize ? GL_TRUE : GL_FALSE, stride, offset);
     glEnableVertexAttribArray(m_current_attrib_index);
     ++m_current_attrib_index;
@@ -101,14 +129,16 @@ void
 Vertex_Array_Object::set_attrib_ptr_list(const Vertex_Attrib_Float_List& list)
 {
     i32 stride = 0;
-    for (const auto& var : list) {
-        stride += static_cast<i32>(size_of_shader_data_type(Shader_Data_Type::Float)) * var.count;
+    if (list.size() > 1) {
+        for (const auto& var : list) {
+            stride += size_of_shader_data_type(Shader_Data_Type::Float, var.count);
+        }
     }
 
-    intptr_t offset = 0;
+    i32 offset = 0;
     for (const auto& var : list) {
-        set_attrib_ptr(var.count, stride, static_cast<void*>(&offset), var.normalize);
-        offset += static_cast<intptr_t>(size_of_shader_data_type(Shader_Data_Type::Float)) * var.count;
+        set_attrib_ptr(var.count, stride, reinterpret_cast<void*>(offset), var.normalize); // NOLINT
+        offset += size_of_shader_data_type(Shader_Data_Type::Float, var.count);
     }
 }
 

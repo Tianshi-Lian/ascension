@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 20:33:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-12 15:22:47
+ * Last Modified: 2023-04-17 19:39:47
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,7 +28,7 @@
 
 namespace ascension::graphics {
 
-enum class Shader_Data_Type {
+enum class Shader_Data_Type : u32 {
     None = 0,
     Float,
     Float2,
@@ -41,38 +41,39 @@ enum class Shader_Data_Type {
     Int2,
     Int3,
     Int4,
-    Bool
+    Bool,
+    SDT_COUNT
 };
 
-static constexpr uint32_t
-size_of_shader_data_type(Shader_Data_Type type)
+static constexpr i32
+size_of_shader_data_type(Shader_Data_Type type, i32 count = 1)
 {
     switch (type) {
         case Shader_Data_Type::Float:
-            return 4;
+            return 4 * count;
         case Shader_Data_Type::Float2:
-            return 4 * 2;
+            return 4 * 2 * count;
         case Shader_Data_Type::Float3:
-            return 4 * 3;
+            return 4 * 3 * count;
         case Shader_Data_Type::Float4:
-            return 4 * 4;
+            return 4 * 4 * count;
         case Shader_Data_Type::Mat2:
-            return 4 * 3 * 2;
+            return 4 * 3 * 2 * count;
         case Shader_Data_Type::Mat3:
-            return 4 * 3 * 3;
+            return 4 * 3 * 3 * count;
         case Shader_Data_Type::Mat4:
-            return 4 * 4 * 4;
+            return 4 * 4 * 4 * count;
         case Shader_Data_Type::Int:
-            return 4;
+            return 4 * count;
         case Shader_Data_Type::Int2:
-            return 4 * 2;
+            return 4 * 2 * count;
         case Shader_Data_Type::Int3:
-            return 4 * 3;
+            return 4 * 3 * count;
         case Shader_Data_Type::Int4:
-            return 4 * 4;
+            return 4 * 4 * count;
         case Shader_Data_Type::Bool:
-            return 1;
-        case Shader_Data_Type::None:
+            return 1 * count;
+        default:
             return 0;
     }
 

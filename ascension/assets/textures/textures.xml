@@ -5,4 +5,7 @@
         <scale>1.5</scale>
         <flip>1</flip>
     </asset>
+	<asset name="unicorn" type="Texture" filepath="assets/textures/unicorn.png" >
+        <flip>1</flip>
+    </asset>
 </assets>

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 20:33:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 19:39:47
+ * Last Modified: 2023-04-18 19:50:54
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -85,6 +85,7 @@ class Shader {
     Shader();
     ~Shader();
 
+    // TODO: Add and check create result.
     void create(const std::string& vertex_source, const std::string& fragment_source);
     void bind() const;
     static void unbind();

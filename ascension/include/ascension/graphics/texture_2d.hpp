@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:35:38
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-12 12:59:10
+ * Last Modified: 2023-04-18 19:50:35
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -31,6 +31,7 @@ class Texture_2D {
     Texture_2D();
     ~Texture_2D();
 
+    // TODO: Add and check create result.
     void create(u32 width, u32 height, u8* data);
     void bind() const;
     static void unbind();

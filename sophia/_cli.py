@@ -72,6 +72,7 @@ def main():
     argc = len(sys.argv)
     if argc < 2:
         print("Invalid CLI command! Type `cli help` for a list of commands.")
+        sys.exit(1)
     else:
         i = 1
         while i < argc:

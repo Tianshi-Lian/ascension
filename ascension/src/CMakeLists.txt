@@ -3,6 +3,7 @@ target_sources(${APP_NAME} PRIVATE
     main.cpp
     assets/asset_manager.cpp
     core/application.cpp
+    core/window.cpp
     graphics/buffer_object.cpp
     graphics/shader.cpp
     graphics/sprite_batch.cpp

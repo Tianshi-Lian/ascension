@@ -1,9 +1,9 @@
 /**
- * File: main.cpp
+ * File: window.hpp
  * Project: ascension
- * File Created: 2023-04-06 21:17:10
+ * File Created: 2023-04-18 17:50:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:35:41
+ * Last Modified: 2023-04-18 19:29:42
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -22,32 +22,40 @@
  * ==================
  */
 
-#include "ascension.hpp"
+#pragma once
 
-#include <SDL.h>
+namespace ascension::core {
 
-#include "yuki/debug/logger.hpp"
+class Window {
+  public:
+    Window();
+    ~Window();
 
-#define UNUSED_PARAM(a) (void)a
+    bool create(const std::string& title, i32 pos_X, i32 pos_y, i32 width, i32 height);
 
-constexpr u32 WIN_DEFAULT_X = 200;
-constexpr u32 WIN_DEFAULT_Y = 200;
-constexpr u32 WIN_DEFAULT_WIDTH = 1600;
-constexpr u32 WIN_DEFAULT_HEIGHT = 900;
+    void clear();
+    void flip();
 
-int
-main(int argc, char** argv)
-{
-    using namespace ascension;
+    void resize(u32 width, u32 height);
 
-    UNUSED_PARAM(argc);
-    UNUSED_PARAM(argv);
+    [[nodiscard]] i32 get_pos_x() const;
+    [[nodiscard]] i32 get_pos_y() const;
+    [[nodiscard]] i32 get_width() const;
+    [[nodiscard]] i32 get_height() const;
 
-    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
+    Window(const Window&) = default;
+    Window(Window&&) = delete;
+    Window& operator=(const Window&) = default;
+    Window& operator=(Window&&) = delete;
 
-    Ascension game;
-    game.initialize("Ascension", WIN_DEFAULT_X, WIN_DEFAULT_Y, WIN_DEFAULT_WIDTH, WIN_DEFAULT_HEIGHT);
-    game.run();
+  private:
+    void* m_internal_window;
+    void* m_internal_context;
 
-    return 0;
+    i32 m_pos_x;
+    i32 m_pos_y;
+    i32 m_width;
+    i32 m_height;
+};
+
 }

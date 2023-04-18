@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 19:59:58
+ * Last Modified: 2023-04-18 19:38:25
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -23,11 +23,10 @@
  */
 
 #include "core/application.hpp"
+#include "core/log.hpp"
 
-#include <GL/glew.h>
 #include <SDL.h>
 
-#include "yuki/debug/logger.hpp"
 #include "yuki/platform/platform.hpp"
 
 namespace {
@@ -41,68 +40,32 @@ constexpr i32 max_skipped_frames = 5;
 
 namespace ascension::core {
 
-constexpr static int OpenGL_MAJOR = 3;
-constexpr static int OpenGL_MINOR = 3;
-
-using namespace yuki::debug;
-
 Application::Application()
-  : m_should_quit(false)
-  , m_window_title("Application")
-  , m_window_position(0, 0)
-  , m_window_size(0, 0)
-  , m_window(nullptr)
-  , m_gl_context(nullptr)
+  : m_window(nullptr)
+  , m_should_quit(false)
 {
 }
 
-Application::~Application()
+bool
+Application::initialize(const std::string& app_name, i32 pos_x, i32 pos_y, i32 width, i32 height)
 {
-    SDL_GL_DeleteContext(m_gl_context);
-    SDL_DestroyWindow(static_cast<SDL_Window*>(m_window));
-}
-
-void
-Application::setup(const std::string& app_name, v2i window_position, v2i window_size)
-{
-    m_window_title = app_name;
-    m_window_position = window_position;
-    m_window_size = window_size;
-
-    // TODO: Move a bunch of this opengl setup to an opengl/renderer file.
-
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER) < 0) {
-        Logger::critical("Ascension", "Failed to initialise SDL! Error {}", SDL_GetError());
-        return;
+        core::log::critical("Failed to initialise SDL! Error {}", SDL_GetError());
+        return false;
     }
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OpenGL_MAJOR);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OpenGL_MINOR);
-
-    m_window = SDL_CreateWindow(
-        m_window_title.c_str(), m_window_position.x, m_window_position.y, m_window_size.x, m_window_size.y, SDL_WINDOW_OPENGL
-    );
-
-    m_gl_context = SDL_GL_CreateContext(static_cast<SDL_Window*>(m_window));
-
-    if (glewInit() != GLEW_OK) {
-        Logger::critical("ascension", "Failed to initialise glew! Error {}", SDL_GetError());
-        return;
+    m_window = std::make_shared<Window>();
+    if (!m_window->create(app_name, pos_x, pos_y, width, height)) {
+        core::log::critical("Failed to initialize application.");
+        return false;
     }
 
-    SDL_GL_MakeCurrent(static_cast<SDL_Window*>(m_window), m_gl_context);
-
-    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    return true;
 }
 
 i32
 Application::run()
 {
-    auto* const window = static_cast<SDL_Window*>(m_window);
-
     const auto platform_state = std::make_shared<yuki::Platform_State>();
     yuki::Platform::initialize_state(platform_state);
 
@@ -141,7 +104,6 @@ Application::run()
         );
 
         render(interpolation);
-        SDL_GL_SwapWindow(window);
     }
 
     return 0;
@@ -168,8 +130,11 @@ Application::update(f64 delta_time)
 void
 Application::render(f32 interpolation)
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    assert(m_window != nullptr);
+
+    m_window->clear();
     on_render(interpolation);
+    m_window->flip();
 }
 
 }

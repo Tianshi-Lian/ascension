@@ -4,6 +4,7 @@ target_sources(${APP_NAME} PRIVATE
     assets/asset_types.hpp
     core/application.hpp
     core/types.hpp
+    core/window.hpp
     graphics/buffer_object.hpp
     graphics/shader.hpp
     graphics/sprite_batch.hpp

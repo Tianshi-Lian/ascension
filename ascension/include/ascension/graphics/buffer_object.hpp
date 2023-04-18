@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 14:35:15
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 20:16:32
+ * Last Modified: 2023-04-18 19:50:48
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -44,6 +44,7 @@ class Buffer_Object {
     explicit Buffer_Object(Buffer_Type type);
     virtual ~Buffer_Object();
 
+    // TODO: Add and check create result.
     void create(u32 size);
     void create(u32 size, const void* data);
 

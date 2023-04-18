@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:37
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-16 14:59:15
+ * Last Modified: 2023-04-18 19:51:04
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -66,6 +66,7 @@ class Sprite_Batch {
     Sprite_Batch();
     ~Sprite_Batch();
 
+    // TODO: Add and check create result.
     // TODO: load the default sprite shader internally.
     void initialize(
         u32 screen_width,

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 16:52:11
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 19:32:47
+ * Last Modified: 2023-04-18 19:51:11
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -43,6 +43,7 @@ class Vertex_Array_Object {
     Vertex_Array_Object();
     ~Vertex_Array_Object();
 
+    // TODO: Add and check create result.
     void create(bool bind = false);
     void bind();
     void unbind();

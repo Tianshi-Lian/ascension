@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 17:50:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:29:42
+ * Last Modified: 2023-04-18 19:47:49
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -31,6 +31,7 @@ class Window {
     Window();
     ~Window();
 
+    // TODO: Make pos & size types consistent.
     bool create(const std::string& title, i32 pos_X, i32 pos_y, i32 width, i32 height);
 
     void clear();
@@ -38,10 +39,10 @@ class Window {
 
     void resize(u32 width, u32 height);
 
-    [[nodiscard]] i32 get_pos_x() const;
-    [[nodiscard]] i32 get_pos_y() const;
-    [[nodiscard]] i32 get_width() const;
-    [[nodiscard]] i32 get_height() const;
+    [[nodiscard]] u32 get_pos_x() const;
+    [[nodiscard]] u32 get_pos_y() const;
+    [[nodiscard]] u32 get_width() const;
+    [[nodiscard]] u32 get_height() const;
 
     Window(const Window&) = default;
     Window(Window&&) = delete;
@@ -52,10 +53,10 @@ class Window {
     void* m_internal_window;
     void* m_internal_context;
 
-    i32 m_pos_x;
-    i32 m_pos_y;
-    i32 m_width;
-    i32 m_height;
+    u32 m_pos_x;
+    u32 m_pos_y;
+    u32 m_width;
+    u32 m_height;
 };
 
 }

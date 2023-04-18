@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 18:53:27
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:31:23
+ * Last Modified: 2023-04-18 19:47:12
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -76,6 +76,11 @@ Window::create(const std::string& title, i32 pos_x, i32 pos_y, i32 width, i32 he
         return false;
     }
 
+    m_pos_x = static_cast<u32>(pos_x);
+    m_pos_y = static_cast<u32>(pos_y);
+    m_width = static_cast<u32>(width);
+    m_height = static_cast<u32>(height);
+
     // TODO: Double check we got (near) our requested OpenGL attributes.
 
     // TODO: Allow the application (user) to set these.
@@ -107,23 +112,23 @@ Window::resize(u32 width, u32 height) // NOLINT
     (void)height;
 }
 
-[[nodiscard]] i32
+[[nodiscard]] u32
 Window::get_pos_x() const
 {
     return m_pos_x;
 }
-[[nodiscard]] i32
+[[nodiscard]] u32
 Window::get_pos_y() const
 {
     return m_pos_y;
 }
 
-[[nodiscard]] i32
+[[nodiscard]] u32
 Window::get_width() const
 {
     return m_width;
 }
-[[nodiscard]] i32
+[[nodiscard]] u32
 Window::get_height() const
 {
     return m_height;

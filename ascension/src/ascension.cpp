@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 19:55:23
+ * Last Modified: 2023-04-18 19:48:04
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -48,9 +48,9 @@ Ascension::on_render(f32 interpolation)
     (void)interpolation;
 
     graphics::Sprite_Batch batch;
-    batch.initialize(1600, 900, m_asset_manager.get_shader("shaders/spritebatch"));
+    batch.initialize(m_window->get_width(), m_window->get_height(), m_asset_manager.get_shader("shaders/spritebatch"));
     batch.begin();
-    batch.draw(m_asset_manager.get_texture_2d("textures/unicorn"), v2f{ 20.0f, 400.0f });
+    batch.draw(m_asset_manager.get_texture_2d("textures/unicorn"), v2f{ 0.0f, 0.0f });
     batch.end();
 }
 

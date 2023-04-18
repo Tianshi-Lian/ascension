@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:41:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 15:43:53
+ * Last Modified: 2023-04-18 19:50:03
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,7 +26,7 @@
 
 #include <GL/glew.h>
 
-#include "yuki/debug/logger.hpp"
+#include "core/log.hpp"
 
 namespace ascension::graphics {
 
@@ -51,7 +51,7 @@ Texture_2D::create(u32 width, u32 height, u8* data)
     glGenTextures(1, &m_id);
 
     if (m_id == 0) {
-        yuki::debug::Logger::error("ascension", "Failed to create texture with error {}", glGetError());
+        core::log::error("Failed to create texture with error {}", glGetError());
         return;
     }
 

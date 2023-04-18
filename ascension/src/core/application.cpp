@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:38:25
+ * Last Modified: 2023-04-18 19:45:12
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -55,12 +55,7 @@ Application::initialize(const std::string& app_name, i32 pos_x, i32 pos_y, i32 w
     }
 
     m_window = std::make_shared<Window>();
-    if (!m_window->create(app_name, pos_x, pos_y, width, height)) {
-        core::log::critical("Failed to initialize application.");
-        return false;
-    }
-
-    return true;
+    return m_window->create(app_name, pos_x, pos_y, width, height);
 }
 
 i32

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:39:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 19:52:18
+ * Last Modified: 2023-04-18 19:31:51
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -25,14 +25,15 @@
 #pragma once
 
 #include "assets/asset_manager.hpp"
+#include "core/window.hpp"
 namespace ascension::core {
 
 class Application {
   public:
     Application();
-    virtual ~Application();
+    virtual ~Application() = default;
 
-    void setup(const std::string& app_name, v2i window_position, v2i window_size);
+    bool initialize(const std::string& app_name, i32 pos_x, i32 pos_y, i32 width, i32 height);
     i32 run();
     void quit();
 
@@ -47,6 +48,7 @@ class Application {
     virtual void on_render(f32 interpolation) = 0;
 
     assets::Asset_Manager m_asset_manager;
+    std::shared_ptr<Window> m_window;
 
   private:
     void initialize();
@@ -54,14 +56,6 @@ class Application {
     void render(f32 interpolation);
 
     bool m_should_quit;
-
-    std::string m_window_title;
-    v2i m_window_position;
-    v2i m_window_size;
-
-    // TODO: Move back to smart pointers once we work out context issues.
-    void* m_window;
-    void* m_gl_context;
 };
 
 }

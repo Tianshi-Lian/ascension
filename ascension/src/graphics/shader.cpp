@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 20:36:05
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-12 15:23:24
+ * Last Modified: 2023-04-18 19:44:26
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -29,7 +29,7 @@
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "yuki/debug/logger.hpp"
+#include "core/log.hpp"
 
 namespace {
 
@@ -56,8 +56,8 @@ check_shader_errors(u32 object, Error_Check_Type type)
 
     if (success == 0) {
         glGetShaderInfoLog(object, Info_Log_Size, nullptr, info_log.data());
-        yuki::debug::Logger::error("ascension", "Errors find when creating shader.");
-        yuki::debug::Logger::error("ascension", "{}", info_log);
+        ascension::core::log::error("Errors find when creating shader.");
+        ascension::core::log::error("{}", info_log);
         return false;
     }
 

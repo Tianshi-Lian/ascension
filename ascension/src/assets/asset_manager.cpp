@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-14 20:38:01
+ * Last Modified: 2023-04-18 19:40:22
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -31,8 +31,7 @@
 #include <magic_enum/magic_enum.hpp>
 #include <pugixml.hpp>
 
-#include "yuki/debug/logger.hpp"
-
+#include "core/log.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/texture_2d.hpp"
 
@@ -61,9 +60,7 @@ Asset_Manager::parse_asset_document(const std::string& document_filepath, const 
     pugi::xml_parse_result result = document.load_file(document_filepath.c_str());
 
     if (!result) {
-        yuki::debug::Logger::error(
-            "ascension", "Failed to load asset file {}. Error {}", document_filepath, result.description()
-        );
+        core::log::error("Failed to load asset file {}. Error {}", document_filepath, result.description());
         return;
     }
 
@@ -74,7 +71,7 @@ Asset_Manager::parse_asset_document(const std::string& document_filepath, const 
 
         const auto type = magic_enum::enum_cast<Asset_Type>(type_str);
         if (!type.has_value()) {
-            yuki::debug::Logger::error("ascension", "Unknown asset type {}", type_str);
+            core::log::error("Unknown asset type {}", type_str);
             return;
         }
 
@@ -107,9 +104,7 @@ Asset_Manager::parse_asset_document(const std::string& document_filepath, const 
                 case Asset_Type::Shader: {
                     Shader_Asset asset;
                     if (node.child("vertex").empty() || node.child("fragment").empty()) {
-                        yuki::debug::Logger::error(
-                            "ascension", "Trying to load shader {} ({}) without fragment or vertex source.", name, filepath
-                        );
+                        core::log::error("Trying to load shader {} ({}) without fragment or vertex source.", name, filepath);
                     }
                     asset.vertex_src_file = node.child("vertex").child_value();
                     asset.fragment_src_file = node.child("fragment").child_value();
@@ -130,8 +125,8 @@ Asset_Manager::load_asset_file(const std::string& asset_file)
 {
     parse_asset_document(asset_file, "");
 
-    yuki::debug::Logger::info("ascension", "Loaded {} textures", m_texture_filepaths.size());
-    yuki::debug::Logger::info("ascension", "Loaded {} shaders", m_shader_filepaths.size());
+    core::log::info("Loaded {} textures", m_texture_filepaths.size());
+    core::log::info("Loaded {} shaders", m_shader_filepaths.size());
 }
 
 std::shared_ptr<graphics::Texture_2D>
@@ -143,7 +138,7 @@ Asset_Manager::load_texture_2d(const std::string& asset_name)
     }
 
     if (m_texture_filepaths.count(asset_name) == 0u) {
-        yuki::debug::Logger::warn("ascension", "Attempting to load unrecognized texture {}", asset_name);
+        core::log::warn("Attempting to load unrecognized texture {}", asset_name);
         return nullptr;
     }
 
@@ -205,7 +200,7 @@ Asset_Manager::load_shader(const std::string& asset_name)
     }
 
     if (m_shader_filepaths.count(asset_name) == 0u) {
-        yuki::debug::Logger::warn("ascension", "Attempting to load unrecognized shader {}", asset_name);
+        core::log::warn("Attempting to load unrecognized shader {}", asset_name);
         return nullptr;
     }
 

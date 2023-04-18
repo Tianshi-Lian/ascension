@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-06 21:17:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:35:41
+ * Last Modified: 2023-04-18 19:45:36
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -22,11 +22,11 @@
  * ==================
  */
 
-#include "ascension.hpp"
-
 #include <SDL.h>
 
 #include "yuki/debug/logger.hpp"
+
+#include "ascension.hpp"
 
 #define UNUSED_PARAM(a) (void)a
 
@@ -46,8 +46,9 @@ main(int argc, char** argv)
     yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
 
     Ascension game;
-    game.initialize("Ascension", WIN_DEFAULT_X, WIN_DEFAULT_Y, WIN_DEFAULT_WIDTH, WIN_DEFAULT_HEIGHT);
-    game.run();
+    if (game.initialize("Ascension", WIN_DEFAULT_X, WIN_DEFAULT_Y, WIN_DEFAULT_WIDTH, WIN_DEFAULT_HEIGHT)) {
+        return game.run();
+    }
 
-    return 0;
+    return 1;
 }

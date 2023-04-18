@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 20:07:02
+ * Last Modified: 2023-04-18 19:49:26
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,12 +28,11 @@
 
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include "core/log.hpp"
 #include "graphics/buffer_object.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/texture_2d.hpp"
 #include "graphics/vertex_array_object.hpp"
-
-#include "yuki/debug/logger.hpp"
 
 namespace ascension::graphics {
 
@@ -57,7 +56,7 @@ void
 Sprite_Batch::initialize(u32 screen_width, u32 screen_height, const std::shared_ptr<Shader>& sprite_shader, u32 max_batch_size)
 {
     if (m_max_batch_size > 0) {
-        yuki::debug::Logger::error("ascension", "Sprite_Batch should only be initialized once!");
+        core::log::error("Sprite_Batch should only be initialized once!");
         return;
     }
 
@@ -103,9 +102,7 @@ void
 Sprite_Batch::begin(m4 transform)
 {
     if (m_batch_active) {
-        yuki::debug::Logger::warn(
-            "ascension", "Sprite_Batch::begin() has already been called. Call Sprite_Batch::end() first."
-        );
+        core::log::warn("Sprite_Batch::begin() has already been called. Call Sprite_Batch::end() first.");
         return;
     }
 
@@ -117,7 +114,7 @@ void
 Sprite_Batch::end()
 {
     if (!m_batch_active) {
-        yuki::debug::Logger::warn("ascension", "Sprite_Batch::end() has already been called without an active batch.");
+        core::log::warn("Sprite_Batch::end() has already been called without an active batch.");
         return;
     }
 
@@ -172,7 +169,7 @@ void
 Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, v2f position)
 {
     if (!m_batch_active) {
-        yuki::debug::Logger::warn("ascension", "Sprite_Batch::draw() has already been called without an active batch.");
+        core::log::warn("Sprite_Batch::draw() has already been called without an active batch.");
         return;
     }
 

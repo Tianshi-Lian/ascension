@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 15:45:35
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 20:16:37
+ * Last Modified: 2023-04-18 19:43:32
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,7 +26,7 @@
 
 #include <GL/glew.h>
 
-#include <yuki/debug/logger.hpp>
+#include "core/log.hpp"
 
 namespace {
 
@@ -148,7 +148,7 @@ void
 Vertex_Buffer_Object::draw_arrays(i32 start_index, i32 count, Draw_Mode mode)
 {
     if (!is_bound()) {
-        yuki::debug::Logger::error("ascension", "Vertex_Buffer_Object::draw_arrays(): attempting to draw unbound buffer!");
+        core::log::error("Vertex_Buffer_Object::draw_arrays(): attempting to draw unbound buffer!");
         return;
     }
 
@@ -165,7 +165,7 @@ void
 Index_Buffer_Object::draw_elements(i32 count, Draw_Mode mode)
 {
     if (!is_bound()) {
-        yuki::debug::Logger::error("ascension", "Vertex_Buffer_Object::draw_elements(): attempting to draw unbound buffer!");
+        core::log::error("Vertex_Buffer_Object::draw_elements(): attempting to draw unbound buffer!");
         return;
     }
 

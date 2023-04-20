@@ -3,7 +3,7 @@
  * Project: yuki
  * File Created: 2023-02-25 11:46:28
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:07:06
+ * Last Modified: 2023-04-20 15:03:18
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -44,65 +44,13 @@ write_direct_log(const std::string& format, Args&&... args)
 
 namespace yuki::debug {
 
-using std::localtime;
-
 std::string
 Logger_Util::get_time_string()
 {
-    constexpr i64 ms_in_s = 1000;
-    constexpr i64 start_year = 1900;
+    const auto clock_now = std::chrono::system_clock::now();
+    const auto ms_since_epoch = std::chrono::floor<std::chrono::milliseconds>(clock_now.time_since_epoch());
 
-    system_clock::time_point now = system_clock::now();
-
-    const i64 ms_since_epoch = duration_cast<milliseconds>(now.time_since_epoch()).count();
-    const i64 sec_since_epoch = ms_since_epoch / ms_in_s;
-
-    std::string result;
-    {
-        std::lock_guard<std::mutex> lock(get_mutex());
-        auto* time_info = std::localtime(&sec_since_epoch); // NOLINT
-
-        std::vector<char> time_buffer(DEFAULT_BUFFER_LENGTH);
-
-        if (time_info != nullptr) {
-#ifdef _WIN32
-            // NOLINTNEXTLINE
-            const auto ret = snprintf(
-                time_buffer.data(),
-                time_buffer.size(),
-                "%04lld-%02d-%02d %02d:%02d:%02d.%03lld",
-                start_year + time_info->tm_year,
-                1 + time_info->tm_mon,
-                time_info->tm_mday,
-                time_info->tm_hour,
-                time_info->tm_min,
-                time_info->tm_sec,
-                ms_since_epoch % ms_in_s
-            );
-#elif __linux__
-            // NOLINTNEXTLINE
-            const auto ret = snprintf(
-                time_buffer.data(),
-                time_buffer.size(),
-                "%04ld-%02d-%02d %02d:%02d:%02d.%03ld",
-                start_year + time_info->tm_year,
-                1 + time_info->tm_mon,
-                time_info->tm_mday,
-                time_info->tm_hour,
-                time_info->tm_min,
-                time_info->tm_sec,
-                ms_since_epoch % ms_in_s
-            );
-#endif
-
-            if (ret == 0) {
-                throw Logger_Exception(Log_Exception_Type::FORMAT, "Logger_Util::get_time_string() failed to format time");
-            }
-        }
-        result = std::string(time_buffer.data());
-    }
-
-    return result;
+    return fmt::format("{:%F}T{:%H:%M:%S}", clock_now, ms_since_epoch);
 }
 
 bool

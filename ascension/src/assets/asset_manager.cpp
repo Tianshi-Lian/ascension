@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:40:22
+ * Last Modified: 2023-04-20 16:12:03
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -53,7 +53,7 @@ Asset_Manager::clear()
 }
 
 void
-// NOLINTNEXTLINE
+// NOLINTNEXTLINE - this needs to be recursive.
 Asset_Manager::parse_asset_document(const std::string& document_filepath, const std::string& root_name)
 {
     pugi::xml_document document;

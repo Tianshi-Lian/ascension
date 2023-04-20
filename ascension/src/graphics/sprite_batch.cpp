@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-20 14:21:32
+ * Last Modified: 2023-04-20 16:10:40
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -183,12 +183,13 @@ Sprite_Batch::generate_quad_vertices(const Sprite_Batch_Item& item)
     const auto position = item.position;
     const auto width = static_cast<f32>(texture->width());
     const auto height = static_cast<f32>(texture->height());
+    static const auto sprite_colour = v4f{ 1.0f, 1.0f, 1.0f, 1.0f };
 
     for (u32 i = 0; i < QUAD_VERTEX_COUNT; i += 4) {
-        m_current_vertices.emplace_back(v2{ position.x, position.y }, v2{ 0, 0 }, v4f{ 1, 1, 1, 1 });
-        m_current_vertices.emplace_back(v2{ position.x, position.y + height }, v2{ 0, 1 }, v4f{ 1, 1, 1, 1 });
-        m_current_vertices.emplace_back(v2{ position.x + height, position.y + height }, v2{ 1, 1 }, v4f{ 1, 1, 1, 1 });
-        m_current_vertices.emplace_back(v2{ position.x + width, position.y }, v2{ 1, 0 }, v4f{ 1, 1, 1, 1 });
+        m_current_vertices.emplace_back(v2{ position.x, position.y }, v2{ 0, 0 }, sprite_colour);
+        m_current_vertices.emplace_back(v2{ position.x, position.y + height }, v2{ 0, 1 }, sprite_colour);
+        m_current_vertices.emplace_back(v2{ position.x + height, position.y + height }, v2{ 1, 1 }, sprite_colour);
+        m_current_vertices.emplace_back(v2{ position.x + width, position.y }, v2{ 1, 0 }, sprite_colour);
     }
 }
 

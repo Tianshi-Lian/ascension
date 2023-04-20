@@ -3,7 +3,7 @@
  * Project: yuki
  * File Created: 2023-02-25 11:46:28
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:05:00
+ * Last Modified: 2023-04-20 15:20:59
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -491,8 +491,8 @@ class Logger {
         std::string log_string;
         if (level != Severity::LOG_MANUAL) {
             const auto timestamp = Logger_Util::get_time_string();
-            const auto log_level = std::string(magic_enum::enum_name(level));
-            log_string = fmt::format("{} [{}] {} > {}", timestamp, log_level, source, formatted_message);
+            const auto log_level = std::string(magic_enum::enum_name(level)).substr(4);
+            log_string = fmt::format("{} [{: <8}] {} > {}", timestamp, log_level, source, formatted_message);
         }
         else {
             log_string = formatted_message;

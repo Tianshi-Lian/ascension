@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:45:12
+ * Last Modified: 2023-04-23 19:41:36
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -70,6 +70,10 @@ Application::run()
     f64 next_game_tick = start_time;
     i32 loops = 0;
 
+    i64 update_frames = 0;
+    i64 render_frames = 0;
+    f64 elapsed_time = 0.0;
+
     while (!m_should_quit) {
         start_time = yuki::Platform::get_platform_time(platform_state);
         loops = 0;
@@ -92,6 +96,8 @@ Application::run()
 
             next_game_tick += skip_update_ms;
             loops++;
+
+            ++update_frames;
         }
 
         f32 interpolation = static_cast<f32>(
@@ -99,6 +105,16 @@ Application::run()
         );
 
         render(interpolation);
+
+        ++render_frames;
+
+        elapsed_time += (yuki::Platform::get_platform_time(platform_state) - start_time);
+        if (elapsed_time >= 1000.0) {
+            yuki::debug::Logger::debug("erika", "Update fps: {}  Render fps: {}", update_frames, render_frames);
+            elapsed_time = 0;
+            update_frames = 0;
+            render_frames = 0;
+        }
     }
 
     return 0;

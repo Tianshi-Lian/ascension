@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-23 19:41:36
+ * Last Modified: 2023-04-24 13:28:20
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -109,7 +109,7 @@ Application::run()
         ++render_frames;
 
         elapsed_time += (yuki::Platform::get_platform_time(platform_state) - start_time);
-        if (elapsed_time >= 1000.0) {
+        if (elapsed_time >= millisecond_per_second) {
             yuki::debug::Logger::debug("erika", "Update fps: {}  Render fps: {}", update_frames, render_frames);
             elapsed_time = 0;
             update_frames = 0;

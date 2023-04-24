@@ -1,9 +1,9 @@
 [submodule "ascension/libs/sdl"]
 	path = ascension/libs/sdl
-	url = https://github.com/r-ggraham/SDL.git
+	url = git@github.com:r-ggraham/SDL.git
 [submodule "ascension/libs/glm"]
 	path = ascension/libs/glm
-	url = https://github.com/g-truc/glm.git
+	url = git@github.com:g-truc/glm.git
 [submodule "ascension/libs/glew"]
 	path = ascension/libs/glew
 	url = git@github.com:Perlmint/glew-cmake.git
@@ -13,3 +13,6 @@
 [submodule "ascension/libs/pugixml"]
 	path = ascension/libs/pugixml
 	url = git@github.com:zeux/pugixml.git
+[submodule "erika/libs/glm"]
+	path = erika/libs/glm
+	url = https://github.com/g-truc/glm.git

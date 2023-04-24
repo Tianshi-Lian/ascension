@@ -5,6 +5,7 @@ message("    (plugins) Configuring renderer plugins...")
 add_library(${LIB_NAME} INTERFACE)
 
 set_lib_output_directories(${ERIKA_BASE_PLUGIN_OUTPUT_DIR} renderer)
+set_lib_ints_directories(${ERIKA_BASE_INT_OUTPUT_DIR} renderer)
 
 # We use this to ensure all users (applications) can refer to plugins as if they are part
 # of erika, even though they "aren't" e.g.: #include "erika/plugins/renderer/d3d11.hpp"

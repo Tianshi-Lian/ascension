@@ -4,6 +4,7 @@ set(LIB_NAME erika)
 message("Configuring ${LIB_NAME}...")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 
@@ -14,7 +15,10 @@ project(${LIB_NAME}
 )
 
 add_library(${LIB_NAME})
+
 add_subdirectory(src)
+add_subdirectory(libs)
+add_subdirectory(plugins)
 
 target_include_directories(${LIB_NAME} PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}>
@@ -34,16 +38,12 @@ set_target_properties(${LIB_NAME} PROPERTIES
 if(ENABLE_PCH)
 	target_precompile_headers(${LIB_NAME}
 		PRIVATE <string> <memory>
-		PRIVATE <yuki/types.hpp>
-		PRIVATE <core/defines.hpp>
+		PRIVATE <core/defines.hpp> <core/types.hpp>
 	)
 endif()
 
 target_link_libraries(${LIB_NAME}
 	PRIVATE project_options project_warnings yuki
 )
-
-# Erika plugins
-add_subdirectory(plugins)
 
 message("Finished ${LIB_NAME}")

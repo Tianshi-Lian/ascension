@@ -6,6 +6,7 @@ message("  (erika) Configuring ${LIB_NAME}...")
 add_library(${LIB_NAME} INTERFACE)
 
 set(ERIKA_BASE_PLUGIN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(ERIKA_BASE_INT_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/ints)
 
 # We use this to ensure all users (applications) can refer to plugins as if they are part
 # of erika, even though they "aren't" e.g.: #include "erika/plugins/renderer/d3d11.hpp"

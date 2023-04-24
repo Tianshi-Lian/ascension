@@ -12,8 +12,7 @@ project(${LIB_NAME}
 add_library(${LIB_NAME} MODULE)
 
 add_subdirectory(src)
-
-target_compile_definitions(${LIB_NAME} PRIVATE ERIKA_EXPORT)
+add_subdirectory(libs)
 
 target_include_directories(${LIB_NAME} PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${ERIKA_BASE_PLUGIN_INC}/${LIB_NAME}>
@@ -31,16 +30,14 @@ set_target_properties(${LIB_NAME} PROPERTIES
 
 if(ENABLE_PCH)
 	target_precompile_headers(${LIB_NAME}
-		PRIVATE <string> <memory>
-		PRIVATE <yuki/types.hpp>
+		PRIVATE <string> <memory> <vector>
+		PRIVATE <erika/core/types.hpp>
 	)
 endif()
 
-add_subdirectory(libs/glad)
-add_subdirectory(libs/raylib)
-
 target_link_libraries(${LIB_NAME}
-	PRIVATE project_options project_warnings yuki erika glad mraylib
+	PRIVATE project_options project_warnings yuki erika
+	PRIVATE glad mraylib libglew_static freetype
 )
 
 if(WIN32)
@@ -52,5 +49,7 @@ elseif(UNIX)
 		PRIVATE GL X11 xcb X11-xcb
 	)
 endif()
+
+target_compile_definitions(${LIB_NAME} PRIVATE ERIKA_EXPORT)
 
 message("      (renderer) Finished ${LIB_NAME}")

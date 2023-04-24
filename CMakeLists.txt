@@ -18,6 +18,7 @@ enable_static_analysis()
 option(ENABLE_PCH "Enable Precompiled Headers" ON)
 
 # Libraries
+add_subdirectory(libs)
 add_subdirectory(erika)
 add_subdirectory(yuki)
 

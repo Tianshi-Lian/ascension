@@ -2,13 +2,13 @@
 	path = ascension/libs/sdl
 	url = git@github.com:r-ggraham/SDL.git
 [submodule "ascension/libs/glm"]
-	path = ascension/libs/glm
+	path = libs/glm
 	url = git@github.com:g-truc/glm.git
 [submodule "ascension/libs/glew"]
-	path = ascension/libs/glew
+	path = libs/glew
 	url = git@github.com:Perlmint/glew-cmake.git
 [submodule "ascension/libs/freetype"]
-	path = ascension/libs/freetype
+	path = libs/freetype
 	url = git@github.com:freetype/freetype.git
 [submodule "ascension/libs/pugixml"]
 	path = ascension/libs/pugixml

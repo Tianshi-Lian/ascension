@@ -37,7 +37,7 @@ endif()
 
 target_link_libraries(${LIB_NAME}
 	PRIVATE project_options project_warnings yuki erika
-	PRIVATE glad mraylib libglew_static freetype
+	PRIVATE glad mraylib libglew_static freetype glm stb
 )
 
 if(WIN32)

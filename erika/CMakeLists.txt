@@ -17,7 +17,6 @@ project(${LIB_NAME}
 add_library(${LIB_NAME})
 
 add_subdirectory(src)
-add_subdirectory(libs)
 add_subdirectory(plugins)
 
 target_include_directories(${LIB_NAME} PRIVATE
@@ -44,6 +43,7 @@ endif()
 
 target_link_libraries(${LIB_NAME}
 	PRIVATE project_options project_warnings yuki
+	PRIVATE glm
 )
 
 message("Finished ${LIB_NAME}")

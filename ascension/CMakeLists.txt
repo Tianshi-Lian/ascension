@@ -20,6 +20,8 @@ add_subdirectory(include/ascension)
 add_subdirectory(src)
 add_subdirectory(libs)
 
+set_app_ito(${APP_NAME})
+
 target_include_directories(${APP_NAME} PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${APP_NAME}>
 	$<INSTALL_INTERFACE:include/${APP_NAME}>
@@ -30,19 +32,19 @@ set_target_properties(${APP_NAME} PROPERTIES
 	CXX_EXTENSIONS OFF
 )
 
-set_app_ito(${APP_NAME})
-
 if(ENABLE_PCH)
 	target_precompile_headers(${APP_NAME}
-		PRIVATE <map> <memory> <string> <vector> <utility> <core/types.hpp>
+		PRIVATE <map> <memory> <string> <vector> <utility>
+		PRIVATE <core/types.hpp>
 	)
 endif()
 
-target_compile_definitions(${APP_NAME} PUBLIC $<$<CONFIG:Debug>:AS_DEBUG>)
-
 target_link_libraries(${APP_NAME}
-	PRIVATE project_options project_warnings yuki SDL2::SDL2main SDL2::SDL2-static libglew_static freetype pugixml-static
+	PRIVATE project_options project_warnings yuki
+	PRIVATE SDL2::SDL2main SDL2::SDL2-static libglew_static freetype pugixml-static
 )
+
+target_compile_definitions(${APP_NAME} PUBLIC $<$<CONFIG:Debug>:AS_DEBUG>)
 
 install(
 	TARGETS ${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/dist

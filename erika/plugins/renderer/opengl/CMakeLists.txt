@@ -9,7 +9,7 @@ project(${LIB_NAME}
 	LANGUAGES CXX
 )
 
-add_library(${LIB_NAME} SHARED)
+add_library(${LIB_NAME} MODULE)
 
 add_subdirectory(src)
 

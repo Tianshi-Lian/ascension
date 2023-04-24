@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-27 19:45:50
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:14
+ * Last Modified: 2023-04-24 13:41:53
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,7 +26,7 @@
 
 #include "opengl_platform_types.hpp"
 
-namespace yuki::platform {
+namespace yuki {
 struct Platform_State;
 }
 
@@ -35,7 +35,7 @@ class OpenGL_Platform {
   public:
     static bool create_context(
         const std::shared_ptr<OpenGL_Platform_State>& opengl_platform_state,
-        const std::shared_ptr<yuki::platform::Platform_State>& platform_state
+        const std::shared_ptr<yuki::Platform_State>& platform_state
     );
 
     static void swap_buffers(const std::shared_ptr<OpenGL_Platform_State>& opengl_platform_state);

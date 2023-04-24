@@ -38,6 +38,10 @@ target_link_libraries(${APP_NAME}
 	PRIVATE project_options project_warnings erika yuki
 )
 
+add_dependencies(${APP_NAME}
+	erika_plugins
+)
+
 install(
 	TARGETS ${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/dist
 )

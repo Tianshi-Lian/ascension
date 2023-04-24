@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-04-06 16:09:06
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:23
+ * Last Modified: 2023-04-24 13:41:33
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -137,7 +137,7 @@ class OpenGL_Renderer_Factory : public Renderer_Plugin_Factory {
 };
 
 void
-OpenGL_Renderer::initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state)
+OpenGL_Renderer::initialize(const std::shared_ptr<yuki::Platform_State>& platform_state)
 {
     yuki::debug::Logger::debug("erika", "OpenGL_Renderer::initialize()");
 

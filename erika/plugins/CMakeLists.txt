@@ -4,7 +4,6 @@ set(LIB_NAME erika_plugins)
 message("  (erika) Configuring ${LIB_NAME}...")
 
 add_library(${LIB_NAME} INTERFACE)
-add_dependencies(${LIB_NAME} erika)
 
 set(ERIKA_BASE_PLUGIN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
@@ -13,9 +12,12 @@ set(ERIKA_BASE_PLUGIN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 # This can be overriden by subdirs.
 set(ERIKA_BASE_PLUGIN_INC include/erika/plugins)
 
-# Import & link to all our plugin options/types.
+# Import & grab all our plugin options/types.
 add_subdirectory(renderer)
 
-target_link_libraries(${LIB_NAME} INTERFACE erika_renderer_plugins)
+add_dependencies(${LIB_NAME}
+    erika
+    erika_renderer_plugins
+)
 
 message("  (erika) Finished ${LIB_NAME}")

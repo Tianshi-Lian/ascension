@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-27 19:45:50
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:16
+ * Last Modified: 2023-04-24 13:41:17
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -36,7 +36,7 @@ class OpenGL_Renderer : public erika::plugins::Renderer {
     OpenGL_Renderer() = default;
     ~OpenGL_Renderer() override = default;
 
-    void initialize(const std::shared_ptr<yuki::platform::Platform_State>& platform_state) override;
+    void initialize(const std::shared_ptr<yuki::Platform_State>& platform_state) override;
     void shutdown() override;
 
     void begin_scene(const Clear_Color& clear_color) override;

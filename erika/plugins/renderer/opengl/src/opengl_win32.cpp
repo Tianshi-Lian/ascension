@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-27 19:45:50
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:22
+ * Last Modified: 2023-04-24 13:42:48
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -58,7 +58,7 @@ namespace erika::plugins::renderer::opengl {
 bool
 OpenGL_Platform::create_context(
     const std::shared_ptr<OpenGL_Platform_State>& opengl_platform_state,
-    const std::shared_ptr<yuki::platform::Platform_State>& app_platform_state
+    const std::shared_ptr<yuki::Platform_State>& app_platform_state
 )
 {
     PROFILE_FUNCTION();

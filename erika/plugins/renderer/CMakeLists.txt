@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
+set(LIB_NAME erika_renderer_plugins)
 message("    (plugins) Configuring renderer plugins...")
+add_library(${LIB_NAME} INTERFACE)
 
 set_lib_output_directories(${ERIKA_BASE_PLUGIN_OUTPUT_DIR} renderer)
 
@@ -10,5 +12,11 @@ set(ERIKA_BASE_PLUGIN_INC ${ERIKA_BASE_PLUGIN_INC}/renderer)
 
 add_subdirectory(d3d11)
 add_subdirectory(opengl)
+
+add_dependencies(${LIB_NAME}
+    erika,
+    d3d11,
+    opengl
+)
 
 message("    (plugins) Finished renderer plugins")

@@ -41,7 +41,7 @@ endif()
 
 target_link_libraries(${APP_NAME}
 	PRIVATE project_options project_warnings yuki
-	PRIVATE SDL2::SDL2main SDL2::SDL2-static libglew_static freetype pugixml-static
+	PRIVATE SDL2::SDL2main SDL2::SDL2-static glm stb libglew_static freetype pugixml-static
 )
 
 target_compile_definitions(${APP_NAME} PUBLIC $<$<CONFIG:Debug>:AS_DEBUG>)

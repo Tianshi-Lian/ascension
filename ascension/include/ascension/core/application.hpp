@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:39:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:31:51
+ * Last Modified: 2023-04-26 15:16:05
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,6 +26,7 @@
 
 #include "assets/asset_manager.hpp"
 #include "core/window.hpp"
+
 namespace ascension::core {
 
 class Application {

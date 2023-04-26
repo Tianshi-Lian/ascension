@@ -3,7 +3,7 @@
  * Project: yuki
  * File Created: 2023-02-25 11:46:28
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-20 15:20:59
+ * Last Modified: 2023-04-26 15:20:32
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -201,7 +201,7 @@ class Logger_Util {
      *
      * @param	milliseconds	The number of milliseconds to sleep
      */
-    static void sleep(unsigned int milliseconds);
+    static void sleep(u32 milliseconds);
 
     /**
      * @brief Composes a string with the same text that would be printed.

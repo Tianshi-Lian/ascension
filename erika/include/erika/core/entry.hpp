@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-03 18:54:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-11 20:18:54
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -33,7 +33,7 @@
 #include "yuki/platform/platform.hpp"
 
 int
-main(int /*argc*/, char** /*args*/) // NOLINT
+main(i32 /*argc*/, char** /*args*/) // NOLINT
 {
     yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
     PROFILE_BEGIN_SESSION("erika_profiling", "logs/timings.json");

@@ -3,7 +3,7 @@
  * Project: yuki
  * File Created: 2023-02-25 11:46:28
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-20 15:03:18
+ * Last Modified: 2023-04-26 15:20:44
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -78,7 +78,7 @@ Logger_Util::has_permissions_for_file(const std::string& filepath)
 }
 
 void
-Logger_Util::sleep(unsigned int milliseconds)
+Logger_Util::sleep(u32 milliseconds)
 {
     constexpr i32 ms_to_ns = 1000000L;
     constexpr i64 s_to_ns = 1000000000L;

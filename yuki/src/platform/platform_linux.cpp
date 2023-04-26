@@ -3,7 +3,7 @@
  * Project: yuki
  * File Created: 2023-03-12 21:20:07
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:07:14
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -70,7 +70,7 @@ Platform::initialize(
     state->display = XOpenDisplay(nullptr);
     XAutoRepeatOff(state->display);
 
-    int screen_p = 0;
+    i32 screen_p = 0;
     state->connection = XGetXCBConnection(state->display);
 
     if (xcb_connection_has_error(state->connection)) {

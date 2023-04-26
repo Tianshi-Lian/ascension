@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 20:36:05
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:44:26
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -43,7 +43,7 @@ enum class Error_Check_Type {
 bool
 check_shader_errors(u32 object, Error_Check_Type type)
 {
-    int success = 1;
+    i32 success = 1;
     auto info_log = std::array<char, Info_Log_Size>();
     switch (type) {
         case Error_Check_Type::SHADER:

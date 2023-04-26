@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-27 19:45:50
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-24 13:42:48
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -82,7 +82,7 @@ OpenGL_Platform::create_context(
     pixel_format_descriptor.cDepthBits = 32;
     pixel_format_descriptor.iLayerType = PFD_MAIN_PLANE;
 
-    int format = ChoosePixelFormat(opengl_state->device_context, &pixel_format_descriptor);
+    i32 format = ChoosePixelFormat(opengl_state->device_context, &pixel_format_descriptor);
     if (format == 0 || SetPixelFormat(opengl_state->device_context, format, &pixel_format_descriptor) == FALSE) {
         ReleaseDC(platform_state->window, opengl_state->device_context);
         DestroyWindow(platform_state->window);
@@ -102,7 +102,7 @@ OpenGL_Platform::create_context(
     // Load WGL Extensions:
     gladLoaderLoadWGL(opengl_state->device_context);
 
-    int attributes[] = {
+    i32 attributes[] = {
         WGL_CONTEXT_MAJOR_VERSION_ARB,
         4, // OpenGL MAJOR 4
         WGL_CONTEXT_MINOR_VERSION_ARB,

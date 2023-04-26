@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-27 19:45:50
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:20
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -74,9 +74,9 @@ OpenGL_Platform::create_context(
 
     opengl_state->display = platform_state->display;
 
-    int visual_id = 0;
-    int num_fb_configs = 0;
-    int default_screen = DefaultScreen(opengl_state->display);
+    i32 visual_id = 0;
+    i32 num_fb_configs = 0;
+    i32 default_screen = DefaultScreen(opengl_state->display);
     GLXFBConfig* fb_configs = 0;
     fb_configs = glXGetFBConfigs(opengl_state->display, default_screen, &num_fb_configs);
     if (!fb_configs || num_fb_configs == 0) {

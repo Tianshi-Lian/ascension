@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 18:53:27
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:47:12
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -30,8 +30,8 @@
 
 namespace ascension::core {
 
-constexpr static int OpenGL_MAJOR = 4;
-constexpr static int OpenGL_MINOR = 3;
+constexpr static i32 OpenGL_MAJOR = 4;
+constexpr static i32 OpenGL_MINOR = 3;
 
 Window::Window()
   : m_internal_window(nullptr)

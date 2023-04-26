@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-03 18:35:33
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:30
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -58,14 +58,14 @@ Engine::run(const std::shared_ptr<yuki::Platform_State>& platform_state, const s
     game->initialize();
 
     constexpr f64 millisecond = 1000.0;
-    constexpr int updates_per_second = 60;
+    constexpr i32 updates_per_second = 60;
     constexpr f64 skip_update_ms = millisecond / updates_per_second;
-    constexpr int max_skipped_frames = 5;
+    constexpr i32 max_skipped_frames = 5;
 
     f64 start_time = Platform::get_platform_time(platform_state);
     f64 next_game_tick = start_time;
-    int loops = 0;
-    float interpolation = 0.0f;
+    i32 loops = 0;
+    f32 interpolation = 0.0f;
 
     i64 update_frames = 0;
     i64 render_frames = 0;

@@ -3,7 +3,7 @@
  * Project: yuki
  * File Created: 2023-03-06 20:09:27
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:07:04
+ * Last Modified: 2023-04-26 15:23:04
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -77,7 +77,7 @@ Instrumentor::end_session()
 void
 Instrumentor::output_profile_result(
     const std::string& name,
-    std::chrono::duration<double, std::micro> start_time,
+    std::chrono::duration<f64, std::micro> start_time,
     std::chrono::microseconds elapsed_time,
     std::thread::id thread_id
 )
@@ -134,7 +134,7 @@ Instrumentor_Timer::stop()
     const auto end_time{ std::chrono::steady_clock::now() };
     const auto elapsed_time{ std::chrono::time_point_cast<std::chrono::microseconds>(end_time).time_since_epoch() -
                              std::chrono::time_point_cast<std::chrono::microseconds>(m_start_time).time_since_epoch() };
-    const auto high_res_start_time{ std::chrono::duration<double, std::micro>{ m_start_time.time_since_epoch() } };
+    const auto high_res_start_time{ std::chrono::duration<f64, std::micro>{ m_start_time.time_since_epoch() } };
 
     Instrumentor::get().output_profile_result(m_name, high_res_start_time, elapsed_time, std::this_thread::get_id());
 

@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-04-06 16:09:06
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-24 13:41:33
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -82,14 +82,14 @@ sandbox()
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
-    float vertices[] = {
+    f32 vertices[] = {
         -0.5f, -0.5f, 0.0f, // bl
         0.5f,  -0.5f, 0.0f, // br
         0.5f,  0.5f,  0.0f, // tr
         -0.5f, 0.5f,  0.0f, // tl
     };
 
-    unsigned int indices[] = {
+    unsigned i32 indices[] = {
         0, 1, 2, // br
         2, 3, 0  // tl
     };

@@ -3,7 +3,7 @@
  * Project: yuki
  * File Created: 2023-03-06 20:00:03
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:57
+ * Last Modified: 2023-04-26 15:22:55
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -75,7 +75,7 @@ class Instrumentor {
      */
     void output_profile_result(
         const std::string& name,
-        std::chrono::duration<double, std::micro> start_time,
+        std::chrono::duration<f64, std::micro> start_time,
         std::chrono::microseconds elapsed_time,
         std::thread::id thread_id
     );

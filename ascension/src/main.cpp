@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-06 21:17:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:45:36
+ * Last Modified: 2023-04-26 15:20:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -36,7 +36,7 @@ constexpr u32 WIN_DEFAULT_WIDTH = 1600;
 constexpr u32 WIN_DEFAULT_HEIGHT = 900;
 
 int
-main(int argc, char** argv)
+main(i32 argc, char** argv)
 {
     using namespace ascension;
 

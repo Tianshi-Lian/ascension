@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 19:02:06
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:21:19
+ * Last Modified: 2023-04-26 15:16:16
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -21,6 +21,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ==================
  */
+
+#pragma once
 
 #include "yuki/debug/logger.hpp"
 

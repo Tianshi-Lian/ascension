@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 18:53:27
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-26 15:20:01
+ * Last Modified: 2023-04-29 17:11:09
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -23,10 +23,11 @@
  */
 
 #include "core/window.hpp"
-#include "core/log.hpp"
 
-#include <GL/glew.h>
 #include <SDL.h>
+
+#include "core/log.hpp"
+#include "graphics/renderer_2d.hpp"
 
 namespace ascension::core {
 
@@ -66,8 +67,8 @@ Window::create(const std::string& title, i32 pos_x, i32 pos_y, i32 width, i32 he
     m_internal_window = SDL_CreateWindow(title.c_str(), pos_x, pos_y, width, height, SDL_WINDOW_OPENGL);
     m_internal_context = SDL_GL_CreateContext(static_cast<SDL_Window*>(m_internal_window));
 
-    if (glewInit() != GLEW_OK) {
-        core::log::critical("Failed to initialise glew! Error {}", SDL_GetError());
+    if (!graphics::Renderer_2D::initialize()) {
+        core::log::critical("Failed to initialize renderer for window!");
         return false;
     }
 
@@ -83,19 +84,13 @@ Window::create(const std::string& title, i32 pos_x, i32 pos_y, i32 width, i32 he
 
     // TODO: Double check we got (near) our requested OpenGL attributes.
 
-    // TODO: Allow the application (user) to set these.
-    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     return true;
 }
 
 void
 Window::clear() // NOLINT
 {
-    // TODO: Allow setting the clear properties and or color.
-    glClear(GL_COLOR_BUFFER_BIT);
+    graphics::Renderer_2D::clear();
 }
 
 void

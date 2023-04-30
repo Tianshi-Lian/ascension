@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-30 15:30:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-30 15:57:57
+ * Last Modified: 2023-04-30 18:49:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -31,7 +31,7 @@
 namespace ascension::input {
 
 struct Mouse_State {
-    v2 position;
+    v2i position;
     std::array<bool, static_cast<size_t>(Mouse_Button::MAX_BUTTONS)> buttons_down;
 
     [[nodiscard]] bool is_down(Mouse_Button button) const;

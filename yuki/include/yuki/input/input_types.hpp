@@ -3,7 +3,7 @@
  * Project: yuki
  * File Created: 2023-04-04 18:37:03
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:05:04
+ * Last Modified: 2023-04-30 19:02:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -32,9 +32,11 @@ namespace yuki::input {
  * @brief Represents available mouse buttons.
  */
 enum class Mouse_Button : u32 {
-    LEFT,
-    RIGHT,
-    MIDDLE,
+    LEFT = 1,
+    MIDDLE = 2,
+    RIGHT = 3,
+    EXTRA_1 = 4,
+    EXTRA_2 = 5,
     MAX_BUTTONS
 };
 

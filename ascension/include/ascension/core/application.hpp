@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:39:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-26 15:16:05
+ * Last Modified: 2023-04-30 18:55:10
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -25,7 +25,9 @@
 #pragma once
 
 #include "assets/asset_manager.hpp"
+
 #include "core/window.hpp"
+#include "input/input_manager.hpp"
 
 namespace ascension::core {
 
@@ -48,8 +50,9 @@ class Application {
     virtual void on_update(f64 delta_time) = 0;
     virtual void on_render(f32 interpolation) = 0;
 
-    assets::Asset_Manager m_asset_manager;
     std::shared_ptr<Window> m_window;
+    assets::Asset_Manager m_asset_manager;
+    input::Input_Manager m_input_manager;
 
   private:
     void initialize();

@@ -5,6 +5,7 @@ target_sources(${APP_NAME} PRIVATE
     core/application.cpp
     core/window.cpp
     input/input_listener.cpp
+    input/input_manager.cpp
     input/input_state.cpp
     graphics/buffer_object.cpp
     graphics/renderer_2d.cpp

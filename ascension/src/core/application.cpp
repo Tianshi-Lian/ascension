@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-24 13:28:20
+ * Last Modified: 2023-04-30 19:08:25
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -86,8 +86,31 @@ Application::run()
                             quit();
                         }
                     } break;
+
                     case SDL_QUIT: {
                         quit();
+                    } break;
+
+                    case SDL_KEYDOWN:
+                    case SDL_KEYUP: {
+                        m_input_manager.process_key(
+                            static_cast<input::Key>(event.key.keysym.scancode), event.key.state == SDL_PRESSED, skip_update_ms
+                        );
+                    } break;
+
+                    case SDL_MOUSEMOTION: {
+                        m_input_manager.process_mouse_move(event.motion.x, event.motion.y, skip_update_ms);
+                    } break;
+                    case SDL_MOUSEWHEEL: {
+                        m_input_manager.process_mouse_scroll(event.wheel.y, skip_update_ms);
+                    } break;
+                    case SDL_MOUSEBUTTONDOWN:
+                    case SDL_MOUSEBUTTONUP: {
+                        m_input_manager.process_mouse_button(
+                            static_cast<input::Mouse_Button>(event.button.button),
+                            event.button.state == SDL_PRESSED,
+                            skip_update_ms
+                        );
                     } break;
                 }
             }
@@ -135,6 +158,7 @@ Application::initialize()
 void
 Application::update(f64 delta_time)
 {
+    m_input_manager.clear_state();
     on_update(delta_time);
 }
 
@@ -147,5 +171,4 @@ Application::render(f32 interpolation)
     on_render(interpolation);
     m_window->flip();
 }
-
 }

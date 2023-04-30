@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-30 15:26:39
+ * Last Modified: 2023-04-30 19:09:04
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -42,6 +42,10 @@ void
 Ascension::on_update(f64 delta_time)
 {
     (void)delta_time;
+
+    if (m_input_manager.is_key_down(input::Key::ESCAPE)) {
+        quit();
+    }
 }
 
 void

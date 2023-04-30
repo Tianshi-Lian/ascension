@@ -4,6 +4,7 @@ target_sources(${APP_NAME} PRIVATE
     assets/asset_manager.cpp
     core/application.cpp
     core/window.cpp
+    input/input_listener.cpp
     input/input_state.cpp
     graphics/buffer_object.cpp
     graphics/renderer_2d.cpp

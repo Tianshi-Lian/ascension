@@ -5,7 +5,9 @@ target_sources(${APP_NAME} PRIVATE
     core/application.hpp
     core/types.hpp
     core/window.hpp
+    input/input_listener.hpp
     input/input_state.hpp
+    input/input_types.hpp
     graphics/buffer_object.hpp
     graphics/renderer_2d.hpp
     graphics/shader.hpp

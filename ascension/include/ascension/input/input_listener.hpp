@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-30 15:50:06
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-30 16:01:24
+ * Last Modified: 2023-04-30 16:22:27
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,7 +28,20 @@
 
 namespace ascension::input {
 
-class Keyboard_Listener {
+class Input_Listener {
+  public:
+    Input_Listener();
+
+    [[nodiscard]] u32 get_id() const;
+
+    friend bool operator==(const Input_Listener& listener_1, const Input_Listener& listener_2);
+    friend bool operator!=(const Input_Listener& listener_1, const Input_Listener& listener_2);
+
+  private:
+    u32 m_id;
+};
+
+class Keyboard_Listener : public Input_Listener {
   public:
     Keyboard_Listener() = default;
     virtual ~Keyboard_Listener() = 0;
@@ -43,7 +56,7 @@ class Keyboard_Listener {
     Keyboard_Listener& operator=(Keyboard_Listener&&) = delete;
 };
 
-class Mouse_Listener {
+class Mouse_Listener : public Input_Listener {
   public:
     Mouse_Listener() = default;
     virtual ~Mouse_Listener() = 0;

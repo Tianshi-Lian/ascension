@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-02-24 19:27:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-13 20:18:15
+ * Last Modified: 2023-04-30 14:58:09
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,6 +26,8 @@
 
 #include "core/application.hpp"
 
+#include "graphics/sprite_batch.hpp"
+
 namespace ascension {
 
 class Ascension : public core::Application {
@@ -37,10 +39,13 @@ class Ascension : public core::Application {
     void on_update(f64 delta_time) override;
     void on_render(f32 interpolation) override;
 
-    Ascension(const Ascension&) = default;
+    Ascension(const Ascension&) = delete;
     Ascension(Ascension&&) = delete;
-    Ascension& operator=(const Ascension&) = default;
+    Ascension& operator=(const Ascension&) = delete;
     Ascension& operator=(Ascension&&) = delete;
+
+  private:
+    graphics::Sprite_Batch m_sprite_batch;
 };
 
 } // namespace ascension

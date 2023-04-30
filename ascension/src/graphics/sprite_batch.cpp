@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-20 16:10:40
+ * Last Modified: 2023-04-30 15:13:38
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -67,7 +67,7 @@ Sprite_Batch::initialize(u32 screen_width, u32 screen_height, const std::shared_
     m_sprite_shader->set_int("u_texture", 0);
 
     std::array indices_template{ 0u, 1u, 2u, 2u, 3u, 0u };
-    std::vector<u32> indices(static_cast<size_t>(QUAD_INDEX_COUNT * m_max_batch_size));
+    std::vector<u32> indices(static_cast<size_t>(QUAD_INDEX_COUNT) * m_max_batch_size);
 
     for (u32 i = 0; i < max_batch_size; ++i) {
         const u32 offset = i * QUAD_INDEX_COUNT;
@@ -94,6 +94,7 @@ Sprite_Batch::initialize(u32 screen_width, u32 screen_height, const std::shared_
     m_vertex_array->unbind();
 
     m_current_batch.reserve(m_max_batch_size);
+    m_current_vertices.reserve(static_cast<size_t>(QUAD_VERTEX_COUNT) * max_batch_size);
 
     on_resize(screen_width, screen_height);
 }

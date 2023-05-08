@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 20:33:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:50:54
+ * Last Modified: 2023-05-08 20:37:43
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,58 +27,6 @@
 #include <unordered_map>
 
 namespace ascension::graphics {
-
-enum class Shader_Data_Type : u32 {
-    None = 0,
-    Float,
-    Float2,
-    Float3,
-    Float4,
-    Mat2,
-    Mat3,
-    Mat4,
-    Int,
-    Int2,
-    Int3,
-    Int4,
-    Bool,
-    SDT_COUNT
-};
-
-static constexpr i32
-size_of_shader_data_type(Shader_Data_Type type, i32 count = 1)
-{
-    switch (type) {
-        case Shader_Data_Type::Float:
-            return 4 * count;
-        case Shader_Data_Type::Float2:
-            return 4 * 2 * count;
-        case Shader_Data_Type::Float3:
-            return 4 * 3 * count;
-        case Shader_Data_Type::Float4:
-            return 4 * 4 * count;
-        case Shader_Data_Type::Mat2:
-            return 4 * 3 * 2 * count;
-        case Shader_Data_Type::Mat3:
-            return 4 * 3 * 3 * count;
-        case Shader_Data_Type::Mat4:
-            return 4 * 4 * 4 * count;
-        case Shader_Data_Type::Int:
-            return 4 * count;
-        case Shader_Data_Type::Int2:
-            return 4 * 2 * count;
-        case Shader_Data_Type::Int3:
-            return 4 * 3 * count;
-        case Shader_Data_Type::Int4:
-            return 4 * 4 * count;
-        case Shader_Data_Type::Bool:
-            return 1 * count;
-        default:
-            return 0;
-    }
-
-    return 0;
-}
 
 class Shader {
   public:

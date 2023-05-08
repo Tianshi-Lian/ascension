@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 19:29:20
+ * Last Modified: 2023-05-08 21:01:19
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -40,9 +40,9 @@ const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 100000;
 GLuint shaderProgramId, textureId;
 
 graphics::Vertex_Array_Object vao;
-graphics::Vertex_Buffer_Object vbo;
-graphics::Vertex_Buffer_Object ubo;
-graphics::Index_Buffer_Object ibo;
+std::shared_ptr<graphics::Vertex_Buffer_Object> vbo;
+std::shared_ptr<graphics::Vertex_Buffer_Object> ubo;
+std::shared_ptr<graphics::Index_Buffer_Object> ibo;
 
 const char* vertexShader = "#version 330\n"
                            "layout (location = 0) in vec2 vert;\n"
@@ -221,15 +221,21 @@ Ascension::on_initialize()
     // initialize OpenGL buffers
     vao.create(true);
 
-    vbo.create(sizeof(vertices));
-    vao.set_attrib_ptr(2, 2 * sizeof(float), 0, false);
+    vbo = std::make_shared<graphics::Vertex_Buffer_Object>();
+    vbo->create(sizeof(vertices));
+    vbo->set_layout({ { graphics::Shader_Data_Type::Float, 2, false } });
+    vao.add_vertex_buffer(vbo);
 
-    ubo.create(sizeof(uvs), uvs);
-    vao.set_attrib_ptr(2, 2 * sizeof(float), 0, true);
+    ubo = std::make_shared<graphics::Vertex_Buffer_Object>();
+    ubo->create(sizeof(uvs), uvs);
+    ubo->set_layout({ { graphics::Shader_Data_Type::Float, 2, true } });
+    vao.add_vertex_buffer(ubo);
 
-    ibo.create(sizeof(indices), indices);
+    ibo = std::make_shared<graphics::Index_Buffer_Object>();
+    ibo->create(sizeof(indices), indices);
+    vao.set_index_buffer(ibo);
 
-    glBindVertexArray(0);
+    vao.unbind();
 
     // const auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
 }
@@ -252,8 +258,7 @@ Ascension::on_update(f64 delta_time)
     }
 
     // if you had to unbind vbo for whatever reason, bind it again now
-    vbo.bind();
-    vbo.buffer_data(sizeof(vertices), vertices);
+    vbo->buffer_data(sizeof(vertices), vertices);
 }
 
 void

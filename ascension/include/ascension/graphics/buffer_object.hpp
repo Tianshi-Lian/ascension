@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 14:35:15
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:50:48
+ * Last Modified: 2023-05-08 20:57:26
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -23,6 +23,8 @@
  */
 
 #pragma once
+
+#include "graphics/shader_data_types.hpp"
 
 namespace ascension::graphics {
 
@@ -67,10 +69,23 @@ class Buffer_Object {
     bool m_is_bound;
 };
 
+struct Vertex_Object_Element {
+    Vertex_Object_Element() = default;
+    Vertex_Object_Element(Shader_Data_Type type, i32 count, bool normalize);
+
+    Shader_Data_Type type;
+    i32 count;
+    bool normalize;
+};
+using Vertex_Buffer_Layout = std::vector<Vertex_Object_Element>;
+
 class Vertex_Buffer_Object : public Buffer_Object {
   public:
     Vertex_Buffer_Object();
     ~Vertex_Buffer_Object() override = default;
+
+    void set_layout(const Vertex_Buffer_Layout& layout);
+    [[nodiscard]] const Vertex_Buffer_Layout& get_layout() const;
 
     void draw_arrays(i32 start_index, i32 count, Draw_Mode mode);
 
@@ -78,6 +93,9 @@ class Vertex_Buffer_Object : public Buffer_Object {
     Vertex_Buffer_Object(Vertex_Buffer_Object&&) = delete;
     Vertex_Buffer_Object& operator=(const Vertex_Buffer_Object&) = default;
     Vertex_Buffer_Object& operator=(Vertex_Buffer_Object&&) = delete;
+
+  private:
+    Vertex_Buffer_Layout m_layout;
 };
 
 class Index_Buffer_Object : public Buffer_Object {

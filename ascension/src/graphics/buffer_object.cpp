@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 15:45:35
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 17:10:17
+ * Last Modified: 2023-05-08 21:01:47
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -63,7 +63,6 @@ gl_draw_mode(ascension::graphics::Draw_Mode mode)
 namespace ascension::graphics {
 
 // Buffer_Object
-
 Buffer_Object::Buffer_Object()
   : m_id(0)
   , m_buffer_type(0)
@@ -122,6 +121,7 @@ Buffer_Object::unbind()
 void
 Buffer_Object::buffer_data(u32 size, const void* data)
 {
+    bind();
     buffer_sub_data(0, size, data);
 }
 
@@ -138,10 +138,30 @@ Buffer_Object::is_bound() const
     return m_is_bound;
 }
 
+// Vertex_Object_Element
+Vertex_Object_Element::Vertex_Object_Element(Shader_Data_Type type, i32 count, bool normalize)
+  : type(type)
+  , count(count)
+  , normalize(normalize)
+{
+}
+
 // Vertex_Buffer_Object
 Vertex_Buffer_Object::Vertex_Buffer_Object()
   : Buffer_Object(Buffer_Type::Vertex)
 {
+}
+
+void
+Vertex_Buffer_Object::set_layout(const Vertex_Buffer_Layout& layout)
+{
+    m_layout = layout;
+}
+
+const Vertex_Buffer_Layout&
+Vertex_Buffer_Object::get_layout() const
+{
+    return m_layout;
 }
 
 void

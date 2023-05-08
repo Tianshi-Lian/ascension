@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-30 19:08:25
+ * Last Modified: 2023-05-08 15:55:50
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,6 +27,7 @@
 
 #include <SDL.h>
 
+#include "yuki/debug/instrumentor.hpp"
 #include "yuki/platform/platform.hpp"
 
 namespace {
@@ -75,6 +76,8 @@ Application::run()
     f64 elapsed_time = 0.0;
 
     while (!m_should_quit) {
+        PROFILE_SCOPE("Application::run update_loop");
+
         start_time = yuki::Platform::get_platform_time(platform_state);
         loops = 0;
         while (yuki::Platform::get_platform_time(platform_state) > next_game_tick && loops < max_skipped_frames) {
@@ -158,6 +161,7 @@ Application::initialize()
 void
 Application::update(f64 delta_time)
 {
+    PROFILE_FUNCTION();
     m_input_manager.clear_state();
     on_update(delta_time);
 }
@@ -165,6 +169,7 @@ Application::update(f64 delta_time)
 void
 Application::render(f32 interpolation)
 {
+    PROFILE_FUNCTION();
     assert(m_window != nullptr);
 
     m_window->clear();

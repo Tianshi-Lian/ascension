@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-06 21:17:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-26 15:20:01
+ * Last Modified: 2023-05-08 15:54:52
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,6 +24,7 @@
 
 #include <SDL.h>
 
+#include "yuki/debug/instrumentor.hpp"
 #include "yuki/debug/logger.hpp"
 
 #include "ascension.hpp"
@@ -44,11 +45,16 @@ main(i32 argc, char** argv)
     UNUSED_PARAM(argv);
 
     yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
+    PROFILE_BEGIN_SESSION("ascension", "logs/timings.json");
 
     Ascension game;
     if (game.initialize("Ascension", WIN_DEFAULT_X, WIN_DEFAULT_Y, WIN_DEFAULT_WIDTH, WIN_DEFAULT_HEIGHT)) {
-        return game.run();
+        const auto result = game.run();
+
+        PROFILE_END_SESSION();
+        return result;
     }
 
+    PROFILE_END_SESSION();
     return 1;
 }

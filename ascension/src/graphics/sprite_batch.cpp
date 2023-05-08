@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-30 15:13:38
+ * Last Modified: 2023-05-08 16:07:10
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,6 +27,8 @@
 #include <limits>
 
 #include <glm/ext/matrix_clip_space.hpp>
+
+#include "yuki/debug/instrumentor.hpp"
 
 #include "core/log.hpp"
 #include "graphics/buffer_object.hpp"
@@ -102,6 +104,7 @@ Sprite_Batch::initialize(u32 screen_width, u32 screen_height, const std::shared_
 void
 Sprite_Batch::begin(m4 transform)
 {
+    PROFILE_FUNCTION();
     if (m_batch_active) {
         core::log::warn("Sprite_Batch::begin() has already been called. Call Sprite_Batch::end() first.");
         return;
@@ -114,6 +117,7 @@ Sprite_Batch::begin(m4 transform)
 void
 Sprite_Batch::end()
 {
+    PROFILE_FUNCTION();
     if (!m_batch_active) {
         core::log::warn("Sprite_Batch::end() has already been called without an active batch.");
         return;
@@ -151,6 +155,7 @@ Sprite_Batch::end()
 void
 Sprite_Batch::clear()
 {
+    PROFILE_FUNCTION();
     m_current_batch.clear();
     m_current_vertices.clear();
 }
@@ -169,6 +174,7 @@ Sprite_Batch::on_resize(u32 screen_width, u32 screen_height)
 void
 Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, v2f position)
 {
+    PROFILE_FUNCTION();
     if (!m_batch_active) {
         core::log::warn("Sprite_Batch::draw() has already been called without an active batch.");
         return;
@@ -180,23 +186,23 @@ Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, v2f position)
 void
 Sprite_Batch::generate_quad_vertices(const Sprite_Batch_Item& item)
 {
+    PROFILE_FUNCTION();
     const auto texture = item.texture;
     const auto position = item.position;
     const auto width = static_cast<f32>(texture->width());
     const auto height = static_cast<f32>(texture->height());
     static const auto sprite_colour = v4f{ 1.0f, 1.0f, 1.0f, 1.0f };
 
-    for (u32 i = 0; i < QUAD_VERTEX_COUNT; i += 4) {
-        m_current_vertices.emplace_back(v2{ position.x, position.y }, v2{ 0, 0 }, sprite_colour);
-        m_current_vertices.emplace_back(v2{ position.x, position.y + height }, v2{ 0, 1 }, sprite_colour);
-        m_current_vertices.emplace_back(v2{ position.x + height, position.y + height }, v2{ 1, 1 }, sprite_colour);
-        m_current_vertices.emplace_back(v2{ position.x + width, position.y }, v2{ 1, 0 }, sprite_colour);
-    }
+    m_current_vertices.emplace_back(v2{ position.x, position.y }, v2{ 0, 0 }, sprite_colour);
+    m_current_vertices.emplace_back(v2{ position.x, position.y + height }, v2{ 0, 1 }, sprite_colour);
+    m_current_vertices.emplace_back(v2{ position.x + height, position.y + height }, v2{ 1, 1 }, sprite_colour);
+    m_current_vertices.emplace_back(v2{ position.x + width, position.y }, v2{ 1, 0 }, sprite_colour);
 }
 
 void
 Sprite_Batch::flush(const std::shared_ptr<Texture_2D>& texture)
 {
+    PROFILE_FUNCTION();
     if (!texture) {
         return;
     }

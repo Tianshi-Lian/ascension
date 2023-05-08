@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 20:33:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 20:37:43
+ * Last Modified: 2023-05-08 21:24:57
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -37,6 +37,8 @@ class Shader {
     void create(const std::string& vertex_source, const std::string& fragment_source);
     void bind() const;
     static void unbind();
+
+    [[nodiscard]] u32 id() const;
 
     void set_float(const std::string& name, f32 value, bool bind_shader = false);
     void set_float2(const std::string& name, f32 value_1, f32 value_2, bool bind_shader = false);

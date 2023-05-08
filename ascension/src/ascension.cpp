@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 21:01:19
+ * Last Modified: 2023-05-08 21:33:22
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -25,8 +25,10 @@
 #include "ascension.hpp"
 
 #include <GL/glew.h>
+#include <glm/ext/matrix_clip_space.hpp>
 
 #include "graphics/buffer_object.hpp"
+#include "graphics/shader.hpp"
 #include "graphics/sprite_batch.hpp"
 #include "graphics/texture_2d.hpp"
 
@@ -35,7 +37,7 @@
 
 namespace ascension {
 
-const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 100000;
+const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 1500000;
 
 GLuint shaderProgramId, textureId;
 
@@ -43,25 +45,6 @@ graphics::Vertex_Array_Object vao;
 std::shared_ptr<graphics::Vertex_Buffer_Object> vbo;
 std::shared_ptr<graphics::Vertex_Buffer_Object> ubo;
 std::shared_ptr<graphics::Index_Buffer_Object> ibo;
-
-const char* vertexShader = "#version 330\n"
-                           "layout (location = 0) in vec2 vert;\n"
-                           "layout (location = 1) in vec2 _uv;\n"
-                           "out vec2 uv;\n"
-                           "void main()\n"
-                           "{\n"
-                           "    uv = _uv;\n"
-                           "    gl_Position = vec4(vert.x / 720.0 - 1.0, vert.y / 405.0 - 1.0, 0.0, 1.0);\n"
-                           "}\n";
-
-const char* fragmentShader = "#version 330\n"
-                             "out vec4 color;\n"
-                             "in vec2 uv;\n"
-                             "uniform sampler2D tex;\n"
-                             "void main()\n"
-                             "{\n"
-                             "    color = texture(tex, uv);\n"
-                             "}\n";
 
 struct Texture {
     i16 width, height;
@@ -106,27 +89,6 @@ updateObject(int i)
     vertices[i * 8 + 7] = objects[i].y;
 }
 
-GLuint
-compileShader(const GLchar* source, GLuint shaderType)
-{
-    GLuint shaderHandler;
-
-    shaderHandler = glCreateShader(shaderType);
-    glShaderSource(shaderHandler, 1, &source, 0);
-    glCompileShader(shaderHandler);
-
-    GLint success;
-    GLchar infoLog[512];
-    glGetShaderiv(shaderHandler, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(shaderHandler, 512, 0, infoLog);
-        printf("Error in compilation of shader:\n%s\n", infoLog);
-        exit(1);
-    };
-
-    return shaderHandler;
-}
-
 void
 Ascension::on_initialize()
 {
@@ -134,37 +96,14 @@ Ascension::on_initialize()
     m_asset_manager.load_texture_2d("textures/unicorn");
     auto fruit_tex = m_asset_manager.load_texture_2d("textures/fruits");
     textureId = fruit_tex->id();
+    auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
+    shaderProgramId = sprite_shader->id();
 
     // viewport setup
     {
-        glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    }
-
-    // initialize shader
-    {
-        GLuint programId, vertexHandler, fragmentHandler;
-
-        vertexHandler = compileShader(vertexShader, GL_VERTEX_SHADER);
-        fragmentHandler = compileShader(fragmentShader, GL_FRAGMENT_SHADER);
-
-        programId = glCreateProgram();
-        glAttachShader(programId, vertexHandler);
-        glAttachShader(programId, fragmentHandler);
-        glLinkProgram(programId);
-
-        GLint success;
-        GLchar infoLog[512];
-        glGetProgramiv(programId, GL_LINK_STATUS, &success);
-        if (!success) {
-            glGetProgramInfoLog(programId, 512, 0, infoLog);
-            printf("Error in linking of shaders:\n%s\n", infoLog);
-            exit(1);
-        }
-
-        glDeleteShader(vertexHandler);
-        glDeleteShader(fragmentHandler);
-
-        shaderProgramId = programId;
+        auto projection = glm::ortho(0.0f, 1600.0f, 0.0f, 900.0f, -1.0f, 1.0f);
+        sprite_shader->bind();
+        sprite_shader->set_mat4f("m_projection_view", projection * m4{ 1.0f });
     }
 
     for (u32 i = 0; i < OBJECT_COUNT; i++) {
@@ -222,7 +161,7 @@ Ascension::on_initialize()
     vao.create(true);
 
     vbo = std::make_shared<graphics::Vertex_Buffer_Object>();
-    vbo->create(sizeof(vertices));
+    vbo->create(sizeof(vertices), vertices);
     vbo->set_layout({ { graphics::Shader_Data_Type::Float, 2, false } });
     vao.add_vertex_buffer(vbo);
 
@@ -236,8 +175,6 @@ Ascension::on_initialize()
     vao.set_index_buffer(ibo);
 
     vao.unbind();
-
-    // const auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
 }
 
 void
@@ -250,15 +187,15 @@ Ascension::on_update(f64 delta_time)
     }
 
     // dancing fruits =)
-    for (i32 i = 0; i < OBJECT_COUNT; i++) {
-        objects[i].x += static_cast<i16>((rand() % 5 - 2));
-        objects[i].y += static_cast<i16>((rand() % 5 - 2));
+    // for (i32 i = 0; i < OBJECT_COUNT; i++) {
+    //     objects[i].x += static_cast<i16>((rand() % 5 - 2));
+    //     objects[i].y += static_cast<i16>((rand() % 5 - 2));
 
-        updateObject(i);
-    }
+    //     updateObject(i);
+    // }
 
     // if you had to unbind vbo for whatever reason, bind it again now
-    vbo->buffer_data(sizeof(vertices), vertices);
+    // vbo->buffer_data(sizeof(vertices), vertices);
 }
 
 void

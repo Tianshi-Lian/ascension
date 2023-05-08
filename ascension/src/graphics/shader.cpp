@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 20:36:05
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 20:37:50
+ * Last Modified: 2023-05-08 21:25:19
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -138,8 +138,13 @@ Shader::get_uniform_location(const std::string& name)
     return m_uniform_cache.at(name);
 }
 
-// Shader uniform variable setters.
+u32
+Shader::id() const
+{
+    return m_id;
+}
 
+// Shader uniform variable setters.
 void
 Shader::set_float(const std::string& name, f32 value, bool bind_shader)
 {

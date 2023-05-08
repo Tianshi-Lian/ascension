@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 18:53:27
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-29 17:11:09
+ * Last Modified: 2023-05-08 16:01:59
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -25,6 +25,8 @@
 #include "core/window.hpp"
 
 #include <SDL.h>
+
+#include "yuki/debug/instrumentor.hpp"
 
 #include "core/log.hpp"
 #include "graphics/renderer_2d.hpp"
@@ -77,6 +79,8 @@ Window::create(const std::string& title, i32 pos_x, i32 pos_y, i32 width, i32 he
         return false;
     }
 
+    SDL_GL_SetSwapInterval(0);
+
     m_pos_x = static_cast<u32>(pos_x);
     m_pos_y = static_cast<u32>(pos_y);
     m_width = static_cast<u32>(width);
@@ -90,12 +94,14 @@ Window::create(const std::string& title, i32 pos_x, i32 pos_y, i32 width, i32 he
 void
 Window::clear() // NOLINT
 {
+    PROFILE_FUNCTION();
     graphics::Renderer_2D::clear();
 }
 
 void
 Window::flip()
 {
+    PROFILE_FUNCTION();
     SDL_GL_SwapWindow(static_cast<SDL_Window*>(m_internal_window));
 }
 

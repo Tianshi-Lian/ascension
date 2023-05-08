@@ -1,0 +1,57 @@
+ascension:
+    Debug:
+        ☐ Debug interface
+        ☐ Rendering
+    Graphics:
+        ☐ Spritebatch rewrite/performance improvement
+        ☐ Text rendering
+        ☐ Animation
+        ☐ UI
+        ☐ Resolution & display mode settings
+        ☐ Texture atlas
+        ☐ Layer stacks
+        ☐ Particle system
+    Audio:
+        ☐ Sound effects
+        ☐ Music
+        ☐ Mixing
+        ☐ Audio settings
+    Serialization:
+        Player data:
+            ☐ Save file
+            ☐ Settings
+        World data:
+            ☐ World state
+    Event System:
+        ☐ Input events
+        ☐ Audio listeners
+    Assets:
+        ☐ Threaded asset loaded
+        ☐ Asset streaming
+    Scene Management:
+        ☐ Scene state
+        ☐ Swapping scenes
+        ☐ Scene stacks
+    Behaviour/AI Management:
+        Scripting:
+            ☐ Allow simple behavioural scripting?
+        ☐ State management for AI actors
+        ☐ Library of basic AI
+    Pathfinding:
+        ☐ A*
+        ☐ JPS+ (jump point search)
+    Physics:
+        ☐ Movement speeds
+        ☐ Collision
+    Procedural Generation:
+        ☐ Deterministic RNG
+        ☐ Wave function collapse
+    Plugin System:
+        ☐ Swap to plugin system demo'ed in erika
+        Rendering:
+            ☐ OpenGL
+            ☐ DirectX11
+        ☐ Game code as reloadable plugin
+    Modding:
+        ☐ Create plugin mods
+        ☐ Define modding API

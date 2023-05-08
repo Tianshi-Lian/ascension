@@ -3,9 +3,9 @@
 <assets>
     <asset name="wabbit_alpha" type="Texture" filepath="assets/textures/wabbit_alpha.png" >
         <scale>1.5</scale>
-        <flip>1</flip>
     </asset>
-	<asset name="unicorn" type="Texture" filepath="assets/textures/unicorn.png" >
+	<asset name="unicorn" type="Texture" filepath="assets/textures/unicorn.png" />
+    <asset name="fruits" type="Texture" filepath="assets/textures/fruits.png" >
         <flip>1</flip>
     </asset>
 </assets>

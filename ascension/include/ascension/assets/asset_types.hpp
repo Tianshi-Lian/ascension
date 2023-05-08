@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-14 13:56:09
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-26 15:18:00
+ * Last Modified: 2023-05-08 16:40:17
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -40,7 +40,7 @@ struct Asset {
 
 struct Texture_Asset : public Asset {
     f32 scale{ 1.0 };
-    bool flip_on_load{ false };
+    bool flip_on_load{ true };
 };
 
 struct Shader_Asset : public Asset {

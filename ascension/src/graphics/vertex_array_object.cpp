@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 20:54:24
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-17 19:39:43
+ * Last Modified: 2023-05-08 21:04:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,24 +28,48 @@
 
 #include <GL/glew.h>
 
+#include "core/log.hpp"
 #include "graphics/buffer_object.hpp"
-#include "graphics/shader.hpp"
+#include "graphics/shader_data_types.hpp"
+
+namespace {
+
+constexpr GLenum
+shader_type_to_opengl(ascension::graphics::Shader_Data_Type type)
+{
+    switch (type) {
+        case ascension::graphics::Shader_Data_Type::Float:
+        case ascension::graphics::Shader_Data_Type::Float2:
+        case ascension::graphics::Shader_Data_Type::Float3:
+        case ascension::graphics::Shader_Data_Type::Float4:
+        case ascension::graphics::Shader_Data_Type::Mat2:
+        case ascension::graphics::Shader_Data_Type::Mat3:
+        case ascension::graphics::Shader_Data_Type::Mat4:
+            return GL_FLOAT;
+        case ascension::graphics::Shader_Data_Type::Int:
+        case ascension::graphics::Shader_Data_Type::Int2:
+        case ascension::graphics::Shader_Data_Type::Int3:
+        case ascension::graphics::Shader_Data_Type::Int4:
+            return GL_INT;
+        case ascension::graphics::Shader_Data_Type::Bool:
+            return GL_BOOL;
+        default:
+            ascension::core::log::error("shader_type_to_opengl() Invalid shader_data_type {}", magic_enum::enum_name(type));
+            return 0;
+    }
+
+    return 0;
+}
+
+}
 
 namespace ascension::graphics {
-
-// Vertex_Attrib_Floats
-Vertex_Attrib_Floats::Vertex_Attrib_Floats(i32 float_count, bool should_normalize)
-  : count(float_count)
-  , normalize(should_normalize)
-{
-}
 
 // Vertex_Array_Object
 Vertex_Array_Object::Vertex_Array_Object()
   : m_id(0)
   , m_current_attrib_index(0)
   , m_is_bound(false)
-  , m_vertex_buffer(nullptr)
   , m_index_buffer(nullptr)
 {
 }
@@ -79,28 +103,6 @@ Vertex_Array_Object::unbind()
     m_is_bound = false;
 }
 
-std::shared_ptr<Vertex_Buffer_Object>
-Vertex_Array_Object::add_vertex_buffer(u32 size, const void* data)
-{
-    m_vertex_buffer = std::make_shared<Vertex_Buffer_Object>();
-    m_vertex_buffer->create(size, data);
-    return m_vertex_buffer;
-}
-
-std::shared_ptr<Index_Buffer_Object>
-Vertex_Array_Object::add_index_buffer(u32 size, const void* data)
-{
-    m_index_buffer = std::make_shared<Index_Buffer_Object>();
-    m_index_buffer->create(size, data);
-    return m_index_buffer;
-}
-
-void
-Vertex_Array_Object::set_vertex_buffer(const std::shared_ptr<Vertex_Buffer_Object>& vertex_buffer)
-{
-    m_vertex_buffer = vertex_buffer;
-}
-
 void
 Vertex_Array_Object::set_index_buffer(const std::shared_ptr<Index_Buffer_Object>& index_buffer)
 {
@@ -108,37 +110,42 @@ Vertex_Array_Object::set_index_buffer(const std::shared_ptr<Index_Buffer_Object>
 }
 
 void
-Vertex_Array_Object::set_attrib_ptr(i32 size, i32 stride, const void* offset, bool normalize)
+Vertex_Array_Object::add_vertex_buffer(const std::shared_ptr<Vertex_Buffer_Object>& vertex_buffer)
 {
-    // TODO: Change this to use opengl 4.3 methods
-    /**
-     *  //Offset specified as integer.
-     * glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3);
-     * glVertexAttribBinding(1, 0);
+    m_vertex_buffers.push_back(vertex_buffer);
 
-     * //Some later point when you're ready to provide a buffer.
-     * //Stride goes into the buffer binding.
-     * glBindVertexBuffer(0, buffer_obj, 0, sizeof(GLfloat) * 8);
-     */
-    glVertexAttribPointer(m_current_attrib_index, size, GL_FLOAT, normalize ? GL_TRUE : GL_FALSE, stride, offset);
-    glEnableVertexAttribArray(m_current_attrib_index);
-    ++m_current_attrib_index;
-}
-
-void
-Vertex_Array_Object::set_attrib_ptr_list(const Vertex_Attrib_Float_List& list)
-{
+    const auto list = vertex_buffer->get_layout();
     i32 stride = 0;
     if (list.size() > 1) {
         for (const auto& var : list) {
-            stride += size_of_shader_data_type(Shader_Data_Type::Float, var.count);
+            stride += size_of_shader_data_type(var.type, var.count);
         }
     }
 
     i32 offset = 0;
     for (const auto& var : list) {
-        set_attrib_ptr(var.count, stride, reinterpret_cast<void*>(offset), var.normalize); // NOLINT
-        offset += size_of_shader_data_type(Shader_Data_Type::Float, var.count);
+        // TODO: Change this to use opengl 4.3 methods
+        /**
+         *  //Offset specified as integer.
+         * glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3);
+         * glVertexAttribBinding(1, 0);
+
+         * //Some later point when you're ready to provide a buffer.
+         * //Stride goes into the buffer binding.
+         * glBindVertexBuffer(0, buffer_obj, 0, sizeof(GLfloat) * 8);
+         */
+
+        glVertexAttribPointer(
+            m_current_attrib_index,
+            var.count,
+            shader_type_to_opengl(var.type),
+            var.normalize ? GL_TRUE : GL_FALSE,
+            stride,
+            reinterpret_cast<void*>(offset) // NOLINT
+        );
+        glEnableVertexAttribArray(m_current_attrib_index);
+        ++m_current_attrib_index;
+        offset += size_of_shader_data_type(var.type, var.count);
     }
 }
 

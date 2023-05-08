@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 16:52:11
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:51:11
+ * Last Modified: 2023-05-08 20:48:27
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -29,15 +29,6 @@ namespace ascension::graphics {
 class Vertex_Buffer_Object;
 class Index_Buffer_Object;
 
-struct Vertex_Attrib_Floats {
-    Vertex_Attrib_Floats() = default;
-    Vertex_Attrib_Floats(i32 float_count, bool should_normalize);
-
-    i32 count;
-    bool normalize;
-};
-using Vertex_Attrib_Float_List = std::vector<Vertex_Attrib_Floats>;
-
 class Vertex_Array_Object {
   public:
     Vertex_Array_Object();
@@ -48,14 +39,8 @@ class Vertex_Array_Object {
     void bind();
     void unbind();
 
-    std::shared_ptr<Vertex_Buffer_Object> add_vertex_buffer(u32 size, const void* data = nullptr);
-    std::shared_ptr<Index_Buffer_Object> add_index_buffer(u32 size, const void* data = nullptr);
-
-    void set_vertex_buffer(const std::shared_ptr<Vertex_Buffer_Object>& vertex_buffer);
     void set_index_buffer(const std::shared_ptr<Index_Buffer_Object>& index_buffer);
-
-    void set_attrib_ptr(i32 size, i32 stride, const void* offset, bool normalize = false);
-    void set_attrib_ptr_list(const Vertex_Attrib_Float_List& list);
+    void add_vertex_buffer(const std::shared_ptr<Vertex_Buffer_Object>& vertex_buffer);
 
     [[nodiscard]] bool is_bound() const;
 
@@ -69,8 +54,8 @@ class Vertex_Array_Object {
     u32 m_current_attrib_index;
     bool m_is_bound;
 
-    std::shared_ptr<Vertex_Buffer_Object> m_vertex_buffer;
     std::shared_ptr<Index_Buffer_Object> m_index_buffer;
+    std::vector<std::shared_ptr<Vertex_Buffer_Object>> m_vertex_buffers;
 };
 
 }

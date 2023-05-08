@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 16:07:10
+ * Last Modified: 2023-05-08 20:58:23
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -84,15 +84,22 @@ Sprite_Batch::initialize(u32 screen_width, u32 screen_height, const std::shared_
         indices.at(offset + 5) = (indices_template.at(5) + vertex_offset); // NOLINT
     }
 
-    static const Vertex_Attrib_Float_List vertex_map = { { 2, false }, { 2, false }, { 4, false } };
+    static const Vertex_Buffer_Layout buffer_layout = { { Shader_Data_Type::Float, 2, false },
+                                                        { Shader_Data_Type::Float, 2, false },
+                                                        { Shader_Data_Type::Float, 4, false } };
 
     m_vertex_array = std::make_unique<Vertex_Array_Object>();
     m_vertex_array->create(true);
 
-    m_vertex_buffer = m_vertex_array->add_vertex_buffer(sizeof(Sprite_Batch_Vertex) * m_max_batch_size * QUAD_VERTEX_COUNT);
-    m_index_buffer = m_vertex_array->add_index_buffer(sizeof(f32) * static_cast<u32>(indices.size()), indices.data());
+    m_vertex_buffer = std::make_shared<Vertex_Buffer_Object>();
+    m_vertex_buffer->create(sizeof(Sprite_Batch_Vertex) * m_max_batch_size * QUAD_VERTEX_COUNT);
+    m_vertex_buffer->set_layout(buffer_layout);
+    m_vertex_array->add_vertex_buffer(m_vertex_buffer);
 
-    m_vertex_array->set_attrib_ptr_list(vertex_map);
+    m_index_buffer = std::make_shared<Index_Buffer_Object>();
+    m_index_buffer->create(sizeof(f32) * static_cast<u32>(indices.size()), indices.data());
+    m_vertex_array->set_index_buffer(m_index_buffer);
+
     m_vertex_array->unbind();
 
     m_current_batch.reserve(m_max_batch_size);

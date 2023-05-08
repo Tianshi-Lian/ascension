@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-30 19:09:04
+ * Last Modified: 2023-05-08 16:03:56
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -25,6 +25,8 @@
 #include "ascension.hpp"
 
 #include "graphics/sprite_batch.hpp"
+
+#include "yuki/debug/instrumentor.hpp"
 
 namespace ascension {
 
@@ -51,10 +53,13 @@ Ascension::on_update(f64 delta_time)
 void
 Ascension::on_render(f32 interpolation)
 {
+    PROFILE_FUNCTION();
     (void)interpolation;
 
     m_sprite_batch.begin();
-    m_sprite_batch.draw(m_asset_manager.get_texture_2d("textures/unicorn"), v2f{ 0.0f, 0.0f });
+    for (int i = 0; i < 1000; ++i) {
+        m_sprite_batch.draw(m_asset_manager.get_texture_2d("textures/unicorn"), v2f{ 0.0f, 0.0f });
+    }
     m_sprite_batch.end();
 }
 

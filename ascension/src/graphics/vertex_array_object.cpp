@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 20:54:24
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 21:04:01
+ * Last Modified: 2023-05-19 19:56:46
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -116,11 +116,11 @@ Vertex_Array_Object::add_vertex_buffer(const std::shared_ptr<Vertex_Buffer_Objec
 
     const auto list = vertex_buffer->get_layout();
     i32 stride = 0;
-    if (list.size() > 1) {
-        for (const auto& var : list) {
-            stride += size_of_shader_data_type(var.type, var.count);
-        }
+    // if (list.size() > 1) {
+    for (const auto& var : list) {
+        stride += size_of_shader_data_type(var.type, var.count);
     }
+    //}
 
     i32 offset = 0;
     for (const auto& var : list) {

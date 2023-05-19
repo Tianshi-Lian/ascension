@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-02-24 19:27:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-30 14:58:09
+ * Last Modified: 2023-05-19 19:31:27
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -45,7 +45,7 @@ class Ascension : public core::Application {
     Ascension& operator=(Ascension&&) = delete;
 
   private:
-    graphics::Sprite_Batch m_sprite_batch;
+    graphics::Batch m_batch;
 };
 
 } // namespace ascension

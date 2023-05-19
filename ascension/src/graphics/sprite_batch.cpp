@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 20:58:23
+ * Last Modified: 2023-05-19 20:21:04
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,6 +24,7 @@
 
 #include "graphics/sprite_batch.hpp"
 
+#include <cstddef>
 #include <limits>
 
 #include <glm/ext/matrix_clip_space.hpp>
@@ -36,195 +37,168 @@
 #include "graphics/texture_2d.hpp"
 #include "graphics/vertex_array_object.hpp"
 
+#include <GL/glew.h>
+
 namespace ascension::graphics {
 
 static constexpr u32 QUAD_VERTEX_COUNT = 4;
+static constexpr u32 QUAD_VERTEX_COMPONENT_COUNT = QUAD_VERTEX_COUNT * 2;
 static constexpr u32 QUAD_INDEX_COUNT = 6;
 
-Sprite_Batch::Sprite_Batch()
-  : m_max_batch_size(0)
-  , m_projection{ 1.0f }
-  , m_batch_active(false)
-  , m_active_transform{ 1.0f }
+// Batch
+Batch::Batch()
+  : m_current_size(0)
 {
-}
-
-Sprite_Batch::~Sprite_Batch()
-{
-    clear();
 }
 
 void
-Sprite_Batch::initialize(u32 screen_width, u32 screen_height, const std::shared_ptr<Shader>& sprite_shader, u32 max_batch_size)
+Batch::create(const Batch_Config& config)
 {
-    if (m_max_batch_size > 0) {
-        core::log::error("Sprite_Batch should only be initialized once!");
-        return;
-    }
+    m_config = config;
 
-    m_sprite_shader = sprite_shader;
-    m_max_batch_size = max_batch_size;
+    m_vertex_positions.reserve(static_cast<size_t>(m_config.max_size) * QUAD_VERTEX_COMPONENT_COUNT);
+    m_texture_coords.reserve(static_cast<size_t>(m_config.max_size) * QUAD_VERTEX_COMPONENT_COUNT);
 
-    m_sprite_shader->bind();
-    m_sprite_shader->set_int("u_texture", 0);
+    m_vao = std::make_unique<Vertex_Array_Object>();
+    m_vao->create(true);
 
-    std::array indices_template{ 0u, 1u, 2u, 2u, 3u, 0u };
-    std::vector<u32> indices(static_cast<size_t>(QUAD_INDEX_COUNT) * m_max_batch_size);
+    m_vbo = std::make_shared<Vertex_Buffer_Object>();
+    m_vbo->create(sizeof(f32) * m_config.max_size * QUAD_VERTEX_COMPONENT_COUNT);
+    m_vbo->set_layout({ { Shader_Data_Type::Float, 2, false } });
+    m_vao->add_vertex_buffer(m_vbo);
 
-    for (u32 i = 0; i < max_batch_size; ++i) {
+    m_ubo = std::make_shared<Vertex_Buffer_Object>();
+    m_ubo->create(sizeof(f32) * m_config.max_size * QUAD_VERTEX_COMPONENT_COUNT);
+    m_ubo->set_layout({ { Shader_Data_Type::Float, 2, true } });
+    m_vao->add_vertex_buffer(m_ubo);
+
+    static const std::array<u32, 6> indices_template{ 0, 1, 2, 2, 3, 0 };
+    std::vector<u32> indices(static_cast<size_t>(QUAD_INDEX_COUNT) * m_config.max_size);
+
+    for (u32 i = 0; i < m_config.max_size; ++i) {
         const u32 offset = i * QUAD_INDEX_COUNT;
         const u32 vertex_offset = i * QUAD_VERTEX_COUNT;
 
         indices.at(offset + 0) = (indices_template.at(0) + vertex_offset);
         indices.at(offset + 1) = (indices_template.at(1) + vertex_offset);
         indices.at(offset + 2) = (indices_template.at(2) + vertex_offset);
-
         indices.at(offset + 3) = (indices_template.at(3) + vertex_offset);
         indices.at(offset + 4) = (indices_template.at(4) + vertex_offset);
         indices.at(offset + 5) = (indices_template.at(5) + vertex_offset); // NOLINT
     }
 
-    static const Vertex_Buffer_Layout buffer_layout = { { Shader_Data_Type::Float, 2, false },
-                                                        { Shader_Data_Type::Float, 2, false },
-                                                        { Shader_Data_Type::Float, 4, false } };
+    m_ibo = std::make_shared<Index_Buffer_Object>();
+    m_ibo->create(sizeof(u32) * m_config.max_size * QUAD_INDEX_COUNT, indices.data());
+    m_vao->set_index_buffer(m_ibo);
 
-    m_vertex_array = std::make_unique<Vertex_Array_Object>();
-    m_vertex_array->create(true);
-
-    m_vertex_buffer = std::make_shared<Vertex_Buffer_Object>();
-    m_vertex_buffer->create(sizeof(Sprite_Batch_Vertex) * m_max_batch_size * QUAD_VERTEX_COUNT);
-    m_vertex_buffer->set_layout(buffer_layout);
-    m_vertex_array->add_vertex_buffer(m_vertex_buffer);
-
-    m_index_buffer = std::make_shared<Index_Buffer_Object>();
-    m_index_buffer->create(sizeof(f32) * static_cast<u32>(indices.size()), indices.data());
-    m_vertex_array->set_index_buffer(m_index_buffer);
-
-    m_vertex_array->unbind();
-
-    m_current_batch.reserve(m_max_batch_size);
-    m_current_vertices.reserve(static_cast<size_t>(QUAD_VERTEX_COUNT) * max_batch_size);
-
-    on_resize(screen_width, screen_height);
+    m_vao->unbind();
 }
 
 void
-Sprite_Batch::begin(m4 transform)
+Batch::add(v2f position, v2f size, v4f tex_coords)
 {
     PROFILE_FUNCTION();
-    if (m_batch_active) {
-        core::log::warn("Sprite_Batch::begin() has already been called. Call Sprite_Batch::end() first.");
+
+    if (m_config.max_size == 0) {
+        core::log::error("Attempting to add texture to uninitialized batch");
         return;
     }
 
-    m_batch_active = true;
-    m_active_transform = transform;
+    // TODO: Work out if we just want to immediately draw here instead.
+    if (m_current_size >= m_config.max_size) {
+        core::log::warn("Attempting to add texture to full batch.");
+        return;
+    }
+
+    m_vertex_positions.emplace_back(position.x);
+    m_vertex_positions.emplace_back(position.y);
+
+    m_vertex_positions.emplace_back(position.x);
+    m_vertex_positions.emplace_back(position.y + size.y);
+
+    m_vertex_positions.emplace_back(position.x + size.x);
+    m_vertex_positions.emplace_back(position.y + size.y);
+
+    m_vertex_positions.emplace_back(position.x + size.x);
+    m_vertex_positions.emplace_back(position.y);
+
+    m_texture_coords.emplace_back(tex_coords.x);
+    m_texture_coords.emplace_back(tex_coords.y);
+
+    m_texture_coords.emplace_back(tex_coords.x);
+    m_texture_coords.emplace_back(tex_coords.w);
+
+    m_texture_coords.emplace_back(tex_coords.z);
+    m_texture_coords.emplace_back(tex_coords.w);
+
+    m_texture_coords.emplace_back(tex_coords.z);
+    m_texture_coords.emplace_back(tex_coords.y);
+
+    ++m_current_size;
 }
 
 void
-Sprite_Batch::end()
+Batch::add(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v4f tex_coords)
 {
-    PROFILE_FUNCTION();
-    if (!m_batch_active) {
-        core::log::warn("Sprite_Batch::end() has already been called without an active batch.");
-        return;
-    }
-
-    std::sort(
-        m_current_batch.begin(),
-        m_current_batch.end(),
-        [](const Sprite_Batch_Item& item_a, const Sprite_Batch_Item& item_b) { return *item_a.texture > *item_b.texture; }
-    );
-
-    m_sprite_shader->bind();
-    m_sprite_shader->set_mat4f("m_projection_view", m_projection * m_active_transform);
-
-    std::shared_ptr<Texture_2D> current_texture = m_current_batch.front().texture;
-
-    for (const auto& batch_item : m_current_batch) {
-        if (batch_item.texture != current_texture) {
-            flush(current_texture);
-            current_texture = batch_item.texture;
-        }
-
-        generate_quad_vertices(batch_item);
-
-        if ((m_current_vertices.size() / QUAD_VERTEX_COUNT) >= m_max_batch_size) {
-            flush(current_texture);
+    if (m_config.texture != nullptr) {
+        if (m_config.texture != texture) {
+            core::log::warn("Attempting to add texture which does not match active.");
+            return;
         }
     }
-
-    flush(current_texture);
-    clear();
-    m_batch_active = false;
-}
-
-void
-Sprite_Batch::clear()
-{
-    PROFILE_FUNCTION();
-    m_current_batch.clear();
-    m_current_vertices.clear();
-}
-
-void
-Sprite_Batch::on_resize(u32 screen_width, u32 screen_height)
-{
-#ifdef AS_DEBUG
-    static const auto float_max = static_cast<u32>(std::numeric_limits<f32>::infinity());
-    assert(float_max >= screen_width);
-    assert(float_max >= screen_height);
-#endif
-    m_projection = glm::ortho(0.0f, static_cast<f32>(screen_width), 0.0f, static_cast<f32>(screen_height), -1.0f, 1.0f);
-}
-
-void
-Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, v2f position)
-{
-    PROFILE_FUNCTION();
-    if (!m_batch_active) {
-        core::log::warn("Sprite_Batch::draw() has already been called without an active batch.");
-        return;
+    else {
+        m_config.texture = texture;
     }
 
-    m_current_batch.emplace_back(texture, position);
+    add(position, size, tex_coords);
 }
 
 void
-Sprite_Batch::generate_quad_vertices(const Sprite_Batch_Item& item)
+Batch::draw()
 {
     PROFILE_FUNCTION();
-    const auto texture = item.texture;
-    const auto position = item.position;
-    const auto width = static_cast<f32>(texture->width());
-    const auto height = static_cast<f32>(texture->height());
-    static const auto sprite_colour = v4f{ 1.0f, 1.0f, 1.0f, 1.0f };
 
-    m_current_vertices.emplace_back(v2{ position.x, position.y }, v2{ 0, 0 }, sprite_colour);
-    m_current_vertices.emplace_back(v2{ position.x, position.y + height }, v2{ 0, 1 }, sprite_colour);
-    m_current_vertices.emplace_back(v2{ position.x + height, position.y + height }, v2{ 1, 1 }, sprite_colour);
-    m_current_vertices.emplace_back(v2{ position.x + width, position.y }, v2{ 1, 0 }, sprite_colour);
+    assert(m_vao != nullptr);
+    assert(m_config.shader != nullptr);
+    assert(m_config.texture != nullptr);
+
+    m_config.shader->bind();
+    m_config.texture->bind();
+
+    m_vao->bind();
+
+    m_vbo->buffer_data(static_cast<u32>(m_vertex_positions.size() * sizeof(f32)), m_vertex_positions.data());
+    m_ubo->buffer_data(static_cast<u32>(m_texture_coords.size() * sizeof(f32)), m_texture_coords.data());
+
+    m_ibo->draw_elements(static_cast<i32>(m_current_size * QUAD_INDEX_COUNT), Draw_Mode::Triangles);
+    m_vao->unbind();
 }
 
 void
-Sprite_Batch::flush(const std::shared_ptr<Texture_2D>& texture)
+Batch::empty()
 {
     PROFILE_FUNCTION();
-    if (!texture) {
-        return;
+
+    m_vertex_positions.clear();
+    m_texture_coords.clear();
+    m_current_size = 0;
+    m_config.texture = nullptr;
+}
+
+u32
+Batch::current_texture_id() const
+{
+    if (m_config.texture) {
+        return m_config.texture->id();
     }
 
-    m_vertex_array->bind();
-    texture->bind();
-    m_vertex_buffer->buffer_data(
-        static_cast<u32>(sizeof(Sprite_Batch_Vertex) * m_current_vertices.size()), m_current_vertices.data()
-    );
-    m_index_buffer->draw_elements(
-        static_cast<i32>((m_current_vertices.size() / QUAD_VERTEX_COUNT) * QUAD_INDEX_COUNT), Draw_Mode::Triangles
-    );
+    return 0;
+}
 
-    m_vertex_array->unbind();
-    m_current_vertices.clear();
+bool
+Batch::has_space() const
+{
+    return m_current_size < m_config.max_size;
 }
 
 }

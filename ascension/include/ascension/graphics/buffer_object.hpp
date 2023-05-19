@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 14:35:15
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 20:57:26
+ * Last Modified: 2023-05-19 20:24:40
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -71,7 +71,7 @@ class Buffer_Object {
 
 struct Vertex_Object_Element {
     Vertex_Object_Element() = default;
-    Vertex_Object_Element(Shader_Data_Type type, i32 count, bool normalize);
+    Vertex_Object_Element(Shader_Data_Type _type, i32 _count, bool _normalize);
 
     Shader_Data_Type type;
     i32 count;

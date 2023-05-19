@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:37
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:51:04
+ * Last Modified: 2023-05-19 20:19:30
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,88 +24,81 @@
 
 #pragma once
 
+#include "graphics/shader.hpp"
+#include "graphics/texture_2d.hpp"
+#include "graphics/vertex_array_object.hpp"
+
 namespace ascension::graphics {
 
-class Texture_2D;
-class Shader;
-class Vertex_Array_Object;
 class Vertex_Buffer_Object;
 class Index_Buffer_Object;
 
-struct Sprite_Batch_Item {
-    Sprite_Batch_Item(const std::shared_ptr<Texture_2D>& in_texture, v2f in_position)
-      : texture(in_texture)
-      , position(in_position)
+struct Batch_Config {
+    Batch_Config()
+      : texture(nullptr)
+      , shader(nullptr)
+
     {
     }
 
+    Batch_Config(
+        u32 _size,
+        const std::shared_ptr<Texture_2D>& _texture,
+        const std::shared_ptr<Shader>& _shader,
+        bool _is_static = false
+    )
+      : max_size(_size)
+      , texture(_texture)
+      , shader(_shader)
+      , is_static(_is_static)
+    {
+    }
+
+    u32 max_size{};
     std::shared_ptr<Texture_2D> texture;
-    v2f position;
+    std::shared_ptr<Shader> shader;
+    bool is_static{};
 };
 
-#pragma pack(push, 0)
-struct Sprite_Batch_Vertex {
-    Sprite_Batch_Vertex(v2f in_position, v2f in_tex_coords, v4f in_color)
-      : position(in_position)
-      , tex_coords(in_tex_coords)
-      , color(in_color)
-    {
-    }
-
-    v2f position;
-    v2f tex_coords;
-    v4f color;
-};
-
-#pragma pack(pop)
-
-class Sprite_Batch {
-    static constexpr u32 DEFAULT_BATCH_SIZE = 2048;
-
+class Batch {
   public:
-    Sprite_Batch();
-    ~Sprite_Batch();
+    Batch();
 
-    // TODO: Add and check create result.
-    // TODO: load the default sprite shader internally.
-    void initialize(
-        u32 screen_width,
-        u32 screen_height,
-        const std::shared_ptr<Shader>& sprite_shader,
-        u32 max_batch_size = DEFAULT_BATCH_SIZE
-    );
+    void create(const Batch_Config& config);
 
-    void begin(m4 transform = m4{ 1.0f });
-    void end();
-    void clear();
+    // TODO: Implement some recognition of texture atlases or sub-textures and remove manually specifying tex_coords.
+    void add(v2f position, v2f size, v4f tex_coords = { 0, 0, 1, 1 });
+    void add(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v4f tex_coords = { 0, 0, 1, 1 });
 
-    void on_resize(u32 screen_width, u32 screen_height);
+    void draw();
+    void empty();
 
-    void draw(const std::shared_ptr<Texture_2D>& texture, v2f position);
-
-    Sprite_Batch(const Sprite_Batch&) = delete;
-    Sprite_Batch(Sprite_Batch&&) = delete;
-    Sprite_Batch& operator=(const Sprite_Batch&) = delete;
-    Sprite_Batch& operator=(Sprite_Batch&&) = delete;
+    [[nodiscard]] u32 current_texture_id() const;
+    [[nodiscard]] bool has_space() const;
 
   private:
-    void generate_quad_vertices(const Sprite_Batch_Item& item);
-    void flush(const std::shared_ptr<Texture_2D>& texture);
+    Batch_Config m_config;
+    u32 m_current_size;
 
-    u32 m_max_batch_size;
+    std::unique_ptr<Vertex_Array_Object> m_vao;
+    std::shared_ptr<Vertex_Buffer_Object> m_vbo;
+    std::shared_ptr<Vertex_Buffer_Object> m_ubo;
+    std::shared_ptr<Index_Buffer_Object> m_ibo;
 
-    std::shared_ptr<Shader> m_sprite_shader;
+    std::vector<f32> m_vertex_positions;
+    std::vector<f32> m_texture_coords;
+};
 
-    std::unique_ptr<Vertex_Array_Object> m_vertex_array;
-    std::shared_ptr<Vertex_Buffer_Object> m_vertex_buffer;
-    std::shared_ptr<Index_Buffer_Object> m_index_buffer;
+class Sprite_Batch {
+  public:
+    Sprite_Batch(u32 max_batches, u32 batch_size, std::shared_ptr<Shader> shader);
 
-    m4 m_projection;
+    void draw(const std::shared_ptr<Texture_2D>& texture, v2f position, v4f tex_coords = { 0, 0, 1, 1 });
 
-    bool m_batch_active;
-    m4 m_active_transform;
-    std::vector<Sprite_Batch_Item> m_current_batch;
-    std::vector<Sprite_Batch_Vertex> m_current_vertices;
+    void draw_all();
+
+  private:
+    std::vector<Batch> m_batches;
 };
 
 }

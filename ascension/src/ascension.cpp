@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 21:33:22
+ * Last Modified: 2023-05-19 20:21:40
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,67 +27,53 @@
 #include <GL/glew.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
-#include "graphics/buffer_object.hpp"
 #include "graphics/shader.hpp"
-#include "graphics/sprite_batch.hpp"
 #include "graphics/texture_2d.hpp"
 
-#include "graphics/vertex_array_object.hpp"
 #include "yuki/debug/instrumentor.hpp"
 
 namespace ascension {
 
-const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 1500000;
-
-GLuint shaderProgramId, textureId;
-
-graphics::Vertex_Array_Object vao;
-std::shared_ptr<graphics::Vertex_Buffer_Object> vbo;
-std::shared_ptr<graphics::Vertex_Buffer_Object> ubo;
-std::shared_ptr<graphics::Index_Buffer_Object> ibo;
+const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 10000;
 
 struct Texture {
-    i16 width, height;
+    v2i size;
     float u1, v1, u2, v2;
 };
 struct Object {
-    i16 x, y;
+    v2f position;
     Texture texture;
 };
 
-Texture watermelon = { 64, 64, 0.0f, 0.5f, 0.5f, 1.0f };
-Texture pineapple = { 64, 64, 0.5f, 0.5f, 1.0f, 1.0f };
-Texture orange = { 32, 32, 0.0f, 0.25f, 0.25f, 0.5f };
-Texture grape = { 32, 32, 0.25f, 0.25f, 0.5f, 0.5f };
-Texture pear = { 32, 32, 0.0f, 0.0f, 0.25f, 0.25f };
-Texture banana = { 32, 32, 0.25f, 0.0f, 0.5f, 0.25f };
-Texture strawberry = { 16, 16, 0.5f, 0.375f, 0.625f, 0.5f };
-Texture raspberry = { 16, 16, 0.625f, 0.375f, 0.75f, 0.5f };
-Texture cherry = { 16, 16, 0.5f, 0.25f, 0.625f, 0.375f };
+Texture watermelon = { { 64, 64 }, 0.0f, 0.5f, 0.5f, 1.0f };
+Texture pineapple = { { 64, 64 }, 0.5f, 0.5f, 1.0f, 1.0f };
+Texture orange = { { 32, 32 }, 0.0f, 0.25f, 0.25f, 0.5f };
+Texture grape = { { 32, 32 }, 0.25f, 0.25f, 0.5f, 0.5f };
+Texture pear = { { 32, 32 }, 0.0f, 0.0f, 0.25f, 0.25f };
+Texture banana = { { 32, 32 }, 0.25f, 0.0f, 0.5f, 0.25f };
+Texture strawberry = { { 16, 16 }, 0.5f, 0.375f, 0.625f, 0.5f };
+Texture raspberry = { { 16, 16 }, 0.625f, 0.375f, 0.75f, 0.5f };
+Texture cherry = { { 16, 16 }, 0.5f, 0.25f, 0.625f, 0.375f };
 
 Texture textures[9] = { watermelon, pineapple, orange, grape, pear, banana, strawberry, raspberry, cherry };
 
 static Object objects[OBJECT_COUNT];
 
-static float vertices[OBJECT_COUNT * 8];
-static u16 indices[OBJECT_COUNT * 6];
-static float uvs[OBJECT_COUNT * 8];
+// void
+// updateObject(int i)
+// {
+//     vertices[i * 8 + 0] = objects[i].x;
+//     vertices[i * 8 + 1] = objects[i].y;
 
-void
-updateObject(int i)
-{
-    vertices[i * 8 + 0] = objects[i].x;
-    vertices[i * 8 + 1] = objects[i].y;
+//     vertices[i * 8 + 2] = objects[i].x;
+//     vertices[i * 8 + 3] = objects[i].y + objects[i].texture.height;
 
-    vertices[i * 8 + 2] = objects[i].x;
-    vertices[i * 8 + 3] = objects[i].y + objects[i].texture.height;
+//     vertices[i * 8 + 4] = objects[i].x + objects[i].texture.width;
+//     vertices[i * 8 + 5] = objects[i].y + objects[i].texture.height;
 
-    vertices[i * 8 + 4] = objects[i].x + objects[i].texture.width;
-    vertices[i * 8 + 5] = objects[i].y + objects[i].texture.height;
-
-    vertices[i * 8 + 6] = objects[i].x + objects[i].texture.width;
-    vertices[i * 8 + 7] = objects[i].y;
-}
+//     vertices[i * 8 + 6] = objects[i].x + objects[i].texture.width;
+//     vertices[i * 8 + 7] = objects[i].y;
+// }
 
 void
 Ascension::on_initialize()
@@ -95,9 +81,7 @@ Ascension::on_initialize()
     m_asset_manager.load_asset_file("assets/assets.xml");
     m_asset_manager.load_texture_2d("textures/unicorn");
     auto fruit_tex = m_asset_manager.load_texture_2d("textures/fruits");
-    textureId = fruit_tex->id();
     auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
-    shaderProgramId = sprite_shader->id();
 
     // viewport setup
     {
@@ -106,75 +90,20 @@ Ascension::on_initialize()
         sprite_shader->set_mat4f("m_projection_view", projection * m4{ 1.0f });
     }
 
-    for (u32 i = 0; i < OBJECT_COUNT; i++) {
+    m_batch.create({ OBJECT_COUNT, fruit_tex, sprite_shader, true });
+
+    for (auto& object : objects) {
         Texture t = textures[rand() % 9];
-        objects[i] = { static_cast<i16>((rand() % (WINDOW_WIDTH - t.width))),
-                       static_cast<i16>((rand() % (WINDOW_HEIGHT - t.height))),
-                       t };
+        object = { v2f{ static_cast<i16>((rand() % (WINDOW_WIDTH - t.size.x))),
+                        static_cast<i16>((rand() % (WINDOW_HEIGHT - t.size.y))) },
+                   t };
 
-        // vertices
-        {
-            vertices[i * 8 + 0] = objects[i].x;
-            vertices[i * 8 + 1] = objects[i].y;
-
-            vertices[i * 8 + 2] = objects[i].x;
-            vertices[i * 8 + 3] = objects[i].y + objects[i].texture.height;
-
-            vertices[i * 8 + 4] = objects[i].x + objects[i].texture.width;
-            vertices[i * 8 + 5] = objects[i].y + objects[i].texture.height;
-
-            vertices[i * 8 + 6] = objects[i].x + objects[i].texture.width;
-            vertices[i * 8 + 7] = objects[i].y;
-        }
-
-        // uvs
-        {
-            uvs[i * 8 + 0] = objects[i].texture.u1;
-            uvs[i * 8 + 1] = objects[i].texture.v1;
-
-            uvs[i * 8 + 2] = objects[i].texture.u1;
-            uvs[i * 8 + 3] = objects[i].texture.v2;
-
-            uvs[i * 8 + 4] = objects[i].texture.u2;
-            uvs[i * 8 + 5] = objects[i].texture.v2;
-
-            uvs[i * 8 + 6] = objects[i].texture.u2;
-            uvs[i * 8 + 7] = objects[i].texture.v1;
-        }
-
-        // indices
-        {
-            static const std::array<u16, 6> indices_template{ 0, 1, 2, 2, 3, 0 };
-            const u32 vertex_offset = i * 4;
-
-            indices[i * 6 + 0] = static_cast<u16>((indices_template.at(0) + vertex_offset));
-            indices[i * 6 + 1] = static_cast<u16>((indices_template.at(1) + vertex_offset));
-            indices[i * 6 + 2] = static_cast<u16>((indices_template.at(2) + vertex_offset));
-
-            indices[i * 6 + 3] = static_cast<u16>((indices_template.at(3) + vertex_offset));
-            indices[i * 6 + 4] = static_cast<u16>((indices_template.at(4) + vertex_offset));
-            indices[i * 6 + 5] = static_cast<u16>((indices_template.at(5) + vertex_offset)); // NOLINT
-        }
+        m_batch.add(
+            object.position,
+            object.texture.size,
+            v4f{ object.texture.u1, object.texture.v1, object.texture.u2, object.texture.v2 }
+        );
     }
-
-    // initialize OpenGL buffers
-    vao.create(true);
-
-    vbo = std::make_shared<graphics::Vertex_Buffer_Object>();
-    vbo->create(sizeof(vertices), vertices);
-    vbo->set_layout({ { graphics::Shader_Data_Type::Float, 2, false } });
-    vao.add_vertex_buffer(vbo);
-
-    ubo = std::make_shared<graphics::Vertex_Buffer_Object>();
-    ubo->create(sizeof(uvs), uvs);
-    ubo->set_layout({ { graphics::Shader_Data_Type::Float, 2, true } });
-    vao.add_vertex_buffer(ubo);
-
-    ibo = std::make_shared<graphics::Index_Buffer_Object>();
-    ibo->create(sizeof(indices), indices);
-    vao.set_index_buffer(ibo);
-
-    vao.unbind();
 }
 
 void
@@ -204,15 +133,15 @@ Ascension::on_render(f32 interpolation)
     PROFILE_FUNCTION();
     (void)interpolation;
 
-    // if you had to unbind vao for whatever reason, bind it again now
-    vao.bind();
-    glUseProgram(shaderProgramId);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureId);
+    // graphics::Sprite_Batch sprite_batch;
+    // sprite_batch.initialize(1600, 900, m_asset_manager.get_shader("shaders/spritebatch"));
 
-    // glDrawArrays(GL_TRIANGLES, 0, OBJECT_COUNT * 6);
-    // ibo.bind();
-    glDrawElements(GL_TRIANGLES, OBJECT_COUNT * 6, GL_UNSIGNED_SHORT, nullptr);
+    // sprite_batch.begin();
+    // sprite_batch.draw(m_asset_manager.get_texture_2d("textures/unicorn"), { 50, 50 });
+    // sprite_batch.end();
+
+    // if you had to unbind vao for whatever reason, bind it again now
+    m_batch.draw();
 
     // m_sprite_batch.begin();
     // for (int i = 0; i < 1000; ++i) {
@@ -220,5 +149,4 @@ Ascension::on_render(f32 interpolation)
     // }
     // m_sprite_batch.end();
 }
-
 }

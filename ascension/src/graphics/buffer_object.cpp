@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-12 15:45:35
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 21:01:47
+ * Last Modified: 2023-05-19 20:25:03
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -122,7 +122,7 @@ void
 Buffer_Object::buffer_data(u32 size, const void* data)
 {
     bind();
-    buffer_sub_data(0, size, data);
+    glBufferSubData(m_buffer_type, 0, size, data);
 }
 
 void
@@ -139,10 +139,10 @@ Buffer_Object::is_bound() const
 }
 
 // Vertex_Object_Element
-Vertex_Object_Element::Vertex_Object_Element(Shader_Data_Type type, i32 count, bool normalize)
-  : type(type)
-  , count(count)
-  , normalize(normalize)
+Vertex_Object_Element::Vertex_Object_Element(Shader_Data_Type _type, i32 _count, bool _normalize)
+  : type(_type)
+  , count(_count)
+  , normalize(_normalize)
 {
 }
 

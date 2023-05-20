@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-19 20:21:04
+ * Last Modified: 2023-05-20 09:55:43
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -49,6 +49,12 @@ static constexpr u32 QUAD_INDEX_COUNT = 6;
 Batch::Batch()
   : m_current_size(0)
 {
+}
+
+Batch::Batch(const Batch_Config& config)
+  : m_current_size(0)
+{
+    create(config);
 }
 
 void
@@ -138,7 +144,7 @@ Batch::add(v2f position, v2f size, v4f tex_coords)
 }
 
 void
-Batch::add(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v4f tex_coords)
+Batch::add(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v4f tex_coords, bool is_static)
 {
     if (m_config.texture != nullptr) {
         if (m_config.texture != texture) {
@@ -148,13 +154,14 @@ Batch::add(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v
     }
     else {
         m_config.texture = texture;
+        m_config.is_static = is_static;
     }
 
     add(position, size, tex_coords);
 }
 
 void
-Batch::draw()
+Batch::flush()
 {
     PROFILE_FUNCTION();
 
@@ -172,10 +179,14 @@ Batch::draw()
 
     m_ibo->draw_elements(static_cast<i32>(m_current_size * QUAD_INDEX_COUNT), Draw_Mode::Triangles);
     m_vao->unbind();
+
+    if (!m_config.is_static) {
+        clear();
+    }
 }
 
 void
-Batch::empty()
+Batch::clear()
 {
     PROFILE_FUNCTION();
 
@@ -199,6 +210,108 @@ bool
 Batch::has_space() const
 {
     return m_current_size < m_config.max_size;
+}
+
+bool
+Batch::is_empty() const
+{
+    return m_current_size == 0;
+}
+
+bool
+Batch::is_static() const
+{
+    return m_config.is_static;
+}
+
+// Sprite_Batch
+Sprite_Batch::Sprite_Batch()
+  : m_max_batches(0)
+  , m_batch_size(0)
+  , m_default_shader(nullptr)
+{
+}
+
+Sprite_Batch::Sprite_Batch(u32 max_batches, u32 batch_size, const std::shared_ptr<Shader>& default_shader)
+  : m_max_batches(0)
+  , m_batch_size(0)
+{
+    create(max_batches, batch_size, default_shader);
+}
+
+void
+Sprite_Batch::create(u32 max_batches, u32 batch_size, const std::shared_ptr<Shader>& default_shader)
+{
+    m_max_batches = max_batches;
+    m_batch_size = batch_size;
+    m_default_shader = default_shader;
+
+    m_batches.reserve(max_batches);
+}
+
+void
+Sprite_Batch::add_batch(const std::shared_ptr<Batch>& batch)
+{
+    // TODO: Check if we have an empty batch and replace that?
+    if (m_batches.size() >= m_max_batches) {
+        core::log::error("Sprite_Batch::add_batch() attempting to add batch to full Sprite_Batch");
+        return;
+    }
+
+    m_batches.push_back(batch);
+}
+
+void
+Sprite_Batch::create_batch(const Batch_Config& config)
+{
+    if (m_batches.size() >= m_max_batches) {
+        core::log::error("Sprite_Batch::create_batch() attempting to create batch for full Sprite_Batch");
+        return;
+    }
+
+    m_batches.emplace_back(std::make_shared<Batch>(config));
+}
+
+void
+Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v4f tex_coords, bool is_static)
+{
+    for (auto& batch : m_batches) {
+        if (!batch->has_space()) {
+            continue;
+        }
+
+        if (batch->current_texture_id() == 0) {
+            batch->add(texture, position, size, tex_coords, is_static);
+        }
+        else if (batch->current_texture_id() == texture->id() && batch->is_static() == is_static) {
+            batch->add(position, size, tex_coords);
+            return;
+        }
+    }
+
+    // We didn't find a batch to put it in, check if we can make a new batch,
+    // else we've got no space!
+    if (m_batches.size() < m_max_batches) {
+        Batch_Config config(m_batch_size, texture, m_default_shader, is_static);
+        create_batch(config);
+
+        m_batches.back()->add(position, tex_coords);
+    }
+    else {
+        // TODO: Consider if we should try and empty the fullest batch?
+        core::log::error("Sprite_Batch::draw() trying to draw new texture when all batches are full!");
+    }
+}
+
+void
+Sprite_Batch::flush()
+{
+    // TODO: Sort the batches by a priority index for drawing order.
+    for (auto& batch : m_batches) {
+        if (!batch->is_empty()) {
+            batch->flush();
+        }
+    }
 }
 
 }

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-19 20:21:40
+ * Last Modified: 2023-05-20 09:59:45
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -59,22 +59,6 @@ Texture textures[9] = { watermelon, pineapple, orange, grape, pear, banana, stra
 
 static Object objects[OBJECT_COUNT];
 
-// void
-// updateObject(int i)
-// {
-//     vertices[i * 8 + 0] = objects[i].x;
-//     vertices[i * 8 + 1] = objects[i].y;
-
-//     vertices[i * 8 + 2] = objects[i].x;
-//     vertices[i * 8 + 3] = objects[i].y + objects[i].texture.height;
-
-//     vertices[i * 8 + 4] = objects[i].x + objects[i].texture.width;
-//     vertices[i * 8 + 5] = objects[i].y + objects[i].texture.height;
-
-//     vertices[i * 8 + 6] = objects[i].x + objects[i].texture.width;
-//     vertices[i * 8 + 7] = objects[i].y;
-// }
-
 void
 Ascension::on_initialize()
 {
@@ -90,7 +74,10 @@ Ascension::on_initialize()
         sprite_shader->set_mat4f("m_projection_view", projection * m4{ 1.0f });
     }
 
-    m_batch.create({ OBJECT_COUNT, fruit_tex, sprite_shader, true });
+    m_batch.create(16, 2048, sprite_shader);
+
+    auto fruits = std::make_shared<graphics::Batch>();
+    fruits->create({ OBJECT_COUNT, fruit_tex, sprite_shader, true });
 
     for (auto& object : objects) {
         Texture t = textures[rand() % 9];
@@ -98,12 +85,14 @@ Ascension::on_initialize()
                         static_cast<i16>((rand() % (WINDOW_HEIGHT - t.size.y))) },
                    t };
 
-        m_batch.add(
+        fruits->add(
             object.position,
             object.texture.size,
             v4f{ object.texture.u1, object.texture.v1, object.texture.u2, object.texture.v2 }
         );
     }
+
+    m_batch.add_batch(fruits);
 }
 
 void
@@ -114,17 +103,6 @@ Ascension::on_update(f64 delta_time)
     if (m_input_manager.is_key_down(input::Key::ESCAPE)) {
         quit();
     }
-
-    // dancing fruits =)
-    // for (i32 i = 0; i < OBJECT_COUNT; i++) {
-    //     objects[i].x += static_cast<i16>((rand() % 5 - 2));
-    //     objects[i].y += static_cast<i16>((rand() % 5 - 2));
-
-    //     updateObject(i);
-    // }
-
-    // if you had to unbind vbo for whatever reason, bind it again now
-    // vbo->buffer_data(sizeof(vertices), vertices);
 }
 
 void
@@ -133,20 +111,6 @@ Ascension::on_render(f32 interpolation)
     PROFILE_FUNCTION();
     (void)interpolation;
 
-    // graphics::Sprite_Batch sprite_batch;
-    // sprite_batch.initialize(1600, 900, m_asset_manager.get_shader("shaders/spritebatch"));
-
-    // sprite_batch.begin();
-    // sprite_batch.draw(m_asset_manager.get_texture_2d("textures/unicorn"), { 50, 50 });
-    // sprite_batch.end();
-
-    // if you had to unbind vao for whatever reason, bind it again now
-    m_batch.draw();
-
-    // m_sprite_batch.begin();
-    // for (int i = 0; i < 1000; ++i) {
-    //     m_sprite_batch.draw(m_asset_manager.get_texture_2d("textures/unicorn"), v2f{ 0.0f, 0.0f });
-    // }
-    // m_sprite_batch.end();
+    m_batch.flush();
 }
 }

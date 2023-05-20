@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:37
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-19 20:19:30
+ * Last Modified: 2023-05-20 10:01:56
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -57,24 +57,35 @@ struct Batch_Config {
     u32 max_size{};
     std::shared_ptr<Texture_2D> texture;
     std::shared_ptr<Shader> shader;
+    // TODO: Consider removing this and just having things which need static drawing keep their own filled out Batch
+    // /t objects which are added to the sprite batch every frame - would require "removing" empty batches to avoid max_size
     bool is_static{};
 };
 
 class Batch {
   public:
     Batch();
+    explicit Batch(const Batch_Config& config);
 
     void create(const Batch_Config& config);
 
     // TODO: Implement some recognition of texture atlases or sub-textures and remove manually specifying tex_coords.
     void add(v2f position, v2f size, v4f tex_coords = { 0, 0, 1, 1 });
-    void add(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v4f tex_coords = { 0, 0, 1, 1 });
+    void add(
+        const std::shared_ptr<Texture_2D>& texture,
+        v2f position,
+        v2f size,
+        v4f tex_coords = { 0, 0, 1, 1 },
+        bool is_static = false
+    );
 
-    void draw();
-    void empty();
+    void flush();
+    void clear();
 
     [[nodiscard]] u32 current_texture_id() const;
     [[nodiscard]] bool has_space() const;
+    [[nodiscard]] bool is_empty() const;
+    [[nodiscard]] bool is_static() const;
 
   private:
     Batch_Config m_config;
@@ -91,14 +102,30 @@ class Batch {
 
 class Sprite_Batch {
   public:
-    Sprite_Batch(u32 max_batches, u32 batch_size, std::shared_ptr<Shader> shader);
+    Sprite_Batch();
+    Sprite_Batch(u32 max_batches, u32 batch_size, const std::shared_ptr<Shader>& default_shader);
 
-    void draw(const std::shared_ptr<Texture_2D>& texture, v2f position, v4f tex_coords = { 0, 0, 1, 1 });
+    void create(u32 max_batches, u32 batch_size, const std::shared_ptr<Shader>& default_shader);
 
-    void draw_all();
+    void add_batch(const std::shared_ptr<Batch>& batch);
+    void create_batch(const Batch_Config& config);
+
+    void draw(
+        const std::shared_ptr<Texture_2D>& texture,
+        v2f position,
+        v2f size,
+        v4f tex_coords = { 0, 0, 1, 1 },
+        bool is_static = false
+    );
+
+    void flush();
 
   private:
-    std::vector<Batch> m_batches;
+    std::vector<std::shared_ptr<Batch>> m_batches;
+    u32 m_max_batches;
+
+    u32 m_batch_size;
+    std::shared_ptr<Shader> m_default_shader;
 };
 
 }

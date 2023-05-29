@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
-set(LIB_NAME erika_plugins)
-message("  (erika) Configuring ${LIB_NAME}...")
-
-add_library(${LIB_NAME} INTERFACE)
+message("  (erika) Configuring erika plugin system...")
 
 set(ERIKA_BASE_PLUGIN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(ERIKA_BASE_INT_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/ints)
@@ -13,12 +10,7 @@ set(ERIKA_BASE_INT_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/ints)
 # This can be overriden by subdirs.
 set(ERIKA_BASE_PLUGIN_INC include/erika/plugins)
 
-# Import & grab all our plugin options/types.
+add_subdirectory(base)
 add_subdirectory(renderer)
 
-add_dependencies(${LIB_NAME}
-    erika
-    erika_renderer_plugins
-)
-
-message("  (erika) Finished ${LIB_NAME}")
+message("  (erika) Finished erika plugin system")

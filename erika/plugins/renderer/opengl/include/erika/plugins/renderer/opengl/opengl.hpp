@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-27 19:45:50
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-24 13:41:17
+ * Last Modified: 2023-05-29 19:16:26
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,8 +24,9 @@
 
 #pragma once
 
-#include "erika/plugins/plugin_manager.hpp"
-#include "erika/plugins/renderer.hpp"
+#include "erika/plugins/base/plugin_manager_base.hpp"
+
+#include "erika/plugins/base/renderer.hpp"
 
 namespace erika::plugins::renderer::opengl {
 
@@ -57,4 +58,4 @@ class OpenGL_Renderer : public erika::plugins::Renderer {
 }
 
 extern "C" void
-registerPlugin(erika::plugins::Plugin_Manager& plugin_manager);
+register_plugin(erika::plugins::Plugin_Manager_Base* plugin_manager);

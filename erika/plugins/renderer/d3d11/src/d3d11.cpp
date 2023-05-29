@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-11 20:05:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:08
+ * Last Modified: 2023-05-29 19:05:56
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -87,7 +87,7 @@ D3D11_Renderer_Factory::create()
 }
 
 void
-registerPlugin(erika::plugins::Plugin_Manager& plugin_manager)
+register_plugin(erika::plugins::Plugin_Manager& plugin_manager)
 {
     plugin_manager.register_renderer(
         "D3D11_Renderer", std::make_shared<erika::plugins::renderer::d3d11::D3D11_Renderer_Factory>()

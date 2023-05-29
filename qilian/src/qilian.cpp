@@ -3,7 +3,7 @@
  * Project: qilian
  * File Created: 2023-04-04 18:39:13
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:06:51
+ * Last Modified: 2023-05-29 19:17:34
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,7 +26,7 @@
 
 #include "erika/core/entry.hpp" // IWYU pragma: keep
 
-#include "erika/plugins/renderer.hpp"
+#include "erika/plugins/base/renderer.hpp"
 
 namespace qilian {
 

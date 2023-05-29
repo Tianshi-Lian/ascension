@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-11 20:05:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-11 20:18:16
+ * Last Modified: 2023-05-29 19:17:13
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -30,8 +30,8 @@
 #include "yuki/debug/logger.hpp"
 #include "yuki/platform/platform.hpp"
 
-#include "plugins/plugin_types.hpp"
-#include "plugins/renderer.hpp"
+#include "erika/plugins/base/plugin.hpp"
+#include "erika/plugins/base/renderer.hpp"
 
 namespace erika::plugins {
 
@@ -79,13 +79,13 @@ Plugin_Manager::initialize(const std::shared_ptr<yuki::Platform_State>& platform
                 }
 
                 const auto plugin_load =
-                    yuki::Platform::load_library_function<void(erika::plugins::Plugin_Manager&)>(plugin_lib, "registerPlugin");
+                    yuki::Platform::load_library_function<void(erika::plugins::Plugin_Manager*)>(plugin_lib, "register_plugin");
 
                 if (plugin_load == nullptr) {
-                    throw std::runtime_error("Failed to find registerPlugin() function");
+                    throw std::runtime_error("Failed to find register_plugin() function");
                 }
 
-                plugin_load(*this);
+                plugin_load(this);
                 yuki::debug::Logger::debug("erika", "Loaded {} plugin {}", plugin_type.second.begin(), plugin_name);
             }
             catch (const std::exception& e) {

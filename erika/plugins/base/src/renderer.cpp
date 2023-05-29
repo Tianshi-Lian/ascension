@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-25 09:53:09
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:40
+ * Last Modified: 2023-05-29 18:48:09
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -22,7 +22,7 @@
  * ==================
  */
 
-#include "plugins/renderer.hpp"
+#include "renderer.hpp"
 
 namespace erika::plugins {
 

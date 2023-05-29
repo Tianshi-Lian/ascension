@@ -8,49 +8,49 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ints)
 
 project(${APP_NAME}
-	VERSION 0.0.1
-	DESCRIPTION "A sandbox application for testing feature development"
-	LANGUAGES CXX
+    VERSION 0.0.1
+    DESCRIPTION "A sandbox application for testing feature development"
+    LANGUAGES CXX
 )
 
 add_executable(${APP_NAME})
 add_subdirectory(src)
 
 target_include_directories(${APP_NAME} PRIVATE
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${APP_NAME}>
-	$<INSTALL_INTERFACE:include/${APP_NAME}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${APP_NAME}>
+    $<INSTALL_INTERFACE:include/${APP_NAME}>
 )
 
 set_target_properties(${APP_NAME} PROPERTIES
-	LINK_WHAT_YOU_USE ON
-	CXX_EXTENSIONS OFF
+    LINK_WHAT_YOU_USE ON
+    CXX_EXTENSIONS OFF
 )
 
 set_app_ito(${APP_NAME})
 
 if(ENABLE_PCH)
-	target_precompile_headers(${APP_NAME}
-		PRIVATE <map> <memory> <string> <vector> <utility> <yuki/types.hpp>
-	)
+    target_precompile_headers(${APP_NAME}
+        PRIVATE <map> <memory> <string> <vector> <utility> <yuki/types.hpp>
+    )
 endif()
 
 target_link_libraries(${APP_NAME}
-	PRIVATE project_options project_warnings erika yuki
+    PRIVATE project_options project_warnings yuki erika erika_plugins_base
 )
 
 add_dependencies(${APP_NAME}
-	erika_plugins
+    erika_plugins_renderers
 )
 
 install(
-	TARGETS ${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/dist
+    TARGETS ${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/dist
 )
 install(
-	DIRECTORY ${CMAKE_BINARY_DIR}/erika/plugins/bin/$<CONFIG>/
-	DESTINATION ${CMAKE_BINARY_DIR}/dist
+    DIRECTORY ${CMAKE_BINARY_DIR}/erika/plugins/bin/$<CONFIG>/
+    DESTINATION ${CMAKE_BINARY_DIR}/dist
 )
 install(
-	DIRECTORY DESTINATION ${CMAKE_BINARY_DIR}/dist
+    DIRECTORY DESTINATION ${CMAKE_BINARY_DIR}/dist
 )
 
 message("Finished ${APP_NAME}")

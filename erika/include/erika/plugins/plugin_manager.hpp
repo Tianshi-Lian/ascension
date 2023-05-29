@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-11 20:05:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:03:56
+ * Last Modified: 2023-05-29 19:03:28
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,21 +28,19 @@
 
 #include "yuki/platform/platform_types.hpp"
 
-namespace erika::plugins {
+#include "erika/plugins/base/plugin_manager_base.hpp"
 
-class Renderer;
-template<typename T>
-class Plugin_Factory;
+namespace erika::plugins {
 
 /**
  * @class Plugin_Manager
  *
  * @brief A class for handling the plugin-based architecture of erika. Handles register, creation & lifecycle of plugins
  */
-class Plugin_Manager {
+class Plugin_Manager : public Plugin_Manager_Base {
   public:
     Plugin_Manager() = default;
-    ~Plugin_Manager();
+    ~Plugin_Manager() override;
 
     /**
      * @brief Initialize the plugin manager, registering found plugins.
@@ -58,7 +56,7 @@ class Plugin_Manager {
      * @param     name      the name of the renderer plugin
      * @param     factory   a shared pointer to a factory which can create this renderer plugin
      */
-    void register_renderer(std::string name, const std::shared_ptr<Plugin_Factory<Renderer>>& factory);
+    void register_renderer(std::string name, const std::shared_ptr<Plugin_Factory<Renderer>>& factory) override;
     /**
      * @brief Change the active renderer plugin.
      * This will create a new plugin and call shutdown() & initialize() if appropriate.

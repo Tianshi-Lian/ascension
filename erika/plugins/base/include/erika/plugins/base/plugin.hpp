@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-11 20:05:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:03:59
+ * Last Modified: 2023-05-29 18:33:31
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -22,7 +22,8 @@
  * ==================
  */
 
-#pragma once
+#ifndef ERIKA_PLUGINS_BASE_PLUGIN_HPP
+#define ERIKA_PLUGINS_BASE_PLUGIN_HPP
 
 namespace erika::plugins {
 
@@ -97,3 +98,5 @@ class Plugin_Factory {
 };
 
 }
+
+#endif // ERIKA_PLUGINS_BASE_PLUGIN_HPP

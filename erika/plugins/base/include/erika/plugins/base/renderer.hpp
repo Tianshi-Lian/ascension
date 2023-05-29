@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-11 20:05:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-11 20:19:31
+ * Last Modified: 2023-05-29 18:49:32
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,7 +24,9 @@
 
 #pragma once
 
-#include "erika/plugins/plugin_types.hpp"
+#include "yuki/types.hpp"
+
+#include "erika/plugins/base/plugin.hpp"
 
 namespace yuki {
 struct Platform_State;

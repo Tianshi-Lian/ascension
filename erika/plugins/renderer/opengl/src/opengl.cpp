@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-04-06 16:09:06
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-26 15:20:01
+ * Last Modified: 2023-05-29 19:21:30
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -224,9 +224,9 @@ OpenGL_Renderer_Factory::create()
 }
 
 void
-registerPlugin(erika::plugins::Plugin_Manager& plugin_manager)
+register_plugin(erika::plugins::Plugin_Manager_Base* plugin_manager)
 {
-    plugin_manager.register_renderer(
+    plugin_manager->register_renderer(
         "OpenGL_Renderer", std::make_shared<erika::plugins::renderer::opengl::OpenGL_Renderer_Factory>()
     );
 }

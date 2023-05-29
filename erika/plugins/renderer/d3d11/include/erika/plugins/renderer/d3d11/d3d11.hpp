@@ -3,7 +3,7 @@
  * Project: erika
  * File Created: 2023-03-11 20:05:16
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-09 16:04:06
+ * Last Modified: 2023-05-29 19:05:50
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -51,4 +51,4 @@ class D3D11_Renderer : public erika::plugins::Renderer {
 }
 
 extern "C" void
-registerPlugin(erika::plugins::Plugin_Manager& plugin_manager);
+register_plugin(erika::plugins::Plugin_Manager& plugin_manager);

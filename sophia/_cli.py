@@ -38,7 +38,8 @@ def import_or_install(package):
             ['python', '-m', 'pip', 'install', '-r', f'./{SCRIPTS_DIR}/requirements.txt'])
 
 # TODO: setup some awareness of "command chains/dependencies" where we can register command dependencies and ensure
-# /t    all of the dependencies run before trying to execute that command. E.g. configure -> build -> install -> run.
+# /t    all of the dependencies run before trying to execute that command. E.g. if we send `dev run` we ensure and/or try to run
+# /t    configure -> build -> install, before run, if needed.
 
 
 def run_command(commands):

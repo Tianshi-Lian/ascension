@@ -41,9 +41,9 @@ enum class path {
 };
 
 // Fire > Ice > Wind > Earth > Lightning > Water > Fire...
-// Aether is a mysterious, unseen power from which the primal aspects emerge and return
 // Light < > Dark
 // Life < > Death
+// Aether is a mysterious, unseen power from which the primal aspects emerge and return
 // Time and space have no inherent strength or weakness, though are greatly more powerful (and rare) than the other elements
 enum class aspect {
     FIRE,
@@ -52,11 +52,11 @@ enum class aspect {
     EARTH,
     LIGHTNING,
     WATER,
-    AETHER,
     LIGHT,
     DARK,
     LIFE,
     DEATH,
+    AETHER,
     TIME,
     SPACE,
 };
@@ -85,8 +85,10 @@ enum class weapon {
 };
 
 
-
-
+// Forces in the universe and how they equate to a creature
+// Physical body    | Worldly force     | Life
+// Energy body      | Heavenly force    | Spirit
+// Spiritual body   | Cosmic force      | Knowledge (Aether)
 
 
 

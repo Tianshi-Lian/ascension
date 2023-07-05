@@ -29,7 +29,7 @@
 namespace ascension::input {
 
 class Input_Manager {
-  public:
+public:
     Input_Manager();
     ~Input_Manager();
 
@@ -68,7 +68,7 @@ class Input_Manager {
     Input_Manager& operator=(const Input_Manager&) = default;
     Input_Manager& operator=(Input_Manager&&) = delete;
 
-  private:
+private:
     Mouse_State m_current_mouse_state;
     Mouse_State m_previous_mouse_state;
     Keyboard_State m_current_keyboard_state;

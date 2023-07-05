@@ -36,7 +36,7 @@ class Shader;
 namespace ascension::assets {
 
 class Asset_Manager {
-  public:
+public:
     Asset_Manager() = default;
     ~Asset_Manager();
 
@@ -57,7 +57,7 @@ class Asset_Manager {
     Asset_Manager& operator=(const Asset_Manager&) = default;
     Asset_Manager& operator=(Asset_Manager&&) = delete;
 
-  private:
+private:
     void parse_asset_document(const std::string& document_filepath, const std::string& root_name);
 
     std::unordered_map<std::string, Texture_Asset> m_texture_filepaths;

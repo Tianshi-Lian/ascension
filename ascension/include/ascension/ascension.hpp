@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-02-24 19:27:40
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-20 09:35:04
+ * Last Modified: 2023-07-05 18:40:08
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -31,7 +31,7 @@
 namespace ascension {
 
 class Ascension : public core::Application {
-  public:
+public:
     Ascension() = default;
     ~Ascension() override = default;
 
@@ -44,7 +44,7 @@ class Ascension : public core::Application {
     Ascension& operator=(const Ascension&) = delete;
     Ascension& operator=(Ascension&&) = delete;
 
-  private:
+private:
     graphics::Sprite_Batch m_batch;
 };
 

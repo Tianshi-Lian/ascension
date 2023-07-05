@@ -38,7 +38,7 @@ namespace yuki {
  * need to implement the functions in this class in a corresponding .cpp file.
  */
 class Platform {
-  public:
+public:
     /**
      * @brief Initialize the platform layer.
      *
@@ -138,7 +138,7 @@ class Platform {
         return result;
     }
 
-  private:
+private:
     static std::shared_ptr<void (*)()>
     load_library_function_internal(const Library_Handle& library_handle, const std::string& function_name);
 };

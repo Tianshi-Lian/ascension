@@ -42,7 +42,7 @@ namespace yuki::input {
 class Input {
     friend class yuki::platform::Platform;
 
-  public:
+public:
     /**
      * @brief Clears the current state, assigning it to the previous state.
      */
@@ -129,7 +129,7 @@ class Input {
     static void process_mouse_scroll(i32 scroll_delta);
     static void process_mouse_button(Mouse_Button button, bool is_down);
 
-  private:
+private:
     static std::array<bool, static_cast<size_t>(Key::MAX_KEYS)> m_key_state;
     static std::array<bool, static_cast<size_t>(Key::MAX_KEYS)> m_previous_key_state;
     static std::array<bool, static_cast<size_t>(Mouse_Button::MAX_BUTTONS)> m_mouse_button_state;

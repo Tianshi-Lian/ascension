@@ -34,7 +34,7 @@ enum class Blend_Function : u32 {
 };
 
 class Renderer_2D {
-  public:
+public:
     static bool initialize();
 
     static void set_clear_color(v4f color);

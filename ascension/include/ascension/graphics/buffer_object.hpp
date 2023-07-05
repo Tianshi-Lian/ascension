@@ -41,7 +41,7 @@ enum class Draw_Mode : u32 {
 };
 
 class Buffer_Object {
-  public:
+public:
     Buffer_Object();
     explicit Buffer_Object(Buffer_Type type);
     virtual ~Buffer_Object();
@@ -63,7 +63,7 @@ class Buffer_Object {
     Buffer_Object& operator=(const Buffer_Object&) = default;
     Buffer_Object& operator=(Buffer_Object&&) = delete;
 
-  private:
+private:
     u32 m_id;
     u32 m_buffer_type;
     bool m_is_bound;
@@ -80,7 +80,7 @@ struct Vertex_Object_Element {
 using Vertex_Buffer_Layout = std::vector<Vertex_Object_Element>;
 
 class Vertex_Buffer_Object : public Buffer_Object {
-  public:
+public:
     Vertex_Buffer_Object();
     ~Vertex_Buffer_Object() override = default;
 
@@ -94,12 +94,12 @@ class Vertex_Buffer_Object : public Buffer_Object {
     Vertex_Buffer_Object& operator=(const Vertex_Buffer_Object&) = default;
     Vertex_Buffer_Object& operator=(Vertex_Buffer_Object&&) = delete;
 
-  private:
+private:
     Vertex_Buffer_Layout m_layout;
 };
 
 class Index_Buffer_Object : public Buffer_Object {
-  public:
+public:
     Index_Buffer_Object();
     ~Index_Buffer_Object() override = default;
 

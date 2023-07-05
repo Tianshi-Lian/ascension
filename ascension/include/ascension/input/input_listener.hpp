@@ -29,7 +29,7 @@
 namespace ascension::input {
 
 class Input_Listener {
-  public:
+public:
     Input_Listener();
 
     [[nodiscard]] u32 get_id() const;
@@ -37,12 +37,12 @@ class Input_Listener {
     friend bool operator==(const Input_Listener& listener_1, const Input_Listener& listener_2);
     friend bool operator!=(const Input_Listener& listener_1, const Input_Listener& listener_2);
 
-  private:
+private:
     u32 m_id;
 };
 
 class Keyboard_Listener : public Input_Listener {
-  public:
+public:
     Keyboard_Listener() = default;
     virtual ~Keyboard_Listener() = 0;
 
@@ -57,7 +57,7 @@ class Keyboard_Listener : public Input_Listener {
 };
 
 class Mouse_Listener : public Input_Listener {
-  public:
+public:
     Mouse_Listener() = default;
     virtual ~Mouse_Listener() = 0;
 

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-20 09:59:45
+ * Last Modified: 2023-07-05 18:40:51
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -34,7 +34,7 @@
 
 namespace ascension {
 
-const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 10000;
+const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 100000;
 
 struct Texture {
     v2i size;

@@ -40,7 +40,7 @@ namespace erika {
 class Game {
     friend class Engine;
 
-  public:
+public:
     explicit Game(std::string window_title = "Erika Game");
     virtual ~Game() = default;
 
@@ -51,7 +51,7 @@ class Game {
     Game& operator=(const Game&) = default;
     Game& operator=(Game&&) = delete;
 
-  protected:
+protected:
     /**
      * @brief Callback for when the game should run initialization code.
      */
@@ -83,7 +83,7 @@ class Game {
 
     erika::plugins::Plugin_Manager m_plugin_manager;
 
-  private:
+private:
     bool initialize();
     void update(f32 delta_time);
     void render(f32 interpolation);

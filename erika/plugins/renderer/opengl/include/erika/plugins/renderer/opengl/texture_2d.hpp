@@ -27,7 +27,7 @@
 namespace erika::plugins::renderer::opengl {
 
 class Texture_2D {
-  public:
+public:
     Texture_2D();
     ~Texture_2D();
 
@@ -51,7 +51,7 @@ class Texture_2D {
     Texture_2D& operator=(const Texture_2D&) = default;
     Texture_2D& operator=(Texture_2D&&) = delete;
 
-  private:
+private:
     u32 m_id;
     u32 m_width;
     u32 m_height;

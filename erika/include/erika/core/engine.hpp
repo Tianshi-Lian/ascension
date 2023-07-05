@@ -38,7 +38,7 @@ class Game;
  * @brief Core engine class for the erika game engine.
  */
 class Engine final {
-  public:
+public:
     /**
      * @brief Initialize the game engine.
      */

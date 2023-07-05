@@ -33,7 +33,7 @@ namespace erika::plugins::renderer::opengl {
 struct OpenGL_Platform_State;
 
 class OpenGL_Renderer : public erika::plugins::Renderer {
-  public:
+public:
     OpenGL_Renderer() = default;
     ~OpenGL_Renderer() override = default;
 
@@ -48,10 +48,10 @@ class OpenGL_Renderer : public erika::plugins::Renderer {
     OpenGL_Renderer& operator=(const OpenGL_Renderer&) = default;
     OpenGL_Renderer& operator=(OpenGL_Renderer&&) = delete;
 
-  protected:
+protected:
     void on_resize(const u32 width, const u32 height) override;
 
-  private:
+private:
     std::shared_ptr<OpenGL_Platform_State> m_opengl_platform_state;
 };
 

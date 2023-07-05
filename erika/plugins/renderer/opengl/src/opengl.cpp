@@ -124,7 +124,7 @@ sandbox()
 namespace erika::plugins::renderer::opengl {
 
 class OpenGL_Renderer_Factory : public Renderer_Plugin_Factory {
-  public:
+public:
     OpenGL_Renderer_Factory() = default;
     ~OpenGL_Renderer_Factory() override = default;
 

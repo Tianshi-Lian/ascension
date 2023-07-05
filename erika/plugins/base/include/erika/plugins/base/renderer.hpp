@@ -41,7 +41,7 @@ namespace erika::plugins {
  * OpenGL etc must inherit from this base class.
  */
 class Renderer : public Plugin {
-  public:
+public:
     /**
      * @struct Clear_Color
      *
@@ -89,7 +89,7 @@ class Renderer : public Plugin {
     Renderer& operator=(const Renderer&) = default;
     Renderer& operator=(Renderer&&) = delete;
 
-  protected:
+protected:
     /**
      * @brief Get the width of the screen.
      *
@@ -112,7 +112,7 @@ class Renderer : public Plugin {
      */
     virtual void on_resize(const u32 width, const u32 height) = 0;
 
-  private:
+private:
     u32 m_screen_width;
     u32 m_screen_height;
 };

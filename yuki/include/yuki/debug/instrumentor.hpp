@@ -38,7 +38,7 @@ namespace yuki::debug {
  * @brief A debug utility class for profiling/instrumenting code.
  */
 class Instrumentor {
-  public:
+public:
     Instrumentor(const Instrumentor&) = delete;
     Instrumentor(Instrumentor&&) = delete;
     Instrumentor& operator=(const Instrumentor&) = delete;
@@ -80,7 +80,7 @@ class Instrumentor {
         std::thread::id thread_id
     );
 
-  private:
+private:
     Instrumentor() = default;
     ~Instrumentor();
 
@@ -92,7 +92,7 @@ class Instrumentor {
 };
 
 class Instrumentor_Timer {
-  public:
+public:
     explicit Instrumentor_Timer(std::string name);
     ~Instrumentor_Timer();
 
@@ -107,7 +107,7 @@ class Instrumentor_Timer {
      */
     void stop();
 
-  private:
+private:
     std::string m_name;
     std::chrono::time_point<std::chrono::steady_clock> m_start_time;
     bool m_stopped;

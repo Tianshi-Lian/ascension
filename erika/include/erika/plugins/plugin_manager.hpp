@@ -38,7 +38,7 @@ namespace erika::plugins {
  * @brief A class for handling the plugin-based architecture of erika. Handles register, creation & lifecycle of plugins
  */
 class Plugin_Manager : public Plugin_Manager_Base {
-  public:
+public:
     Plugin_Manager() = default;
     ~Plugin_Manager() override;
 
@@ -83,7 +83,7 @@ class Plugin_Manager : public Plugin_Manager_Base {
     Plugin_Manager& operator=(const Plugin_Manager&) = default;
     Plugin_Manager& operator=(Plugin_Manager&&) = delete;
 
-  private:
+private:
     std::shared_ptr<yuki::Platform_State> m_platform_state;
 
     std::vector<yuki::Library_Handle> m_loaded_plugins;

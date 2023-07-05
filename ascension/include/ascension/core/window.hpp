@@ -27,7 +27,7 @@
 namespace ascension::core {
 
 class Window {
-  public:
+public:
     Window();
     ~Window();
 
@@ -49,7 +49,7 @@ class Window {
     Window& operator=(const Window&) = default;
     Window& operator=(Window&&) = delete;
 
-  private:
+private:
     void* m_internal_window;
     void* m_internal_context;
 

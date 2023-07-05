@@ -37,7 +37,7 @@ class Plugin_Factory;
  * @brief An interface for the plugin manager to specify the relevant register operations across libraries.
  */
 class Plugin_Manager_Base {
-  public:
+public:
     Plugin_Manager_Base() = default;
     virtual ~Plugin_Manager_Base() = default;
 

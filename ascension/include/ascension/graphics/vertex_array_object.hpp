@@ -30,7 +30,7 @@ class Vertex_Buffer_Object;
 class Index_Buffer_Object;
 
 class Vertex_Array_Object {
-  public:
+public:
     Vertex_Array_Object();
     ~Vertex_Array_Object();
 
@@ -49,7 +49,7 @@ class Vertex_Array_Object {
     Vertex_Array_Object& operator=(const Vertex_Array_Object&) = default;
     Vertex_Array_Object& operator=(Vertex_Array_Object&&) = delete;
 
-  private:
+private:
     u32 m_id;
     u32 m_current_attrib_index;
     bool m_is_bound;

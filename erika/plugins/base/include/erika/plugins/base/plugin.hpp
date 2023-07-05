@@ -44,7 +44,7 @@ enum class Plugin_Type : u32 {
  * should derive from this base.
  */
 class Plugin {
-  public:
+public:
     explicit Plugin(Plugin_Type type)
       : m_type(type)
     {
@@ -68,7 +68,7 @@ class Plugin {
     Plugin& operator=(const Plugin&) = default;
     Plugin& operator=(Plugin&&) = delete;
 
-  private:
+private:
     Plugin_Type m_type;
 };
 
@@ -80,7 +80,7 @@ class Plugin {
  */
 template<typename T>
 class Plugin_Factory {
-  public:
+public:
     Plugin_Factory<T>() = default;
     virtual ~Plugin_Factory<T>() = default;
 

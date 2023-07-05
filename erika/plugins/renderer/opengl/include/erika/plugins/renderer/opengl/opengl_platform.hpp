@@ -32,7 +32,7 @@ struct Platform_State;
 
 namespace erika::plugins::renderer::opengl {
 class OpenGL_Platform {
-  public:
+public:
     static bool create_context(
         const std::shared_ptr<OpenGL_Platform_State>& opengl_platform_state,
         const std::shared_ptr<yuki::Platform_State>& platform_state

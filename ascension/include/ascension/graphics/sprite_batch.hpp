@@ -63,7 +63,7 @@ struct Batch_Config {
 };
 
 class Batch {
-  public:
+public:
     Batch();
     explicit Batch(const Batch_Config& config);
 
@@ -87,7 +87,7 @@ class Batch {
     [[nodiscard]] bool is_empty() const;
     [[nodiscard]] bool is_static() const;
 
-  private:
+private:
     Batch_Config m_config;
     u32 m_current_size;
 
@@ -101,7 +101,7 @@ class Batch {
 };
 
 class Sprite_Batch {
-  public:
+public:
     Sprite_Batch();
     Sprite_Batch(u32 max_batches, u32 batch_size, const std::shared_ptr<Shader>& default_shader);
 
@@ -120,7 +120,7 @@ class Sprite_Batch {
 
     void flush();
 
-  private:
+private:
     std::vector<std::shared_ptr<Batch>> m_batches;
     u32 m_max_batches;
 

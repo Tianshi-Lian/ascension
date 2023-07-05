@@ -80,7 +80,7 @@ enum class Log_Exception_Type {
  * @brief Class which implements logger general exception handler.
  */
 class Logger_Exception : std::exception {
-  public:
+public:
     /**
      * @brief Sets the logger exception type.
      *
@@ -123,7 +123,7 @@ class Logger_Exception : std::exception {
         return m_message;
     }
 
-  private:
+private:
     std::string m_message;
     Log_Exception_Type m_type;
 };
@@ -134,7 +134,7 @@ class Logger_Exception : std::exception {
  * @brief Utility queue class which performs string pop/push operation.
  */
 class Blocking_string_Queue {
-  public:
+public:
     /**
      * @brief Pop elements from queue.
      *
@@ -166,7 +166,7 @@ class Blocking_string_Queue {
         m_queue.push(value);
     }
 
-  private:
+private:
     std::mutex m_mutex;
     std::queue<std::string> m_queue;
 };
@@ -177,7 +177,7 @@ class Blocking_string_Queue {
  * @brief Utility class which provides helper functions to logging operations.
  */
 class Logger_Util {
-  public:
+public:
     /**
      * @brief Creates a timestamp of the current time in the format "yyyy-MM-dd
      * HH:mm:ss.SSS"
@@ -222,7 +222,7 @@ class Logger_Util {
         return fmt::format(format, std::forward<Args>(args)...);
     }
 
-  private:
+private:
     static std::mutex& get_mutex();
 };
 
@@ -236,7 +236,7 @@ class Logger;
 class Logger_Worker {
     friend Logger;
 
-  public:
+public:
     Logger_Worker();
     ~Logger_Worker();
 
@@ -279,7 +279,7 @@ class Logger_Worker {
     Logger_Worker& operator=(const Logger_Worker&) = delete;
     Logger_Worker& operator=(Logger_Worker&&) = delete;
 
-  private:
+private:
     std::unique_ptr<std::thread> m_app_log_thread;
     volatile bool m_is_app_interrupted;
 
@@ -303,7 +303,7 @@ class Logger_Worker {
  * Original by: https://github.com/prajilal/cpplogger
  */
 class Logger {
-  public:
+public:
     Logger();
     ~Logger();
 
@@ -461,7 +461,7 @@ class Logger {
     Logger& operator=(const Logger&) = default;
     Logger& operator=(Logger&&) = delete;
 
-  private:
+private:
     /**
      * @brief Get the internal worker object for this logger.
      * Initializes the worker if required.

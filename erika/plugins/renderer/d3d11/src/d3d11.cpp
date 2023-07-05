@@ -29,7 +29,7 @@
 namespace erika::plugins::renderer::d3d11 {
 
 class D3D11_Renderer_Factory : public Renderer_Plugin_Factory {
-  public:
+public:
     D3D11_Renderer_Factory() = default;
     ~D3D11_Renderer_Factory() override = default;
 

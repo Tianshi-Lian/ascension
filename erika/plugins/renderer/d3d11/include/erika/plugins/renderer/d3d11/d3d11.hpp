@@ -29,7 +29,7 @@
 
 namespace erika::plugins::renderer::d3d11 {
 class D3D11_Renderer : public erika::plugins::Renderer {
-  public:
+public:
     D3D11_Renderer() = default;
     ~D3D11_Renderer() override = default;
 
@@ -44,7 +44,7 @@ class D3D11_Renderer : public erika::plugins::Renderer {
     D3D11_Renderer& operator=(const D3D11_Renderer&) = default;
     D3D11_Renderer& operator=(D3D11_Renderer&&) = delete;
 
-  protected:
+protected:
     void on_resize(const u32 width, const u32 height) override;
 };
 

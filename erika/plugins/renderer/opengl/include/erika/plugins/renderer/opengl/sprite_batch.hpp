@@ -62,7 +62,7 @@ struct Sprite_Batch_Vertex {
 class Sprite_Batch {
     static constexpr u32 DEFAULT_BATCH_SIZE = 2048;
 
-  public:
+public:
     Sprite_Batch();
     ~Sprite_Batch();
 
@@ -88,7 +88,7 @@ class Sprite_Batch {
     Sprite_Batch& operator=(const Sprite_Batch&) = delete;
     Sprite_Batch& operator=(Sprite_Batch&&) = delete;
 
-  private:
+private:
     void generate_quad_vertices(const Sprite_Batch_Item& item);
     void flush(const std::shared_ptr<Texture_2D>& texture);
 

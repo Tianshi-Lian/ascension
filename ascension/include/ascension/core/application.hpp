@@ -32,7 +32,7 @@
 namespace ascension::core {
 
 class Application {
-  public:
+public:
     Application();
     virtual ~Application() = default;
 
@@ -45,7 +45,7 @@ class Application {
     Application& operator=(const Application&) = default;
     Application& operator=(Application&&) = delete;
 
-  protected:
+protected:
     virtual void on_initialize() = 0;
     virtual void on_update(f64 delta_time) = 0;
     virtual void on_render(f32 interpolation) = 0;
@@ -54,7 +54,7 @@ class Application {
     assets::Asset_Manager m_asset_manager;
     input::Input_Manager m_input_manager;
 
-  private:
+private:
     void initialize();
     void update(f64 delta_time);
     void render(f32 interpolation);

@@ -29,7 +29,7 @@
 namespace ascension::graphics {
 
 class Shader {
-  public:
+public:
     Shader();
     ~Shader();
 
@@ -67,7 +67,7 @@ class Shader {
     Shader& operator=(const Shader&) = default;
     Shader& operator=(Shader&&) = delete;
 
-  private:
+private:
     i32 get_uniform_location(const std::string& name);
 
     u32 m_id;

@@ -6,7 +6,7 @@ ColumnLimit: 128
 UseTab: Never
 UseCRLF: false
 
-AccessModifierOffset: -2
+AccessModifierOffset: -4
 AlignAfterOpenBracket: BlockIndent
 AlignOperands: Align
 AlignTrailingComments: true

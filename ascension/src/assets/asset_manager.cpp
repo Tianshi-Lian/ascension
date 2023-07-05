@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-20 16:12:03
+ * Last Modified: 2023-07-05 20:12:40
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -34,6 +34,28 @@
 #include "core/log.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/texture_2d.hpp"
+#include "graphics/texture_atlas.hpp"
+
+namespace {
+
+ascension::assets::Texture_Asset
+parse_texture_asset(const pugi::xml_node& node, const std::string& name, const std::string& filepath)
+{
+    ascension::assets::Texture_Asset asset;
+    if (!node.child("scale").empty()) {
+        asset.scale = std::strtof(node.child("scale").child_value(), nullptr);
+    }
+    if (!node.child("flip").empty()) {
+        asset.flip_on_load = (std::stoi(node.child("flip").child_value()) != 0);
+    }
+    asset.name = name;
+    asset.filepath = filepath;
+    asset.type = ascension::assets::Asset_Type::Texture;
+
+    return asset;
+}
+
+}
 
 namespace ascension::assets {
 
@@ -46,9 +68,11 @@ void
 Asset_Manager::clear()
 {
     m_texture_filepaths.clear();
+    m_texture_atlas_filepaths.clear();
     m_shader_filepaths.clear();
 
     m_loaded_textures.clear();
+    m_loaded_texture_atlas.clear();
     m_loaded_shaders.clear();
 }
 
@@ -79,7 +103,7 @@ Asset_Manager::parse_asset_document(const std::string& document_filepath, const 
         if (!root_name.empty()) {
             asset_base_path = root_name + "/";
         }
-        else if (type != ascension::assets::Asset_Type::Asset_List) {
+        else if (type != assets::Asset_Type::Asset_List) {
             asset_base_path = type_str + "/";
         }
 
@@ -89,22 +113,54 @@ Asset_Manager::parse_asset_document(const std::string& document_filepath, const 
         else {
             switch (*type) {
                 case Asset_Type::Texture: {
-                    Texture_Asset asset;
-                    if (!node.child("scale").empty()) {
-                        asset.scale = std::strtof(node.child("scale").child_value(), nullptr);
+                    Texture_Asset asset = parse_texture_asset(node, name, filepath);
+                    // TODO: Should probably check we're not overwriting these...
+                    m_texture_filepaths[(asset_base_path + name)] = asset;
+                } break;
+                case Asset_Type::Texture_Atlas: {
+                    Texture_Atlas_Asset asset;
+
+                    if (node.child("asset").empty()) {
+                        core::log::error("Trying to load texture atlas {} ({}) without respective texture", name, filepath);
+                        continue;
                     }
-                    if (!node.child("flip").empty()) {
-                        asset.flip_on_load = (std::stoi(node.child("flip").child_value()) != 0);
+
+                    const auto texture_node = node.child("asset");
+
+                    const std::string child_type_value = texture_node.attribute("type").value();
+                    const auto child_type = magic_enum::enum_cast<Asset_Type>(child_type_value);
+                    if (!child_type.has_value()) {
+                        core::log::error(
+                            "Unknown asset type {} loading texture atlas {} ({})", child_type_value, name, filepath
+                        );
+                        continue;
                     }
+
+                    if (*child_type != Asset_Type::Texture) {
+                        core::log::error(
+                            "Unexpected child asset type {} loading texture atlas {} ({})", child_type_value, name, filepath
+                        );
+                        continue;
+                    }
+
+                    const std::string texture_name = texture_node.attribute("name").value();
+                    const std::string texture_filepath = texture_node.attribute("filepath").value();
+                    Texture_Asset texture_asset = parse_texture_asset(texture_node, texture_name, texture_filepath);
+
+                    std::string sub_texture_id = asset_base_path + texture_name;
+                    m_texture_filepaths[sub_texture_id] = texture_asset;
+
                     asset.name = name;
                     asset.filepath = filepath;
-                    asset.type = Asset_Type::Texture;
-                    m_texture_filepaths[(asset_base_path + name)] = asset;
+                    asset.type = Asset_Type::Texture_Atlas;
+                    asset.sub_texture_id = sub_texture_id;
+                    m_texture_atlas_filepaths[(asset_base_path + name)] = asset;
                 } break;
                 case Asset_Type::Shader: {
                     Shader_Asset asset;
                     if (node.child("vertex").empty() || node.child("fragment").empty()) {
                         core::log::error("Trying to load shader {} ({}) without fragment or vertex source.", name, filepath);
+                        continue;
                     }
                     asset.vertex_src_file = node.child("vertex").child_value();
                     asset.fragment_src_file = node.child("fragment").child_value();
@@ -126,6 +182,7 @@ Asset_Manager::load_asset_file(const std::string& asset_file)
     parse_asset_document(asset_file, "");
 
     core::log::info("Loaded {} textures", m_texture_filepaths.size());
+    core::log::info("Loaded {} texture atlas", m_texture_atlas_filepaths.size());
     core::log::info("Loaded {} shaders", m_shader_filepaths.size());
 }
 
@@ -189,6 +246,79 @@ Asset_Manager::unload_texture_2d(const std::string& asset_name)
     }
 
     m_loaded_textures.erase(asset_name);
+}
+
+std::shared_ptr<graphics::Texture_Atlas>
+Asset_Manager::load_texture_atlas(const std::string& asset_name)
+{
+    auto texture_atlas = get_texture_atlas(asset_name);
+    if (texture_atlas) {
+        return texture_atlas;
+    }
+
+    if (m_texture_atlas_filepaths.count(asset_name) == 0u) {
+        core::log::warn("Attempting to load unrecognized texture atlas {}", asset_name);
+        return nullptr;
+    }
+
+    Texture_Atlas_Asset asset = m_texture_atlas_filepaths[asset_name];
+
+    const auto texture = load_texture_2d(asset.sub_texture_id);
+    if (!texture) {
+        core::log::error("Asset_Manager::load_texture_atlas() failed to load internal texture {}", asset.sub_texture_id);
+        return nullptr;
+    }
+
+    std::ifstream file(asset.filepath, std::ifstream::in);
+    if (!file.is_open()) {
+        core::log::error("Asset_Manager::load_texture_atlas() failed to open file {}", asset.filepath);
+        return nullptr;
+    }
+
+    std::unordered_map<std::string, v4f> sub_textures;
+
+    std::string sub_texture_details;
+    while (file.peek() != EOF) {
+        std::getline(file, sub_texture_details);
+
+        v4f texture_coords{ 0 };
+        std::string texture_name;
+        std::stringstream sub_texture_details_stream(sub_texture_details);
+        sub_texture_details_stream >> texture_name;
+        sub_texture_details_stream >> texture_coords.x >> texture_coords.y >> texture_coords.z >> texture_coords.w;
+
+        sub_textures.emplace(texture_name, texture_coords);
+    }
+
+    auto new_texture_atlas = std::make_shared<graphics::Texture_Atlas>();
+    new_texture_atlas->create(texture, sub_textures);
+
+    m_loaded_texture_atlas.insert({ asset_name, new_texture_atlas });
+    return new_texture_atlas;
+}
+
+std::shared_ptr<graphics::Texture_Atlas>
+Asset_Manager::get_texture_atlas(const std::string& asset_name)
+{
+    if (m_loaded_texture_atlas.count(asset_name) == 0) {
+        return nullptr;
+    }
+
+    return m_loaded_texture_atlas[asset_name];
+}
+
+void
+Asset_Manager::unload_texture_atlas(const std::string& asset_name)
+{
+    const auto texture_atlas = get_texture_atlas(asset_name);
+    if (!texture_atlas) {
+        return;
+    }
+
+    const auto texture_name = m_texture_atlas_filepaths.at(asset_name).sub_texture_id;
+    unload_texture_2d(texture_name);
+
+    m_loaded_texture_atlas.erase(asset_name);
 }
 
 std::shared_ptr<graphics::Shader>

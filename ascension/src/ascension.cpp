@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-05 18:40:51
+ * Last Modified: 2023-07-05 20:28:49
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,7 +28,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "graphics/shader.hpp"
-#include "graphics/texture_2d.hpp"
+#include "graphics/texture_atlas.hpp"
 
 #include "yuki/debug/instrumentor.hpp"
 
@@ -38,24 +38,23 @@ const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 100000;
 
 struct Texture {
     v2i size;
-    float u1, v1, u2, v2;
 };
 struct Object {
     v2f position;
     Texture texture;
 };
 
-Texture watermelon = { { 64, 64 }, 0.0f, 0.5f, 0.5f, 1.0f };
-Texture pineapple = { { 64, 64 }, 0.5f, 0.5f, 1.0f, 1.0f };
-Texture orange = { { 32, 32 }, 0.0f, 0.25f, 0.25f, 0.5f };
-Texture grape = { { 32, 32 }, 0.25f, 0.25f, 0.5f, 0.5f };
-Texture pear = { { 32, 32 }, 0.0f, 0.0f, 0.25f, 0.25f };
-Texture banana = { { 32, 32 }, 0.25f, 0.0f, 0.5f, 0.25f };
-Texture strawberry = { { 16, 16 }, 0.5f, 0.375f, 0.625f, 0.5f };
-Texture raspberry = { { 16, 16 }, 0.625f, 0.375f, 0.75f, 0.5f };
-Texture cherry = { { 16, 16 }, 0.5f, 0.25f, 0.625f, 0.375f };
+Texture watermelon = { { 64, 64 } };
+Texture pineapple = { { 64, 64 } };
+Texture orange = { { 32, 32 } };
+Texture grape = { { 32, 32 } };
+Texture pear = { { 32, 32 } };
+Texture banana = { { 32, 32 } };
+Texture strawberry = { { 16, 16 } };
+Texture raspberry = { { 16, 16 } };
+Texture cherry = { { 16, 16 } };
 
-Texture textures[9] = { watermelon, pineapple, orange, grape, pear, banana, strawberry, raspberry, cherry };
+Texture textures[9] = { cherry, raspberry, strawberry, banana, pear, grape, orange, pineapple, watermelon };
 
 static Object objects[OBJECT_COUNT];
 
@@ -64,7 +63,7 @@ Ascension::on_initialize()
 {
     m_asset_manager.load_asset_file("assets/assets.xml");
     m_asset_manager.load_texture_2d("textures/unicorn");
-    auto fruit_tex = m_asset_manager.load_texture_2d("textures/fruits");
+    auto fruit_atlas = m_asset_manager.load_texture_atlas("textures/fruits");
     auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
 
     // viewport setup
@@ -77,19 +76,16 @@ Ascension::on_initialize()
     m_batch.create(16, 2048, sprite_shader);
 
     auto fruits = std::make_shared<graphics::Batch>();
-    fruits->create({ OBJECT_COUNT, fruit_tex, sprite_shader, true });
+    fruits->create({ OBJECT_COUNT, fruit_atlas->get_texture(), sprite_shader, true });
 
     for (auto& object : objects) {
-        Texture t = textures[rand() % 9];
+        int id = rand() % 9;
+        Texture t = textures[id];
         object = { v2f{ static_cast<i16>((rand() % (WINDOW_WIDTH - t.size.x))),
                         static_cast<i16>((rand() % (WINDOW_HEIGHT - t.size.y))) },
                    t };
 
-        fruits->add(
-            object.position,
-            object.texture.size,
-            v4f{ object.texture.u1, object.texture.v1, object.texture.u2, object.texture.v2 }
-        );
+        fruits->add(object.position, object.texture.size, fruit_atlas->get_texture_coords(static_cast<u32>(id + 1)));
     }
 
     m_batch.add_batch(fruits);

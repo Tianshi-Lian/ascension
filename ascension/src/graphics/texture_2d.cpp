@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:41:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:50:03
+ * Last Modified: 2023-07-09 17:41:30
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -34,6 +34,7 @@ Texture_2D::Texture_2D()
   : m_id(0)
   , m_width(0)
   , m_height(0)
+  , m_texture_coords(0.0f, 1.0f, 1.0f, 0.0f)
 {
 }
 
@@ -48,15 +49,27 @@ Texture_2D::~Texture_2D()
 void
 Texture_2D::create(u32 width, u32 height, u8* data)
 {
+    create(width, height, { 0.0f, 1.0f, 1.0f, 0.0f }, data);
+}
+
+void
+Texture_2D::create(u32 width, u32 height, v4f texture_coords, u8* data)
+{
+    m_width = width;
+    m_height = height;
+
+    m_texture_coords = texture_coords;
+
+    if (data == nullptr) {
+        return;
+    }
+
     glGenTextures(1, &m_id);
 
     if (m_id == 0) {
         core::log::error("Failed to create texture with error {}", glGetError());
         return;
     }
-
-    m_width = width;
-    m_height = height;
 
     bind();
 
@@ -101,6 +114,18 @@ u32
 Texture_2D::height() const
 {
     return m_height;
+}
+
+v2u
+Texture_2D::size() const
+{
+    return { m_width, m_height };
+}
+
+v4f
+Texture_2D::texture_coords() const
+{
+    return m_texture_coords;
 }
 
 bool

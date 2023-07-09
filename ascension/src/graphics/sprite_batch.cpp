@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-20 09:55:43
+ * Last Modified: 2023-07-09 18:46:09
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -101,11 +101,28 @@ Batch::create(const Batch_Config& config)
 }
 
 void
-Batch::add(v2f position, v2f size, v4f tex_coords)
+Batch::set_texture(const std::shared_ptr<Texture_2D>& texture)
+{
+    if (m_config.texture != nullptr) {
+        flush();
+        clear();
+    }
+
+    m_config.texture = texture;
+}
+
+void
+Batch::set_is_static(bool is_static)
+{
+    m_config.is_static = is_static;
+}
+
+void
+Batch::add(const v2f& position, const v2u& size, const v4f& tex_coords)
 {
     PROFILE_FUNCTION();
 
-    if (m_config.max_size == 0) {
+    if (m_config.max_size == 0 || m_config.texture == nullptr) {
         core::log::error("Attempting to add texture to uninitialized batch");
         return;
     }
@@ -120,12 +137,12 @@ Batch::add(v2f position, v2f size, v4f tex_coords)
     m_vertex_positions.emplace_back(position.y);
 
     m_vertex_positions.emplace_back(position.x);
-    m_vertex_positions.emplace_back(position.y + size.y);
+    m_vertex_positions.emplace_back(position.y + static_cast<f32>(size.y));
 
-    m_vertex_positions.emplace_back(position.x + size.x);
-    m_vertex_positions.emplace_back(position.y + size.y);
+    m_vertex_positions.emplace_back(position.x + static_cast<f32>(size.x));
+    m_vertex_positions.emplace_back(position.y + static_cast<f32>(size.y));
 
-    m_vertex_positions.emplace_back(position.x + size.x);
+    m_vertex_positions.emplace_back(position.x + static_cast<f32>(size.x));
     m_vertex_positions.emplace_back(position.y);
 
     m_texture_coords.emplace_back(tex_coords.x);
@@ -144,20 +161,15 @@ Batch::add(v2f position, v2f size, v4f tex_coords)
 }
 
 void
-Batch::add(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v4f tex_coords, bool is_static)
+Batch::add(const std::shared_ptr<Texture_2D>& texture, const v2f& position)
 {
-    if (m_config.texture != nullptr) {
-        if (m_config.texture != texture) {
-            core::log::warn("Attempting to add texture which does not match active.");
-            return;
-        }
-    }
-    else {
-        m_config.texture = texture;
-        m_config.is_static = is_static;
-    }
+    add(position, texture->size(), texture->texture_coords());
+}
 
-    add(position, size, tex_coords);
+void
+Batch::add(const Texture_2D& sub_texture, const v2f& position)
+{
+    add(position, sub_texture.size(), sub_texture.texture_coords());
 }
 
 void
@@ -273,7 +285,13 @@ Sprite_Batch::create_batch(const Batch_Config& config)
 }
 
 void
-Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f size, v4f tex_coords, bool is_static)
+Sprite_Batch::draw(
+    const std::shared_ptr<Texture_2D>& texture,
+    const v2f& position,
+    const v2u& size,
+    const v4f& texture_coords,
+    bool is_static
+)
 {
     for (auto& batch : m_batches) {
         if (!batch->has_space()) {
@@ -281,10 +299,14 @@ Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f
         }
 
         if (batch->current_texture_id() == 0) {
-            batch->add(texture, position, size, tex_coords, is_static);
+            batch->set_texture(texture);
+            batch->set_is_static(is_static);
+
+            batch->add(position, size, texture_coords);
+            return;
         }
         else if (batch->current_texture_id() == texture->id() && batch->is_static() == is_static) {
-            batch->add(position, size, tex_coords);
+            batch->add(position, size, texture_coords);
             return;
         }
     }
@@ -295,12 +317,29 @@ Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, v2f position, v2f
         Batch_Config config(m_batch_size, texture, m_default_shader, is_static);
         create_batch(config);
 
-        m_batches.back()->add(position, tex_coords);
+        m_batches.back()->add(position, size, texture_coords);
     }
     else {
         // TODO: Consider if we should try and empty the fullest batch?
         core::log::error("Sprite_Batch::draw() trying to draw new texture when all batches are full!");
     }
+}
+
+void
+Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, const v2f& position, bool is_static)
+{
+    draw(texture, position, texture->size(), texture->texture_coords(), is_static);
+}
+
+void
+Sprite_Batch::draw(
+    const std::shared_ptr<Texture_2D>& texture,
+    const Texture_2D& sub_texture,
+    const v2f& position,
+    bool is_static
+)
+{
+    draw(texture, position, sub_texture.size(), sub_texture.texture_coords(), is_static);
 }
 
 void

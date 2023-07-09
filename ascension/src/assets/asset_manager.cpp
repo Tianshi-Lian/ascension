@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-05 20:12:40
+ * Last Modified: 2023-07-09 17:29:15
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -275,19 +275,19 @@ Asset_Manager::load_texture_atlas(const std::string& asset_name)
         return nullptr;
     }
 
-    std::unordered_map<std::string, v4f> sub_textures;
+    std::unordered_map<std::string, v4u> sub_textures;
 
     std::string sub_texture_details;
     while (file.peek() != EOF) {
         std::getline(file, sub_texture_details);
 
-        v4f texture_coords{ 0 };
+        v4u image_dims{ 0 };
         std::string texture_name;
         std::stringstream sub_texture_details_stream(sub_texture_details);
         sub_texture_details_stream >> texture_name;
-        sub_texture_details_stream >> texture_coords.x >> texture_coords.y >> texture_coords.z >> texture_coords.w;
+        sub_texture_details_stream >> image_dims.x >> image_dims.y >> image_dims.z >> image_dims.w;
 
-        sub_textures.emplace(texture_name, texture_coords);
+        sub_textures.emplace(texture_name, image_dims);
     }
 
     auto new_texture_atlas = std::make_shared<graphics::Texture_Atlas>();
@@ -378,5 +378,4 @@ Asset_Manager::unload_shader(const std::string& asset_name)
 
     m_loaded_shaders.erase(asset_name);
 }
-
 }

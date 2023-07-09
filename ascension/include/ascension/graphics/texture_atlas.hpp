@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-05 18:49:32
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-05 20:31:55
+ * Last Modified: 2023-07-09 17:32:26
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -31,18 +31,14 @@
 
 namespace ascension::graphics {
 
-// TODO: Create a sub_texture struct with v2i: size, v4f: coords or alternatively just add
-// /t    a texture_coords field to the Texture_2D which defaults to 0, 0, 1, 1 unless used as
-// /t    a sub_texture and then store a list of textures here - preferable?
-
 class Texture_Atlas {
 public:
     Texture_Atlas() = default;
 
-    void create(const std::shared_ptr<Texture_2D>& texture, const std::unordered_map<std::string, v4f>& sub_textures);
+    void create(const std::shared_ptr<Texture_2D>& texture, const std::unordered_map<std::string, v4u>& sub_textures);
 
-    const v4f& get_texture_coords(const std::string& name) const;
-    const v4f& get_texture_coords(u32 coords_id) const;
+    const Texture_2D& get_sub_texture(const std::string& name) const;
+    const Texture_2D& get_sub_texture(u32 coords_id) const;
 
     const std::shared_ptr<Texture_2D>& get_texture() const;
 
@@ -50,7 +46,7 @@ private:
     std::shared_ptr<Texture_2D> m_texture;
 
     std::unordered_map<std::string, u32> m_coord_ids;
-    std::vector<v4f> m_texture_coords;
+    std::vector<Texture_2D> m_sub_textures;
 };
 
 }

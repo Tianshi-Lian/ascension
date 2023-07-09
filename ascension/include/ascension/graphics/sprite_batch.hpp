@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:37
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-20 10:01:56
+ * Last Modified: 2023-07-09 18:43:14
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -69,15 +69,12 @@ public:
 
     void create(const Batch_Config& config);
 
-    // TODO: Implement some recognition of texture atlases or sub-textures and remove manually specifying tex_coords.
-    void add(v2f position, v2f size, v4f tex_coords = { 0, 0, 1, 1 });
-    void add(
-        const std::shared_ptr<Texture_2D>& texture,
-        v2f position,
-        v2f size,
-        v4f tex_coords = { 0, 0, 1, 1 },
-        bool is_static = false
-    );
+    void set_texture(const std::shared_ptr<Texture_2D>& texture);
+    void set_is_static(bool is_static);
+
+    void add(const v2f& position, const v2u& size, const v4f& tex_coords);
+    void add(const Texture_2D& sub_texture, const v2f& position);
+    void add(const std::shared_ptr<Texture_2D>& texture, const v2f& position);
 
     void flush();
     void clear();
@@ -110,11 +107,11 @@ public:
     void add_batch(const std::shared_ptr<Batch>& batch);
     void create_batch(const Batch_Config& config);
 
+    void draw(const std::shared_ptr<Texture_2D>& texture, const v2f& position, bool is_static = false);
     void draw(
         const std::shared_ptr<Texture_2D>& texture,
-        v2f position,
-        v2f size,
-        v4f tex_coords = { 0, 0, 1, 1 },
+        const Texture_2D& sub_texture,
+        const v2f& position,
         bool is_static = false
     );
 
@@ -126,6 +123,14 @@ private:
 
     u32 m_batch_size;
     std::shared_ptr<Shader> m_default_shader;
+
+    void draw(
+        const std::shared_ptr<Texture_2D>& texture,
+        const v2f& position,
+        const v2u& size,
+        const v4f& texture_coords,
+        bool is_static
+    );
 };
 
 }

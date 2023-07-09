@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-05 18:55:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-05 20:30:20
+ * Last Modified: 2023-07-09 17:34:29
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -29,47 +29,65 @@
 namespace ascension::graphics {
 
 void
-Texture_Atlas::create(const std::shared_ptr<Texture_2D>& texture, const std::unordered_map<std::string, v4f>& sub_textures)
+Texture_Atlas::create(const std::shared_ptr<Texture_2D>& texture, const std::unordered_map<std::string, v4u>& sub_textures)
 {
     if (texture == nullptr) {
         core::log::error("Texture_Atlas::create() attempting to create a texture_atlas from a null texture");
         return;
     }
 
-    m_texture_coords.reserve(sub_textures.size());
+    m_sub_textures.reserve(sub_textures.size());
     m_coord_ids.reserve(sub_textures.size());
 
-    m_coord_ids[""] = 0;
-    m_texture_coords.emplace_back(0, 0, 0, 0);
+    Texture_2D null_texture;
+    null_texture.create(0, 0, nullptr);
 
-    for (const auto& sub_texture : sub_textures) {
-        m_coord_ids[sub_texture.first] = static_cast<u32>(m_texture_coords.size());
-        m_texture_coords.push_back(sub_texture.second);
+    m_coord_ids[""] = 0;
+    m_sub_textures.push_back(null_texture);
+
+    for (const auto& sub_texture_data : sub_textures) {
+        m_coord_ids[sub_texture_data.first] = static_cast<u32>(m_sub_textures.size());
+
+        const v4u& image_dims = sub_texture_data.second;
+        const u32 sub_texture_width = image_dims.z - image_dims.x;
+        const u32 sub_texture_height = image_dims.w - image_dims.y;
+
+        const v4f sub_texture_coords = {
+            static_cast<f32>(image_dims.x) / static_cast<f32>(texture->width()),
+            static_cast<f32>(image_dims.y) / static_cast<f32>(texture->height()),
+            static_cast<f32>(image_dims.z) / static_cast<f32>(texture->width()),
+            static_cast<f32>(image_dims.w) / static_cast<f32>(texture->height()),
+        };
+
+        Texture_2D sub_texture;
+        sub_texture.create(sub_texture_width, sub_texture_height, sub_texture_coords, nullptr);
+
+        m_sub_textures.push_back(sub_texture);
     }
 
     m_texture = texture;
 }
 
-const v4f&
-Texture_Atlas::get_texture_coords(const std::string& name) const
+const Texture_2D&
+Texture_Atlas::get_sub_texture(const std::string& name) const
 {
     if (m_coord_ids.count(name) == 0) {
         core::log::warn("Texture_Atlas::get_texture_coords() Attempting to get non-existant sub_texture: '{}'", name);
-        return m_texture_coords.at(0);
+        return m_sub_textures.at(0);
     }
 
-    return m_texture_coords.at(m_coord_ids.at(name));
+    return m_sub_textures.at(m_coord_ids.at(name));
 }
 
-const v4f&
-Texture_Atlas::get_texture_coords(u32 coords_id) const
+const Texture_2D&
+Texture_Atlas::get_sub_texture(u32 coords_id) const
 {
-    if (coords_id >= m_texture_coords.size()) {
+    if (coords_id >= m_sub_textures.size()) {
         core::log::warn("Texture_Atlas::get_texture_coords() Attempting to get non-existant sub_texture: {}", coords_id);
-        return m_texture_coords.at(0);
+        return m_sub_textures.at(0);
     }
 
-    return m_texture_coords.at(coords_id);
+    return m_sub_textures.at(coords_id);
 }
 
 const std::shared_ptr<Texture_2D>&

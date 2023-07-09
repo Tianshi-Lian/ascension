@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-05 20:28:49
+ * Last Modified: 2023-07-09 18:49:35
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -36,28 +36,6 @@ namespace ascension {
 
 const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 100000;
 
-struct Texture {
-    v2i size;
-};
-struct Object {
-    v2f position;
-    Texture texture;
-};
-
-Texture watermelon = { { 64, 64 } };
-Texture pineapple = { { 64, 64 } };
-Texture orange = { { 32, 32 } };
-Texture grape = { { 32, 32 } };
-Texture pear = { { 32, 32 } };
-Texture banana = { { 32, 32 } };
-Texture strawberry = { { 16, 16 } };
-Texture raspberry = { { 16, 16 } };
-Texture cherry = { { 16, 16 } };
-
-Texture textures[9] = { cherry, raspberry, strawberry, banana, pear, grape, orange, pineapple, watermelon };
-
-static Object objects[OBJECT_COUNT];
-
 void
 Ascension::on_initialize()
 {
@@ -78,14 +56,14 @@ Ascension::on_initialize()
     auto fruits = std::make_shared<graphics::Batch>();
     fruits->create({ OBJECT_COUNT, fruit_atlas->get_texture(), sprite_shader, true });
 
-    for (auto& object : objects) {
-        int id = rand() % 9;
-        Texture t = textures[id];
-        object = { v2f{ static_cast<i16>((rand() % (WINDOW_WIDTH - t.size.x))),
-                        static_cast<i16>((rand() % (WINDOW_HEIGHT - t.size.y))) },
-                   t };
+    for (u32 i = 0; i < OBJECT_COUNT; ++i) {
+        u32 id = static_cast<u32>(rand() % 9);
+        const auto fruit_texture = fruit_atlas->get_sub_texture(id);
 
-        fruits->add(object.position, object.texture.size, fruit_atlas->get_texture_coords(static_cast<u32>(id + 1)));
+        const v2f position = { static_cast<i16>((static_cast<u32>(rand()) % (WINDOW_WIDTH - fruit_texture.width()))),
+                               static_cast<i16>((static_cast<u32>(rand()) % (WINDOW_HEIGHT - fruit_texture.height()))) };
+
+        fruits->add(fruit_texture, position);
     }
 
     m_batch.add_batch(fruits);

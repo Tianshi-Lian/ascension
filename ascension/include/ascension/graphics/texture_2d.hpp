@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:35:38
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-18 19:50:35
+ * Last Modified: 2023-07-09 18:06:19
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,6 +26,7 @@
 
 namespace ascension::graphics {
 
+// TODO: Have a base Texture (struct?) with dimensions and co-ordinates which Texture_2D extends
 class Texture_2D {
 public:
     Texture_2D();
@@ -33,12 +34,17 @@ public:
 
     // TODO: Add and check create result.
     void create(u32 width, u32 height, u8* data);
+    void create(u32 width, u32 height, v4f texture_coords, u8* data);
     void bind() const;
     static void unbind();
 
     [[nodiscard]] u32 id() const;
+
     [[nodiscard]] u32 width() const;
     [[nodiscard]] u32 height() const;
+    [[nodiscard]] v2u size() const;
+
+    [[nodiscard]] v4f texture_coords() const;
 
     friend bool operator==(const Texture_2D& tex_1, const Texture_2D& tex_2);
     friend bool operator!=(const Texture_2D& tex_1, const Texture_2D& tex_2);
@@ -53,8 +59,11 @@ public:
 
 private:
     u32 m_id;
+
     u32 m_width;
     u32 m_height;
+
+    v4f m_texture_coords;
 };
 
 }

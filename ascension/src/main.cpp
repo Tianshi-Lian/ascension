@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-06 21:17:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 15:54:52
+ * Last Modified: 2023-07-14 10:29:05
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,6 +28,7 @@
 #include "yuki/debug/logger.hpp"
 
 #include "ascension.hpp"
+#include "core/log.hpp"
 
 #define UNUSED_PARAM(a) (void)a
 
@@ -46,6 +47,13 @@ main(i32 argc, char** argv)
 
     yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
     PROFILE_BEGIN_SESSION("ascension", "logs/timings.json");
+
+    core::log::critical("Critical Test");
+    core::log::error("Error Test");
+    core::log::warn("Warning Test");
+    core::log::notice("Notice Test");
+
+    core::log::info("Multiple\nLine\nLog\nTest");
 
     Ascension game;
     if (game.initialize("Ascension", WIN_DEFAULT_X, WIN_DEFAULT_Y, WIN_DEFAULT_WIDTH, WIN_DEFAULT_HEIGHT)) {

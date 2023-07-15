@@ -1,14 +1,22 @@
+Priority:
+    Text rendering
+    Animated sprites
+    Optimized tilemap renderer
+    Serialization
+    Threaded asset loading
+
+
 ascension:
     Debug:
-        ☐ Debug interface
+        ☐ Debug user interface
         ☐ Rendering
     Graphics:
-        ☐ Spritebatch rewrite/performance improvement
+        ✔ Spritebatch rewrite/performance improvement @done(23-07-15 20:42)
         ☐ Text rendering
         ☐ Animation
         ☐ UI
         ☐ Resolution & display mode settings
-        ☐ Texture atlas
+        ✔ Texture atlas @done(23-07-15 20:42)
         ☐ Layer stacks
         ☐ Particle system
     Audio:
@@ -17,16 +25,19 @@ ascension:
         ☐ Mixing
         ☐ Audio settings
     Serialization:
+        ☐ Implement BSON wrapper https://github.com/nlohmann/json
+        Assets:
+            ☐ Move assets to use BSON
         Player data:
             ☐ Save file
             ☐ Settings
         World data:
             ☐ World state
     Event System:
-        ☐ Input events
+        ✔ Input events @done(23-07-15 20:44)
         ☐ Audio listeners
     Assets:
-        ☐ Threaded asset loaded
+        ☐ Threaded asset loading
         ☐ Asset streaming
     Scene Management:
         ☐ Scene state
@@ -37,6 +48,13 @@ ascension:
             ☐ Allow simple behavioural scripting?
         ☐ State management for AI actors
         ☐ Library of basic AI
+    Game Objects:
+        ☐ Decide architecture
+        Lifetime:
+            ☐ Creation
+            ☐ Updating
+            ☐ Deletion
+        ☐ Messaging system
     Pathfinding:
         ☐ A*
         ☐ JPS+ (jump point search)

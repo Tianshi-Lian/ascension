@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 18:53:27
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-08 16:01:59
+ * Last Modified: 2023-07-17 21:22:54
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -62,6 +62,11 @@ Window::~Window()
 bool
 Window::create(const std::string& title, i32 pos_x, i32 pos_y, i32 width, i32 height)
 {
+    // TODO: Move all of this to some sort of larger render manager/system to remove the need for
+    // /t    window to require awareness of renderer and it's order of initialization etc. as this
+    // /t    is dependent on the underlying libraries. The top-level render system can check which
+    // /t    libraries we want to use and then control the creation & initialization itself.
+
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OpenGL_MAJOR);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OpenGL_MINOR);

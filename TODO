@@ -1,9 +1,14 @@
 Priority:
     Text rendering
+      String batch?
+    core/helpers.hpp - Assert(test, "Failure message") - candidate for yuki.
     Animated sprites
     Optimized tilemap renderer
     Serialization
-    Threaded asset loading
+    Threads
+      Thread wrappers/utils/just go full job system?
+      Threaded asset loading
+      Render thread
 
 
 ascension:

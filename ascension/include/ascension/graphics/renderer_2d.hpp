@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-29 16:55:06
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-29 17:04:06
+ * Last Modified: 2023-07-17 21:06:07
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -41,6 +41,11 @@ public:
     static void clear();
 
     static void enable_blending(Blend_Function blend_func = Blend_Function::SRC_ALPHA);
+
+    [[nodiscard]] static bool is_initialized();
+
+private:
+    static bool s_initialized;
 };
 
 }

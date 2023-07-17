@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-29 17:02:08
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-29 17:13:22
+ * Last Modified: 2023-07-17 21:26:12
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,14 +28,27 @@
 
 #include "core/log.hpp"
 
+#include "graphics/sprite_font.hpp"
+
 namespace ascension::graphics {
+
+bool Renderer_2D::s_initialized = false;
 
 bool
 Renderer_2D::initialize()
 {
+    if (s_initialized) {
+        core::log::error("Attempting to initialize static Renderer_2D more than once");
+        return true;
+    }
+
     const u32 result = glewInit();
     if (result != GLEW_OK) {
         core::log::critical("Failed to initialise glew! Error {}", result);
+        return false;
+    }
+
+    if (!Sprite_Font::initialize()) {
         return false;
     }
 
@@ -43,12 +56,15 @@ Renderer_2D::initialize()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    s_initialized = true;
+
     return true;
 }
 
 void
 Renderer_2D::set_clear_color(v4f color)
 {
+    assert(s_initialized);
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
@@ -76,6 +92,12 @@ Renderer_2D::enable_blending(Blend_Function blend_func)
             glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
             break;
     }
+}
+
+bool
+Renderer_2D::is_initialized()
+{
+    return s_initialized;
 }
 
 }

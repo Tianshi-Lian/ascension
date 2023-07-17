@@ -21,6 +21,7 @@ target_sources(${APP_NAME} PRIVATE
     graphics/shader.hpp
     graphics/shader_data_types.hpp
     graphics/sprite_batch.hpp
+    graphics/sprite_font.hpp
     graphics/texture_2d.hpp
     graphics/texture_atlas.hpp
     graphics/vertex_array_object.hpp

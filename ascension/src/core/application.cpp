@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-05-20 10:39:19
+ * Last Modified: 2023-07-17 21:26:44
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -23,12 +23,13 @@
  */
 
 #include "core/application.hpp"
-#include "core/log.hpp"
-
-#include <SDL.h>
 
 #include "yuki/debug/instrumentor.hpp"
 #include "yuki/platform/platform.hpp"
+
+#include "core/log.hpp"
+
+#include <SDL.h>
 
 namespace {
 
@@ -50,6 +51,10 @@ Application::Application()
 bool
 Application::initialize(const std::string& app_name, i32 pos_x, i32 pos_y, i32 width, i32 height)
 {
+    // TODO: Potentially make a secondary application abstraction which wraps the 3rd-party library we are using
+    // /t    such as SDL, so that Application & especially the event loop will be all our own code and our events
+    // /t    which we can tie in to our own event & messaging systems without coupling to SDL.
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER) < 0) {
         core::log::critical("Failed to initialise SDL! Error {}", SDL_GetError());
         return false;

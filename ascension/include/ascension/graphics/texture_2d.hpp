@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:35:38
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-09 18:06:19
+ * Last Modified: 2023-07-17 20:26:32
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,7 +26,6 @@
 
 namespace ascension::graphics {
 
-// TODO: Have a base Texture (struct?) with dimensions and co-ordinates which Texture_2D extends
 class Texture_2D {
 public:
     Texture_2D();

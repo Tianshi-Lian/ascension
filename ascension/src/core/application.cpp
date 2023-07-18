@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-17 21:26:44
+ * Last Modified: 2023-07-18 20:54:40
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,12 +24,12 @@
 
 #include "core/application.hpp"
 
+#include <SDL.h>
+
 #include "yuki/debug/instrumentor.hpp"
 #include "yuki/platform/platform.hpp"
 
 #include "core/log.hpp"
-
-#include <SDL.h>
 
 namespace {
 

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-05 18:49:32
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-17 20:26:43
+ * Last Modified: 2023-07-18 20:54:24
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -25,9 +25,9 @@
 #ifndef ASCENSION_GRAPHICS_TEXTURE_ATLAS_HPP
 #define ASCENSION_GRAPHICS_TEXTURE_ATLAS_HPP
 
-#include "graphics/texture_2d.hpp"
-
 #include <unordered_map>
+
+#include "graphics/texture_2d.hpp"
 
 namespace ascension::graphics {
 

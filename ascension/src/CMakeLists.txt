@@ -16,6 +16,7 @@ target_sources(${APP_NAME} PRIVATE
 
     # Graphics
     graphics/buffer_object.cpp
+    graphics/frame_buffer.cpp
     graphics/renderer_2d.cpp
     graphics/shader.cpp
     graphics/sprite_batch.cpp

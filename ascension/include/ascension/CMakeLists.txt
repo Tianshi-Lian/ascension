@@ -17,9 +17,10 @@ target_sources(${APP_NAME} PRIVATE
 
     # Graphics
     graphics/buffer_object.hpp
+    graphics/frame_buffer.hpp
     graphics/renderer_2d.hpp
-    graphics/shader.hpp
     graphics/shader_data_types.hpp
+    graphics/shader.hpp
     graphics/sprite_batch.hpp
     graphics/sprite_font.hpp
     graphics/texture_2d.hpp

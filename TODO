@@ -17,7 +17,7 @@ ascension:
         ☐ Rendering
     Graphics:
         ✔ Spritebatch rewrite/performance improvement @done(23-07-15 20:42)
-        ☐ Text rendering
+        ☐ Text rendering @started(22-07-18 18:20)
         ☐ Animation
         ☐ UI
         ☐ Resolution & display mode settings

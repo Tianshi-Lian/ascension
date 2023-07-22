@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-09 17:29:15
+ * Last Modified: 2023-07-22 16:27:47
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -33,6 +33,7 @@
 
 #include "core/log.hpp"
 #include "graphics/shader.hpp"
+#include "graphics/sprite_font.hpp"
 #include "graphics/texture_2d.hpp"
 #include "graphics/texture_atlas.hpp"
 
@@ -169,6 +170,13 @@ Asset_Manager::parse_asset_document(const std::string& document_filepath, const 
                     asset.type = Asset_Type::Shader;
                     m_shader_filepaths[(asset_base_path + name)] = asset;
                 } break;
+                case Asset_Type::Font: {
+                    Font_Asset asset;
+                    asset.name = name;
+                    asset.filepath = filepath;
+                    asset.type = Asset_Type::Font;
+                    m_font_filepaths[(asset_base_path + name)] = asset;
+                } break;
                 default:
                     break;
             };
@@ -184,6 +192,7 @@ Asset_Manager::load_asset_file(const std::string& asset_file)
     core::log::info("Loaded {} textures", m_texture_filepaths.size());
     core::log::info("Loaded {} texture atlas", m_texture_atlas_filepaths.size());
     core::log::info("Loaded {} shaders", m_shader_filepaths.size());
+    core::log::info("Loaded {} fonts", m_font_filepaths.size());
 }
 
 std::shared_ptr<graphics::Texture_2D>
@@ -378,4 +387,49 @@ Asset_Manager::unload_shader(const std::string& asset_name)
 
     m_loaded_shaders.erase(asset_name);
 }
+
+std::shared_ptr<graphics::Sprite_Font>
+Asset_Manager::load_font(const std::string& asset_name)
+{
+    auto font = get_font(asset_name);
+    if (font) {
+        return font;
+    }
+
+    if (m_font_filepaths.count(asset_name) == 0u) {
+        core::log::warn("Attempting to load unrecognized font {}", asset_name);
+        return nullptr;
+    }
+
+    Font_Asset asset = m_font_filepaths[asset_name];
+
+    auto new_font = std::make_shared<graphics::Sprite_Font>();
+    // TODO: Specify the shader in the font xml file
+    new_font->create(asset.filepath, get_shader("shaders/spritefont"));
+
+    m_loaded_fonts.insert({ asset_name, new_font });
+    return new_font;
+}
+
+std::shared_ptr<graphics::Sprite_Font>
+Asset_Manager::get_font(const std::string& asset_name)
+{
+    if (m_loaded_fonts.count(asset_name) == 0) {
+        return nullptr;
+    }
+
+    return m_loaded_fonts[asset_name];
+}
+
+void
+Asset_Manager::unload_font(const std::string& asset_name)
+{
+    const auto font = get_font(asset_name);
+    if (!font) {
+        return;
+    }
+
+    m_loaded_fonts.erase(asset_name);
+}
+
 }

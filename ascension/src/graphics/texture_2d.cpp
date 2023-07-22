@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:41:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-09 17:41:30
+ * Last Modified: 2023-07-22 15:07:03
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -59,10 +59,6 @@ Texture_2D::create(u32 width, u32 height, v4f texture_coords, u8* data)
     m_height = height;
 
     m_texture_coords = texture_coords;
-
-    if (data == nullptr) {
-        return;
-    }
 
     glGenTextures(1, &m_id);
 

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 18:53:27
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-17 21:22:54
+ * Last Modified: 2023-07-18 21:19:05
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -114,6 +114,9 @@ void
 Window::resize(u32 width, u32 height) // NOLINT
 {
     // TODO: Implement window (renderer) resizing.
+    // /t    In the short term we probably just want to statically update our Renderer and set a static var
+    // /t    in a new global Settings class and then just pull from this in all the other places, until we
+    // /t    setup a messaging system in which other places can subscribe to resized events.
     (void)width;
     (void)height;
 }

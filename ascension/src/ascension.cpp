@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-09 18:49:35
+ * Last Modified: 2023-07-22 15:36:43
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,10 +24,10 @@
 
 #include "ascension.hpp"
 
-#include <GL/glew.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "graphics/shader.hpp"
+#include "graphics/sprite_font.hpp"
 #include "graphics/texture_atlas.hpp"
 
 #include "yuki/debug/instrumentor.hpp"
@@ -43,6 +43,7 @@ Ascension::on_initialize()
     m_asset_manager.load_texture_2d("textures/unicorn");
     auto fruit_atlas = m_asset_manager.load_texture_atlas("textures/fruits");
     auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
+    auto font_shader = m_asset_manager.load_shader("shaders/spritefont");
 
     // viewport setup
     {
@@ -67,6 +68,9 @@ Ascension::on_initialize()
     }
 
     m_batch.add_batch(fruits);
+
+    graphics::Sprite_Font sprite_font;
+    sprite_font.create("fonts/arial.ttf", font_shader);
 }
 
 void

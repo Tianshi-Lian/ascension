@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 14:45:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-05 19:11:46
+ * Last Modified: 2023-07-22 15:43:08
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -29,13 +29,17 @@
 #include "assets/asset_types.hpp"
 
 namespace ascension::graphics {
+class Shader;
+class Sprite_Font;
 class Texture_2D;
 class Texture_Atlas;
-class Shader;
 }
 
 namespace ascension::assets {
 
+// TODO: Look at registering loaders for asset types through templates so we can move internal implementation
+// /t    details of asset loading away from the asset manager to specific loader classes.
+// /t    register_loader<Font_Asset, Sprite_Font>(std::shared_ptr<AssetLoader<>());
 class Asset_Manager {
 public:
     Asset_Manager() = default;
@@ -57,6 +61,10 @@ public:
     std::shared_ptr<graphics::Shader> get_shader(const std::string& asset_name);
     void unload_shader(const std::string& asset_name);
 
+    std::shared_ptr<graphics::Sprite_Font> load_font(const std::string& asset_name);
+    std::shared_ptr<graphics::Sprite_Font> get_font(const std::string& asset_name);
+    void unload_font(const std::string& asset_name);
+
     Asset_Manager(const Asset_Manager&) = default;
     Asset_Manager(Asset_Manager&&) = delete;
     Asset_Manager& operator=(const Asset_Manager&) = default;
@@ -65,13 +73,15 @@ public:
 private:
     void parse_asset_document(const std::string& document_filepath, const std::string& root_name);
 
+    std::unordered_map<std::string, Font_Asset> m_font_filepaths;
+    std::unordered_map<std::string, Shader_Asset> m_shader_filepaths;
     std::unordered_map<std::string, Texture_Asset> m_texture_filepaths;
     std::unordered_map<std::string, Texture_Atlas_Asset> m_texture_atlas_filepaths;
-    std::unordered_map<std::string, Shader_Asset> m_shader_filepaths;
 
+    std::unordered_map<std::string, std::shared_ptr<graphics::Shader>> m_loaded_shaders;
+    std::unordered_map<std::string, std::shared_ptr<graphics::Sprite_Font>> m_loaded_fonts;
     std::unordered_map<std::string, std::shared_ptr<graphics::Texture_2D>> m_loaded_textures;
     std::unordered_map<std::string, std::shared_ptr<graphics::Texture_Atlas>> m_loaded_texture_atlas;
-    std::unordered_map<std::string, std::shared_ptr<graphics::Shader>> m_loaded_shaders;
 };
 
 }

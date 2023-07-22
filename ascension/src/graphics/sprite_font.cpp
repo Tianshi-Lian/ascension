@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 21:08:32
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 15:33:37
+ * Last Modified: 2023-07-22 15:38:11
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -83,8 +83,6 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
         Size_Cache size_cache;
         size_cache.font_size = font_size;
         size_cache.next_char_texture_position = v2{ 0 };
-        // TODO: We need to dynamically allocate the memory needed for this texture; this would be best done through
-        // /t    through a (dynamic) texture manager.
         size_cache.texture->create(m_max_texture_size, m_max_texture_size, nullptr);
 
         auto* ft_font_face = static_cast<FT_Face>(size_cache.font_face);

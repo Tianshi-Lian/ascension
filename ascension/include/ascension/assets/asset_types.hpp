@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-14 13:56:09
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-05 19:49:23
+ * Last Modified: 2023-07-22 15:39:21
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,9 +28,10 @@ namespace ascension::assets {
 
 enum class Asset_Type {
     Asset_List,
-    Texture,
-    Texture_Atlas,
+    Font,
     Shader,
+    Texture_Atlas,
+    Texture,
 };
 
 struct Asset {
@@ -52,5 +53,7 @@ struct Shader_Asset : public Asset {
     std::string vertex_src_file;
     std::string fragment_src_file;
 };
+
+struct Font_Asset : public Asset {};
 
 }

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 21:08:32
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 15:38:11
+ * Last Modified: 2023-07-22 16:22:42
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -64,6 +64,7 @@ Sprite_Font::initialize()
         return false;
     }
 
+    s_internal = ft_library;
     return true;
 }
 
@@ -83,10 +84,10 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
         Size_Cache size_cache;
         size_cache.font_size = font_size;
         size_cache.next_char_texture_position = v2{ 0 };
+        size_cache.texture = std::make_shared<Texture_2D>();
         size_cache.texture->create(m_max_texture_size, m_max_texture_size, nullptr);
 
         auto* ft_font_face = static_cast<FT_Face>(size_cache.font_face);
-
         if (FT_New_Face(ft_library, m_filepath.c_str(), 0, &ft_font_face) != 0) {
             core::log::error("Failed to create font face {} ({}) for character {}", m_filepath, font_size, character);
             // TODO: We need an empty/failure glyph to return here.
@@ -94,10 +95,11 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
 
         FT_Set_Pixel_Sizes(ft_font_face, 0, font_size);
 
+        size_cache.font_face = ft_font_face;
         m_font_cache[font_size] = size_cache;
     }
 
-    auto size_cache = m_font_cache[font_size];
+    auto& size_cache = m_font_cache[font_size];
     auto* font_face = static_cast<FT_Face>(size_cache.font_face);
 
     if (size_cache.glyph_cache.count(character) == 0) {
@@ -158,7 +160,7 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
         size_cache.glyph_cache[character] = glyph;
     }
 
-    return size_cache.glyph_cache[character];
+    return m_font_cache[font_size].glyph_cache[character];
 }
 
 }

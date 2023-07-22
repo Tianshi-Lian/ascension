@@ -3,4 +3,5 @@
 <assets>
     <asset name="textures" type="Asset_List" filepath="assets/textures/textures.xml" />
     <asset name="shaders" type="Asset_List" filepath="assets/shaders/shaders.xml" />
+    <asset name="fonts" type="Asset_List" filepath="assets/fonts/fonts.xml" />
 </assets>

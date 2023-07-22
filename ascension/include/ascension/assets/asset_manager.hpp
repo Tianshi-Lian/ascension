@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 14:45:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 15:43:08
+ * Last Modified: 2023-07-22 16:05:51
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -40,6 +40,8 @@ namespace ascension::assets {
 // TODO: Look at registering loaders for asset types through templates so we can move internal implementation
 // /t    details of asset loading away from the asset manager to specific loader classes.
 // /t    register_loader<Font_Asset, Sprite_Font>(std::shared_ptr<AssetLoader<>());
+// /t    We can also have the loaders look after usage counts for deleting assets for when we want to share
+// /t    assets between assets, like texture & texture_atlas or fonts & shaders
 class Asset_Manager {
 public:
     Asset_Manager() = default;

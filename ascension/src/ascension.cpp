@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 15:36:43
+ * Last Modified: 2023-07-22 16:26:29
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -43,7 +43,8 @@ Ascension::on_initialize()
     m_asset_manager.load_texture_2d("textures/unicorn");
     auto fruit_atlas = m_asset_manager.load_texture_atlas("textures/fruits");
     auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
-    auto font_shader = m_asset_manager.load_shader("shaders/spritefont");
+    m_asset_manager.load_shader("shaders/spritefont");
+    auto sprite_font = m_asset_manager.load_font("fonts/arial");
 
     // viewport setup
     {
@@ -67,10 +68,10 @@ Ascension::on_initialize()
         fruits->add(fruit_texture, position);
     }
 
-    m_batch.add_batch(fruits);
+    // m_batch.add_batch(fruits);
 
-    graphics::Sprite_Font sprite_font;
-    sprite_font.create("fonts/arial.ttf", font_shader);
+    const auto& glyph_a = sprite_font->get_glyph('a', 16);
+    m_batch.draw(glyph_a.texture, { 5, 5 });
 }
 
 void

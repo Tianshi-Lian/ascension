@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 20:38:36
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-17 21:30:52
+ * Last Modified: 2023-07-22 15:32:21
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -29,13 +29,16 @@
 
 namespace ascension::graphics {
 
+class Shader;
+
 class Sprite_Font {
 public:
     struct Glyph {
         Texture_2D sub_texture;
+        std::shared_ptr<Texture_2D> texture;
 
         v2 bearing;
-        u32 advance;
+        i32 advance;
     };
     using Glyph_Cache = std::map<u32, Sprite_Font::Glyph>;
 
@@ -58,7 +61,7 @@ public:
 
     static bool initialize();
 
-    void create(std::string filepath);
+    void create(std::string filepath, const std::shared_ptr<Shader>& font_shader);
 
     [[nodiscard]] static bool is_initialized();
 
@@ -74,6 +77,8 @@ private:
     u32 m_max_texture_size;
 
     std::string m_filepath;
+    std::shared_ptr<Shader> m_shader;
+
     Font_Cache m_font_cache;
 
     static void* s_internal;

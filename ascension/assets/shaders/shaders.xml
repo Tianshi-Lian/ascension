@@ -5,4 +5,8 @@
         <vertex>spritebatch.vert</vertex>
         <fragment>spritebatch.frag</fragment>
     </asset>
+    <asset name="spritefont" type="Shader" filepath="assets/shaders/spritefont/" >
+        <vertex>spritefont.vert</vertex>
+        <fragment>spritefont.frag</fragment>
+    </asset>
 </assets>

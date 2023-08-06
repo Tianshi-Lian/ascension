@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 21:08:32
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 16:22:42
+ * Last Modified: 2023-08-06 18:22:26
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -78,6 +78,22 @@ Sprite_Font::create(std::string filepath, const std::shared_ptr<Shader>& font_sh
 const Sprite_Font::Glyph&
 Sprite_Font::get_glyph(u32 character, u32 font_size)
 {
+    // auto* ft_library = static_cast<FT_Library>(s_internal);
+
+    // FT_Face face;
+    // FT_New_Face(ft_library, m_filepath.c_str(), 0, &face);
+
+    // FT_Set_Pixel_Sizes(face, font_size, font_size);
+
+    // auto g_index = FT_Get_Char_Index(face, character);
+    // FT_Load_Glyph(face, g_index, FT_LOAD_DEFAULT);
+    // FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+
+    // auto texture = std::make_shared<Texture_2D>();
+    // texture->create(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer);
+
+    // m_font_cache[font_size].glyph_cache[character].texture = texture;
+
     if (m_font_cache.count(font_size) == 0) {
         auto* ft_library = static_cast<FT_Library>(s_internal);
 
@@ -93,7 +109,9 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
             // TODO: We need an empty/failure glyph to return here.
         }
 
-        FT_Set_Pixel_Sizes(ft_font_face, 0, font_size);
+        // TODO: Settle on a pixel multiplier as the default one seems really small? Maybe use Set_Char_Size?
+        FT_Set_Pixel_Sizes(ft_font_face, 0, font_size * 2);
+        // FT_Set_Char_Size(ft_font_face, 0, static_cast<int>(font_size) * 64, 300, 300);
 
         size_cache.font_face = ft_font_face;
         m_font_cache[font_size] = size_cache;
@@ -109,7 +127,12 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
         }
 
         auto temp_texture = std::make_shared<Texture_2D>();
-        temp_texture->create(font_face->glyph->bitmap.width, font_face->glyph->bitmap.rows, font_face->glyph->bitmap.buffer);
+        temp_texture->create(
+            font_face->glyph->bitmap.width,
+            font_face->glyph->bitmap.rows,
+            font_face->glyph->bitmap.buffer,
+            Texture_2D::Format::RED
+        );
 
         // TODO: Sort out these data type sizes
         if ((size_cache.next_char_texture_position.x + static_cast<f32>(temp_texture->width()) >
@@ -125,8 +148,8 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
         }
 
         if (temp_texture->width() != 0 && temp_texture->height() != 0) {
-            Batch_Config batch_config{ 1, size_cache.texture, m_shader, true };
-            Batch draw_batch{ batch_config };
+            Sprite_Batch batch;
+            batch.create(1, 1, m_shader);
 
             Frame_Buffer frame_buffer;
             // TODO: Get the actual window sizes.
@@ -134,12 +157,13 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
 
             if (size_cache.next_char_texture_position == v2{ 0, 0 }) {
                 // TODO: Get/restore the previous clear color.
-                Renderer_2D::set_clear_color(v4f{ 0.0f });
-                Renderer_2D::clear();
+                // Renderer_2D::set_clear_color(v4f{ 0.0f });
+                // Renderer_2D::clear();
+                // Renderer_2D::set_clear_color(v4f{ 0.0f });
             }
 
-            draw_batch.add(size_cache.texture, size_cache.next_char_texture_position);
-            draw_batch.flush();
+            batch.draw(temp_texture, size_cache.next_char_texture_position);
+            batch.flush();
             frame_buffer.end();
         }
 
@@ -153,7 +177,8 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
 
         Glyph glyph;
         glyph.sub_texture.create(temp_texture->width(), temp_texture->height(), sub_tex_coords, nullptr);
-        glyph.texture = size_cache.texture;
+        glyph.texture = temp_texture;
+        // glyph.texture = size_cache.texture;
         glyph.advance = font_face->glyph->advance.y;
         glyph.bearing = v2{ font_face->glyph->bitmap_left, font_face->glyph->bitmap_top };
 

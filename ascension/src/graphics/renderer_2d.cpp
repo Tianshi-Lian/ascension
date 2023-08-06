@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-29 17:02:08
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-17 21:26:12
+ * Last Modified: 2023-08-06 17:27:53
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -52,7 +52,7 @@ Renderer_2D::initialize()
         return false;
     }
 
-    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

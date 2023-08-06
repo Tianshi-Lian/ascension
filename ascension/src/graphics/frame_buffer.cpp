@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-18 20:35:33
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-18 20:52:49
+ * Last Modified: 2023-08-06 18:22:41
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -61,7 +61,7 @@ Frame_Buffer::destroy()
 }
 
 void
-Frame_Buffer::start(u32 window_width, u32 window_height, std::shared_ptr<Texture_2D> target)
+Frame_Buffer::start(u32 window_width, u32 window_height, const std::shared_ptr<Texture_2D>& target)
 {
     if (m_target != nullptr) {
         core::log::error("Attempting start frame buffer which already has a target");
@@ -72,7 +72,7 @@ Frame_Buffer::start(u32 window_width, u32 window_height, std::shared_ptr<Texture
         core::log::warn("Attempting to start frame buffer with unexpected width {} or height {}", window_width, window_height);
     }
 
-    m_target = std::move(target);
+    m_target = target;
     m_window_width = window_width;
     m_window_height = window_height;
 

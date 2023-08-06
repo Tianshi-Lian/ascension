@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 16:26:29
+ * Last Modified: 2023-08-06 17:26:08
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,6 +26,8 @@
 
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include "graphics/frame_buffer.hpp"
+#include "graphics/renderer_2d.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/sprite_font.hpp"
 #include "graphics/texture_atlas.hpp"
@@ -43,7 +45,7 @@ Ascension::on_initialize()
     m_asset_manager.load_texture_2d("textures/unicorn");
     auto fruit_atlas = m_asset_manager.load_texture_atlas("textures/fruits");
     auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
-    m_asset_manager.load_shader("shaders/spritefont");
+    auto font_shader = m_asset_manager.load_shader("shaders/spritefont");
     auto sprite_font = m_asset_manager.load_font("fonts/arial");
 
     // viewport setup
@@ -51,6 +53,8 @@ Ascension::on_initialize()
         auto projection = glm::ortho(0.0f, 1600.0f, 0.0f, 900.0f, -1.0f, 1.0f);
         sprite_shader->bind();
         sprite_shader->set_mat4f("m_projection_view", projection * m4{ 1.0f });
+        font_shader->bind();
+        font_shader->set_mat4f("m_projection_view", projection * m4{ 1.0f });
     }
 
     m_batch.create(16, 2048, sprite_shader);
@@ -70,8 +74,8 @@ Ascension::on_initialize()
 
     // m_batch.add_batch(fruits);
 
-    const auto& glyph_a = sprite_font->get_glyph('a', 16);
-    m_batch.draw(glyph_a.texture, { 5, 5 });
+    // const auto& glyph_a = sprite_font->get_glyph('a', 16);
+    // m_batch.draw(glyph_a.texture, { 5, 5 });
 }
 
 void
@@ -90,6 +94,13 @@ Ascension::on_render(f32 interpolation)
     PROFILE_FUNCTION();
     (void)interpolation;
 
+    auto sprite_font = m_asset_manager.get_font("fonts/arial");
+    const auto t_glyph = sprite_font->get_glyph('a', 16);
     m_batch.flush();
+
+    graphics::Sprite_Batch batch;
+    batch.create(8, 8, m_asset_manager.get_shader("shaders/spritefont"));
+    batch.draw(t_glyph.texture, { 5, 5 });
+    batch.flush();
 }
 }

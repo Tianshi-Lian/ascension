@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-18 20:26:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-18 20:53:01
+ * Last Modified: 2023-08-06 17:34:11
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -36,7 +36,7 @@ public:
 
     void destroy();
 
-    void start(u32 window_width, u32 window_height, std::shared_ptr<Texture_2D> target);
+    void start(u32 window_width, u32 window_height, const std::shared_ptr<Texture_2D>& target);
     void end();
 
     Frame_Buffer(const Frame_Buffer&) = default;

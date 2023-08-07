@@ -1,6 +1,6 @@
 Priority:
     Text rendering
-      String batch?
+      String batch? Cache rendered strings as their own texture?
     core/helpers.hpp - Assert(test, "Failure message") - candidate for yuki.
     Animated sprites
     Optimized tilemap renderer

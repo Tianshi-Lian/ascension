@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-18 20:35:33
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-06 18:22:41
+ * Last Modified: 2023-08-07 14:49:40
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -36,8 +36,6 @@ Frame_Buffer::Frame_Buffer()
   , m_target(nullptr)
   , m_window_width(0)
   , m_window_height(0)
-  , m_depth_enabled(false)
-  , m_depth_buffer_id(0)
 {
 }
 
@@ -49,11 +47,6 @@ Frame_Buffer::~Frame_Buffer()
 void
 Frame_Buffer::destroy()
 {
-    if (m_depth_enabled && m_depth_buffer_id != 0) {
-        glDeleteRenderbuffers(1, &m_depth_buffer_id);
-        m_depth_buffer_id = 0;
-    }
-
     if (m_id != 0) {
         glDeleteFramebuffers(1, &m_id);
         m_id = 0;
@@ -79,28 +72,16 @@ Frame_Buffer::start(u32 window_width, u32 window_height, const std::shared_ptr<T
     glGenFramebuffers(1, &m_id);
     glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_target->id(), 0);
-
-    // TODO: If/once we support z positions in our rendering we should probably turn this on.
-    if (m_depth_enabled) {
-        glGenRenderbuffers(1, &m_depth_buffer_id);
-        glBindRenderbuffer(GL_RENDERBUFFER, m_depth_buffer_id);
-        glRenderbufferStorage(
-            GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, static_cast<i32>(m_target->width()), static_cast<i32>(m_target->height())
-        );
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth_buffer_id);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    }
-
-    std::array<GLenum, 1> draw_buffers = { GL_COLOR_ATTACHMENT0 };
-    glDrawBuffers(1, static_cast<GLenum*>(draw_buffers.data()));
+    glBindTexture(GL_TEXTURE_2D, target->id());
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->id(), 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         core::log::error("Failed to create frame buffer");
-        destroy();
     }
 
     glViewport(0, 0, static_cast<i32>(m_target->width()), static_cast<i32>(m_target->height()));
+
+    // TODO: If/once we support z positions in our rendering we should attach a depth component & renderbuffer
 }
 
 void

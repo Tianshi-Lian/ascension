@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:41:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-06 17:53:53
+ * Last Modified: 2023-08-07 14:14:52
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -51,7 +51,7 @@ Texture_2D::Texture_2D()
   , m_width(0)
   , m_height(0)
   , m_format(Format::RGBA)
-  , m_texture_coords(0.0f, 1.0f, 1.0f, 0.0f)
+  , m_texture_coords(0.0f, 0.0f, 1.0f, 1.0f)
 {
 }
 
@@ -66,7 +66,7 @@ Texture_2D::~Texture_2D()
 void
 Texture_2D::create(u32 width, u32 height, u8* data, Format format)
 {
-    create(width, height, { 0.0f, 1.0f, 1.0f, 0.0f }, data, format);
+    create(width, height, { 0.0f, 0.0f, 1.0f, 1.0f }, data, format);
 }
 
 void

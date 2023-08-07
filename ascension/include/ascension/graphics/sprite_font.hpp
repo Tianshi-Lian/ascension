@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 20:38:36
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 15:32:21
+ * Last Modified: 2023-08-07 14:44:00
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -35,17 +35,19 @@ class Sprite_Font {
 public:
     struct Glyph {
         Texture_2D sub_texture;
-        std::shared_ptr<Texture_2D> texture;
+        std::shared_ptr<Texture_2D> texture{ nullptr };
 
-        v2 bearing;
-        i32 advance;
+        v2 bearing{};
+        i32 advance{};
+
+        Glyph() = default;
     };
     using Glyph_Cache = std::map<u32, Sprite_Font::Glyph>;
 
     struct Size_Cache {
         u32 font_size;
 
-        v2 next_char_texture_position;
+        v2u next_char_texture_position;
         std::shared_ptr<Texture_2D> texture;
 
         Glyph_Cache glyph_cache;
@@ -79,11 +81,11 @@ private:
     std::string m_filepath;
     std::shared_ptr<Shader> m_shader;
 
+    Glyph m_empty_glyph;
     Font_Cache m_font_cache;
 
     static void* s_internal;
 };
-
 }
 
 #endif // ASCENSION_GRAPHICS_SPRITE_FONT_HPP

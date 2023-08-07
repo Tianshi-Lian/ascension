@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 21:08:32
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-06 18:22:26
+ * Last Modified: 2023-08-07 15:02:39
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,11 +26,11 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include <glm/ext/matrix_clip_space.hpp>
 
 #include "core/log.hpp"
 
 #include "graphics/frame_buffer.hpp"
-#include "graphics/renderer_2d.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/sprite_batch.hpp"
 
@@ -78,22 +78,6 @@ Sprite_Font::create(std::string filepath, const std::shared_ptr<Shader>& font_sh
 const Sprite_Font::Glyph&
 Sprite_Font::get_glyph(u32 character, u32 font_size)
 {
-    // auto* ft_library = static_cast<FT_Library>(s_internal);
-
-    // FT_Face face;
-    // FT_New_Face(ft_library, m_filepath.c_str(), 0, &face);
-
-    // FT_Set_Pixel_Sizes(face, font_size, font_size);
-
-    // auto g_index = FT_Get_Char_Index(face, character);
-    // FT_Load_Glyph(face, g_index, FT_LOAD_DEFAULT);
-    // FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
-
-    // auto texture = std::make_shared<Texture_2D>();
-    // texture->create(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer);
-
-    // m_font_cache[font_size].glyph_cache[character].texture = texture;
-
     if (m_font_cache.count(font_size) == 0) {
         auto* ft_library = static_cast<FT_Library>(s_internal);
 
@@ -106,7 +90,7 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
         auto* ft_font_face = static_cast<FT_Face>(size_cache.font_face);
         if (FT_New_Face(ft_library, m_filepath.c_str(), 0, &ft_font_face) != 0) {
             core::log::error("Failed to create font face {} ({}) for character {}", m_filepath, font_size, character);
-            // TODO: We need an empty/failure glyph to return here.
+            return m_empty_glyph;
         }
 
         // TODO: Settle on a pixel multiplier as the default one seems really small? Maybe use Set_Char_Size?
@@ -123,7 +107,7 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
     if (size_cache.glyph_cache.count(character) == 0) {
         if (FT_Load_Char(font_face, character, FT_LOAD_RENDER) != 0) {
             core::log::error("Failed to load character {} for font {} ({})", character, m_filepath, font_size);
-            // TODO: We need an empty/failure glyph to return here.
+            return m_empty_glyph;
         }
 
         auto temp_texture = std::make_shared<Texture_2D>();
@@ -134,16 +118,13 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
             Texture_2D::Format::RED
         );
 
-        // TODO: Sort out these data type sizes
-        if ((size_cache.next_char_texture_position.x + static_cast<f32>(temp_texture->width()) >
-             static_cast<f32>(m_max_texture_size))) {
+        if (size_cache.next_char_texture_position.x + temp_texture->width() > m_max_texture_size) {
             size_cache.next_char_texture_position.x = 0;
-            size_cache.next_char_texture_position.y += static_cast<f32>(font_size);
+            size_cache.next_char_texture_position.y += font_size;
 
-            if ((size_cache.next_char_texture_position.y + static_cast<f32>(font_size)) >
-                static_cast<f32>(m_max_texture_size)) {
+            if ((size_cache.next_char_texture_position.y + font_size) > m_max_texture_size) {
                 core::log::error("Max texture size has already been reached for {} ({})", m_filepath, font_size);
-                // TODO: We need an empty/failure glyph to return here.
+                return m_empty_glyph;
             }
         }
 
@@ -153,39 +134,44 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
 
             Frame_Buffer frame_buffer;
             // TODO: Get the actual window sizes.
+            // /t    Probably go for a Font_Manager class which has access to window sizes & clear colour which either we can
+            // /t    request a framebuffer from, or we can always go through that and it can handle any logic which isn't FT2.
+            // /t    Alternatively some dynamic texture manager or service which we can just request a temporary framebuffer.
             frame_buffer.start(1600, 900, size_cache.texture);
 
-            if (size_cache.next_char_texture_position == v2{ 0, 0 }) {
-                // TODO: Get/restore the previous clear color.
-                // Renderer_2D::set_clear_color(v4f{ 0.0f });
-                // Renderer_2D::clear();
-                // Renderer_2D::set_clear_color(v4f{ 0.0f });
-            }
+            static constexpr auto mat_identity = m4{ 1.0f };
+            auto projection =
+                glm::ortho(0.0f, static_cast<f32>(m_max_texture_size), 0.0f, static_cast<f32>(m_max_texture_size), -1.0f, 1.0f);
+            m_shader->bind();
+            m_shader->set_mat4f("m_projection_view", projection * mat_identity);
+
+            // TODO: Do we need to bother to clear our framebuffer here?
 
             batch.draw(temp_texture, size_cache.next_char_texture_position);
             batch.flush();
             frame_buffer.end();
         }
 
-        const auto sub_tex_coords_width = static_cast<f32>(temp_texture->width()) / static_cast<f32>(m_max_texture_size);
-        const auto sub_tex_coords_height = static_cast<f32>(temp_texture->height()) / static_cast<f32>(m_max_texture_size);
+        const auto texture_size_f = 1 / static_cast<f32>(m_max_texture_size);
 
-        const auto sub_tex_coords = v4f{ size_cache.next_char_texture_position.x,
-                                         size_cache.next_char_texture_position.y + sub_tex_coords_height,
-                                         size_cache.next_char_texture_position.x + sub_tex_coords_width,
-                                         size_cache.next_char_texture_position.y };
+        const auto sub_tex_uv_x = static_cast<f32>(size_cache.next_char_texture_position.x) * texture_size_f;
+        const auto sub_tex_uv_y = static_cast<f32>(size_cache.next_char_texture_position.y) * texture_size_f;
+        const auto sub_tex_uv_w = static_cast<f32>(temp_texture->width()) * texture_size_f;
+        const auto sub_tex_uv_h = static_cast<f32>(temp_texture->height()) * texture_size_f;
+
+        const auto sub_tex_coords = v4f{ sub_tex_uv_x, sub_tex_uv_y + sub_tex_uv_h, sub_tex_uv_x + sub_tex_uv_w, sub_tex_uv_y };
 
         Glyph glyph;
         glyph.sub_texture.create(temp_texture->width(), temp_texture->height(), sub_tex_coords, nullptr);
         glyph.texture = temp_texture;
-        // glyph.texture = size_cache.texture;
+        glyph.texture = size_cache.texture;
         glyph.advance = font_face->glyph->advance.y;
         glyph.bearing = v2{ font_face->glyph->bitmap_left, font_face->glyph->bitmap_top };
 
         size_cache.glyph_cache[character] = glyph;
+        size_cache.next_char_texture_position.x += temp_texture->width();
     }
 
     return m_font_cache[font_size].glyph_cache[character];
 }
-
 }

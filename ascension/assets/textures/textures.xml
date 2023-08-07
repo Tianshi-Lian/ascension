@@ -6,8 +6,6 @@
     </asset>
 	<asset name="unicorn" type="Texture" filepath="assets/textures/unicorn.png" />
     <asset name="fruits" type="Texture_Atlas" filepath="assets/textures/fruits.dat">
-        <asset name="fruits" type="Texture" filepath="assets/textures/fruits.png">
-            <flip>1</flip>
-        </asset>
+        <asset name="fruits" type="Texture" filepath="assets/textures/fruits.png" />
     </asset>
 </assets>

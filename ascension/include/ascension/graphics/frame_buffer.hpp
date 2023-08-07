@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-18 20:26:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-06 17:34:11
+ * Last Modified: 2023-08-07 14:17:46
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -51,9 +51,6 @@ private:
 
     u32 m_window_width;
     u32 m_window_height;
-
-    bool m_depth_enabled;
-    u32 m_depth_buffer_id;
 };
 
 }

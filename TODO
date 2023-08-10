@@ -1,6 +1,4 @@
 Priority:
-    Text rendering
-      String batch? Cache rendered strings as their own texture?
     core/helpers.hpp - Assert(test, "Failure message") - candidate for yuki.
     Animated sprites
     Optimized tilemap renderer
@@ -17,13 +15,14 @@ ascension:
         ☐ Rendering
     Graphics:
         ✔ Spritebatch rewrite/performance improvement @done(23-07-15 20:42)
-        ☐ Text rendering @started(22-07-18 18:20)
+        ✔ Text rendering @started(22-07-18 18:20) @done(23-08-10 12:33) @lasted(1y3w1d18h13m27s)
         ☐ Animation
         ☐ UI
         ☐ Resolution & display mode settings
         ✔ Texture atlas @done(23-07-15 20:42)
         ☐ Layer stacks
         ☐ Particle system
+        ☐ Smooth/subpixel text rendering (revist)
     Audio:
         ☐ Sound effects
         ☐ Music

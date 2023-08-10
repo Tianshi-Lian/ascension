@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-29 17:02:08
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-06 17:27:53
+ * Last Modified: 2023-08-10 12:04:25
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -55,6 +55,8 @@ Renderer_2D::initialize()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // and if it didn't work, then disable depth testing by uncommenting this:
+    glDisable(GL_DEPTH_TEST);
 
     s_initialized = true;
 

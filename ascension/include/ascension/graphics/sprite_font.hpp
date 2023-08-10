@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 20:38:36
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-07 14:44:00
+ * Last Modified: 2023-08-10 11:46:59
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -38,7 +38,7 @@ public:
         std::shared_ptr<Texture_2D> texture{ nullptr };
 
         v2 bearing{};
-        i32 advance{};
+        u32 advance{};
 
         Glyph() = default;
     };

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:37
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-09 18:43:14
+ * Last Modified: 2023-08-10 11:50:44
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,7 +24,6 @@
 
 #pragma once
 
-#include "graphics/shader.hpp"
 #include "graphics/texture_2d.hpp"
 #include "graphics/vertex_array_object.hpp"
 
@@ -32,6 +31,9 @@ namespace ascension::graphics {
 
 class Vertex_Buffer_Object;
 class Index_Buffer_Object;
+
+class Shader;
+class Sprite_Font;
 
 struct Batch_Config {
     Batch_Config()
@@ -107,15 +109,23 @@ public:
     void add_batch(const std::shared_ptr<Batch>& batch);
     void create_batch(const Batch_Config& config);
 
-    void draw(const std::shared_ptr<Texture_2D>& texture, const v2f& position, bool is_static = false);
-    void draw(
+    void flush();
+
+    void draw_texture(const std::shared_ptr<Texture_2D>& texture, const v2f& position, bool is_static = false);
+    void draw_texture(
         const std::shared_ptr<Texture_2D>& texture,
         const Texture_2D& sub_texture,
         const v2f& position,
         bool is_static = false
     );
 
-    void flush();
+    void draw_string(
+        const std::shared_ptr<Sprite_Font>& font,
+        u16 font_size,
+        const v2f& position,
+        const std::string& value,
+        bool is_static = true
+    );
 
 private:
     std::vector<std::shared_ptr<Batch>> m_batches;
@@ -124,7 +134,7 @@ private:
     u32 m_batch_size;
     std::shared_ptr<Shader> m_default_shader;
 
-    void draw(
+    void draw_texture_internal(
         const std::shared_ptr<Texture_2D>& texture,
         const v2f& position,
         const v2u& size,

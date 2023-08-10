@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-07 14:13:54
+ * Last Modified: 2023-08-10 12:23:09
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,6 +27,7 @@
 #include <cstddef>
 #include <limits>
 
+#include <GL/glew.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "yuki/debug/instrumentor.hpp"
@@ -34,16 +35,16 @@
 #include "core/log.hpp"
 #include "graphics/buffer_object.hpp"
 #include "graphics/shader.hpp"
+#include "graphics/sprite_font.hpp"
 #include "graphics/texture_2d.hpp"
 #include "graphics/vertex_array_object.hpp"
-
-#include <GL/glew.h>
 
 namespace ascension::graphics {
 
 static constexpr u32 QUAD_VERTEX_COUNT = 4;
 static constexpr u32 QUAD_VERTEX_COMPONENT_COUNT = QUAD_VERTEX_COUNT * 2;
 static constexpr u32 QUAD_INDEX_COUNT = 6;
+static constexpr u32 PIXEL_BIT_SHIFT = 6;
 
 // Batch
 Batch::Batch()
@@ -285,7 +286,60 @@ Sprite_Batch::create_batch(const Batch_Config& config)
 }
 
 void
-Sprite_Batch::draw(
+Sprite_Batch::flush()
+{
+    // TODO: Sort the batches by a priority index for drawing order.
+    for (auto& batch : m_batches) {
+        if (!batch->is_empty()) {
+            batch->flush();
+        }
+    }
+}
+
+void
+Sprite_Batch::draw_texture(const std::shared_ptr<Texture_2D>& texture, const v2f& position, bool is_static)
+{
+    draw_texture_internal(texture, position, texture->size(), texture->texture_coords(), is_static);
+}
+
+void
+Sprite_Batch::draw_texture(
+    const std::shared_ptr<Texture_2D>& texture,
+    const Texture_2D& sub_texture,
+    const v2f& position,
+    bool is_static
+)
+{
+    draw_texture_internal(texture, position, sub_texture.size(), sub_texture.texture_coords(), is_static);
+}
+
+void
+Sprite_Batch::draw_string(
+    const std::shared_ptr<Sprite_Font>& font,
+    u16 font_size,
+    const v2f& position,
+    const std::string& value,
+    bool is_static
+)
+{
+    auto current_position = position;
+    for (const auto& character : value) {
+        const auto& glyph = font->get_glyph(static_cast<u32>(character), font_size);
+
+        const auto offset_x = glyph.bearing.x;
+        const auto offset_y = (static_cast<f32>(glyph.sub_texture.height()) - glyph.bearing.y);
+        const auto glyph_position = v2f{ current_position.x + offset_x, current_position.y - offset_y };
+
+        draw_texture_internal(
+            glyph.texture, glyph_position, glyph.sub_texture.size(), glyph.sub_texture.texture_coords(), is_static
+        );
+
+        current_position.x += static_cast<f32>((glyph.advance >> PIXEL_BIT_SHIFT));
+    }
+}
+
+void
+Sprite_Batch::draw_texture_internal(
     const std::shared_ptr<Texture_2D>& texture,
     const v2f& position,
     const v2u& size,
@@ -322,34 +376,6 @@ Sprite_Batch::draw(
     else {
         // TODO: Consider if we should try and empty the fullest batch?
         core::log::error("Sprite_Batch::draw() trying to draw new texture when all batches are full!");
-    }
-}
-
-void
-Sprite_Batch::draw(const std::shared_ptr<Texture_2D>& texture, const v2f& position, bool is_static)
-{
-    draw(texture, position, texture->size(), texture->texture_coords(), is_static);
-}
-
-void
-Sprite_Batch::draw(
-    const std::shared_ptr<Texture_2D>& texture,
-    const Texture_2D& sub_texture,
-    const v2f& position,
-    bool is_static
-)
-{
-    draw(texture, position, sub_texture.size(), sub_texture.texture_coords(), is_static);
-}
-
-void
-Sprite_Batch::flush()
-{
-    // TODO: Sort the batches by a priority index for drawing order.
-    for (auto& batch : m_batches) {
-        if (!batch->is_empty()) {
-            batch->flush();
-        }
     }
 }
 

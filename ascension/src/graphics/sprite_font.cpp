@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 21:08:32
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-07 15:02:39
+ * Last Modified: 2023-08-10 12:31:24
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -94,7 +94,7 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
         }
 
         // TODO: Settle on a pixel multiplier as the default one seems really small? Maybe use Set_Char_Size?
-        FT_Set_Pixel_Sizes(ft_font_face, 0, font_size * 2);
+        FT_Set_Pixel_Sizes(ft_font_face, 0, font_size);
         // FT_Set_Char_Size(ft_font_face, 0, static_cast<int>(font_size) * 64, 300, 300);
 
         size_cache.font_face = ft_font_face;
@@ -105,7 +105,7 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
     auto* font_face = static_cast<FT_Face>(size_cache.font_face);
 
     if (size_cache.glyph_cache.count(character) == 0) {
-        if (FT_Load_Char(font_face, character, FT_LOAD_RENDER) != 0) {
+        if (FT_Load_Char(font_face, character, FT_LOAD_RENDER) != 0) { // NOLINT
             core::log::error("Failed to load character {} for font {} ({})", character, m_filepath, font_size);
             return m_empty_glyph;
         }
@@ -147,7 +147,7 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
 
             // TODO: Do we need to bother to clear our framebuffer here?
 
-            batch.draw(temp_texture, size_cache.next_char_texture_position);
+            batch.draw_texture(temp_texture, size_cache.next_char_texture_position);
             batch.flush();
             frame_buffer.end();
         }
@@ -165,7 +165,7 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
         glyph.sub_texture.create(temp_texture->width(), temp_texture->height(), sub_tex_coords, nullptr);
         glyph.texture = temp_texture;
         glyph.texture = size_cache.texture;
-        glyph.advance = font_face->glyph->advance.y;
+        glyph.advance = static_cast<u32>(font_face->glyph->advance.x);
         glyph.bearing = v2{ font_face->glyph->bitmap_left, font_face->glyph->bitmap_top };
 
         size_cache.glyph_cache[character] = glyph;

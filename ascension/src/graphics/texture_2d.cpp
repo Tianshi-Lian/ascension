@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:41:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-10 12:22:07
+ * Last Modified: 2023-08-10 13:33:38
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -40,7 +40,10 @@ format_to_gl_format(ascension::graphics::Texture_2D::Format format)
             return GL_RGBA;
         case ascension::graphics::Texture_2D::Format::RED:
             return GL_RED;
+        default:
+            return GL_RGBA;
     }
+    return GL_RGBA;
 }
 
 }

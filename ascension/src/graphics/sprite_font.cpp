@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-07-17 21:08:32
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-10 12:31:24
+ * Last Modified: 2023-08-12 16:39:48
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -163,7 +163,6 @@ Sprite_Font::get_glyph(u32 character, u32 font_size)
 
         Glyph glyph;
         glyph.sub_texture.create(temp_texture->width(), temp_texture->height(), sub_tex_coords, nullptr);
-        glyph.texture = temp_texture;
         glyph.texture = size_cache.texture;
         glyph.advance = static_cast<u32>(font_face->glyph->advance.x);
         glyph.bearing = v2{ font_face->glyph->bitmap_left, font_face->glyph->bitmap_top };

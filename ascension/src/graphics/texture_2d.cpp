@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-11 19:41:46
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-10 13:33:38
+ * Last Modified: 2023-08-12 16:40:23
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -93,11 +93,11 @@ Texture_2D::create(u32 width, u32 height, v4f texture_coords, u8* data, Format f
     glGetIntegerv(GL_UNPACK_ALIGNMENT, &previous_pixel_store);
 
     const i32 gl_format = format_to_gl_format(format);
-    // if (format == Format::RED) {
-    //  NOTE: We generate some textures on the fly such as texture atlases for fonts, the font data loaded by
-    //  /n    TrueType is stored in single alignment in the red channel, which is then filter later in the shader.
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    //}
+    if (format == Format::RED) {
+        //  NOTE: We generate some textures on the fly such as texture atlases for fonts, the font data loaded by
+        //  /n    TrueType is stored in single alignment in the red channel, which is then filter later in the shader.
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    }
 
     bind();
 
@@ -120,9 +120,7 @@ Texture_2D::create(u32 width, u32 height, v4f texture_coords, u8* data, Format f
 
     unbind();
 
-    // if (format == Format::RED) {
-    //     glPixelStorei(GL_UNPACK_ALIGNMENT, previous_pixel_store);
-    // }
+    glPixelStorei(GL_UNPACK_ALIGNMENT, previous_pixel_store);
 }
 
 void

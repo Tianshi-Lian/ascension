@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 14:45:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 16:05:51
+ * Last Modified: 2023-08-15 20:46:30
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,6 +27,7 @@
 #include <unordered_map>
 
 #include "assets/asset_types.hpp"
+#include "assets/texture_handler.hpp"
 
 namespace ascension::graphics {
 class Shader;
@@ -75,14 +76,14 @@ public:
 private:
     void parse_asset_document(const std::string& document_filepath, const std::string& root_name);
 
-    std::unordered_map<std::string, Font_Asset> m_font_filepaths;
-    std::unordered_map<std::string, Shader_Asset> m_shader_filepaths;
-    std::unordered_map<std::string, Texture_Asset> m_texture_filepaths;
-    std::unordered_map<std::string, Texture_Atlas_Asset> m_texture_atlas_filepaths;
+    Texture_Handler m_texture_handler;
+
+    std::unordered_map<std::string, Font_File> m_font_filepaths;
+    std::unordered_map<std::string, Shader_File> m_shader_filepaths;
+    std::unordered_map<std::string, Texture_Atlas_File> m_texture_atlas_filepaths;
 
     std::unordered_map<std::string, std::shared_ptr<graphics::Shader>> m_loaded_shaders;
     std::unordered_map<std::string, std::shared_ptr<graphics::Sprite_Font>> m_loaded_fonts;
-    std::unordered_map<std::string, std::shared_ptr<graphics::Texture_2D>> m_loaded_textures;
     std::unordered_map<std::string, std::shared_ptr<graphics::Texture_Atlas>> m_loaded_texture_atlas;
 };
 

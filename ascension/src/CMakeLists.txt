@@ -4,6 +4,7 @@ target_sources(${APP_NAME} PRIVATE
 
     # Assets
     assets/asset_manager.cpp
+    assets/texture_handler.cpp
 
     # Core
     core/application.cpp

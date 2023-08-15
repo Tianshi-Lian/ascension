@@ -13,3 +13,6 @@
 [submodule "ascension/libs/pugixml"]
 	path = ascension/libs/pugixml
 	url = git@github.com:r-ggraham/pugixml.git
+[submodule "ascension/libs/yaml-cpp"]
+	path = ascension/libs/yaml-cpp
+	url = git@github.com:jbeder/yaml-cpp.git

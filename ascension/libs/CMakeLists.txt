@@ -11,3 +11,7 @@ add_subdirectory(sdl EXCLUDE_FROM_ALL)
 # pugixml
 # https://github.com/zeux/pugixml
 add_subdirectory(pugixml EXCLUDE_FROM_ALL)
+
+# yaml-cpp
+# https://github.com/jbeder/yaml-cpp
+add_subdirectory(yaml-cpp EXCLUDE_FROM_ALL)

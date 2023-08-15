@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 14:45:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 21:00:10
+ * Last Modified: 2023-08-15 21:01:23
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -108,9 +108,9 @@ public:
         }
     }
 
-    std::shared_ptr<graphics::Texture_2D> load_texture_2d(const std::string& asset_name);
-    std::shared_ptr<graphics::Texture_2D> get_texture_2d(const std::string& asset_name);
-    void unload_texture_2d(const std::string& asset_name);
+    std::shared_ptr<graphics::Texture_2D> load_texture(const std::string& asset_name);
+    std::shared_ptr<graphics::Texture_2D> get_texture(const std::string& asset_name);
+    void unload_texture(const std::string& asset_name);
 
     std::shared_ptr<graphics::Texture_Atlas> load_texture_atlas(const std::string& asset_name);
     std::shared_ptr<graphics::Texture_Atlas> get_texture_atlas(const std::string& asset_name);

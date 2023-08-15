@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 20:49:52
+ * Last Modified: 2023-08-15 21:01:36
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -189,19 +189,19 @@ Asset_Manager::load_asset_file(const std::string& asset_file)
 }
 
 std::shared_ptr<graphics::Texture_2D>
-Asset_Manager::load_texture_2d(const std::string& asset_name)
+Asset_Manager::load_texture(const std::string& asset_name)
 {
     return m_texture_handler.load_texture(asset_name);
 }
 
 std::shared_ptr<graphics::Texture_2D>
-Asset_Manager::get_texture_2d(const std::string& asset_name)
+Asset_Manager::get_texture(const std::string& asset_name)
 {
     return m_texture_handler.get_texture(asset_name);
 }
 
 void
-Asset_Manager::unload_texture_2d(const std::string& asset_name)
+Asset_Manager::unload_texture(const std::string& asset_name)
 {
     return m_texture_handler.unload_texture(asset_name);
 }
@@ -221,7 +221,7 @@ Asset_Manager::load_texture_atlas(const std::string& asset_name)
 
     Texture_Atlas_File asset = m_texture_atlas_filepaths[asset_name];
 
-    const auto texture = load_texture_2d(asset.sub_texture_id);
+    const auto texture = load_texture(asset.sub_texture_id);
     if (!texture) {
         core::log::error("Asset_Manager::load_texture_atlas() failed to load internal texture {}", asset.sub_texture_id);
         return nullptr;
@@ -274,7 +274,7 @@ Asset_Manager::unload_texture_atlas(const std::string& asset_name)
     }
 
     const auto texture_name = m_texture_atlas_filepaths.at(asset_name).sub_texture_id;
-    unload_texture_2d(texture_name);
+    unload_texture(texture_name);
 
     m_loaded_texture_atlas.erase(asset_name);
 }

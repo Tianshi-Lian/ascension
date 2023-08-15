@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-10 12:25:26
+ * Last Modified: 2023-08-15 21:20:30
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -40,7 +40,7 @@ void
 Ascension::on_initialize()
 {
     m_asset_manager.load_asset_file("assets/assets.xml");
-    m_asset_manager.load_texture_2d("textures/unicorn");
+    m_asset_manager.load_texture("textures/unicorn");
     auto fruit_atlas = m_asset_manager.load_texture_atlas("textures/fruits");
     auto sprite_shader = m_asset_manager.load_shader("shaders/spritebatch");
     auto font_shader = m_asset_manager.load_shader("shaders/spritefont");

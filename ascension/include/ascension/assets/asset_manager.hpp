@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 14:45:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 20:46:30
+ * Last Modified: 2023-08-15 21:00:10
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -51,6 +51,62 @@ public:
     void clear();
 
     void load_asset_file(const std::string& asset_file);
+
+    template<typename T>
+    std::shared_ptr<T> load_asset(Asset_Type type, const std::string& asset_name)
+    {
+        switch (type) {
+            case Asset_Type::Asset_List: {
+                load_asset_file(asset_name);
+                return nullptr;
+            }
+            case Asset_Type::Texture:
+                return m_texture_handler.load_texture(asset_name);
+            case Asset_Type::Texture_Atlas:
+                return load_texture_atlas(asset_name);
+            case Asset_Type::Shader:
+                return load_shader(asset_name);
+            case Asset_Type::Font:
+                return load_font(asset_name);
+        }
+    }
+
+    template<typename T>
+    std::shared_ptr<T> get_asset(Asset_Type type, const std::string& asset_name)
+    {
+        switch (type) {
+            case Asset_Type::Asset_List:
+                return nullptr;
+            case Asset_Type::Texture:
+                return m_texture_handler.get_texture(asset_name);
+            case Asset_Type::Texture_Atlas:
+                return get_texture_atlas(asset_name);
+            case Asset_Type::Shader:
+                return get_shader(asset_name);
+            case Asset_Type::Font:
+                return get_font(asset_name);
+        }
+    }
+
+    void unload_asset(Asset_Type type, const std::string& asset_name)
+    {
+        switch (type) {
+            case Asset_Type::Asset_List:
+                break;
+            case Asset_Type::Texture:
+                m_texture_handler.unload_texture(asset_name);
+                break;
+            case Asset_Type::Texture_Atlas:
+                unload_texture_atlas(asset_name);
+                break;
+            case Asset_Type::Shader:
+                unload_shader(asset_name);
+                break;
+            case Asset_Type::Font:
+                unload_font(asset_name);
+                break;
+        }
+    }
 
     std::shared_ptr<graphics::Texture_2D> load_texture_2d(const std::string& asset_name);
     std::shared_ptr<graphics::Texture_2D> get_texture_2d(const std::string& asset_name);

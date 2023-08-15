@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-15 20:09:20
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 20:45:43
+ * Last Modified: 2023-08-15 21:08:20
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -42,8 +42,7 @@ struct Texture_File : public Asset_File {
 
 class Texture_Handler {
 public:
-    // TODO: When we swap to yaml we should just pass the asset.yaml path here and parse the file attributes here.
-    // Texture_File parse_texture_file()
+    static Texture_File parse_texture_file(const std::string& filepath);
 
     std::shared_ptr<graphics::Texture_2D> load_texture(const std::string& asset_name);
     std::shared_ptr<graphics::Texture_2D> get_texture(const std::string& asset_name);

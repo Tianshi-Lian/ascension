@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-15 20:12:47
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 20:43:47
+ * Last Modified: 2023-08-15 21:08:01
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,11 +28,34 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
+#include <yaml-cpp/yaml.h>
+
 #include "assets/asset_types.hpp"
 #include "core/log.hpp"
 #include "graphics/texture_2d.hpp"
 
 namespace ascension::assets {
+
+Texture_File
+Texture_Handler::parse_texture_file(const std::string& filepath)
+{
+    YAML::Node yaml_root = YAML::LoadFile(filepath);
+
+    Texture_File texture_file;
+
+    if (yaml_root["scale"]) {
+        texture_file.scale = yaml_root["scale"].as<f32>();
+    }
+    if (yaml_root["flip"]) {
+        texture_file.flip_on_load = yaml_root["flip"].as<bool>();
+    }
+
+    texture_file.name = yaml_root["name"].as<std::string>();
+    texture_file.filepath = yaml_root["filepath"].as<std::string>();
+    texture_file.type = Asset_Type::Texture;
+
+    return texture_file;
+}
 
 std::shared_ptr<graphics::Texture_2D>
 Texture_Handler::load_texture(const std::string& asset_name)

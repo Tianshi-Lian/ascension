@@ -4,6 +4,7 @@ target_sources(${APP_NAME} PRIVATE
     # Assets
     assets/asset_manager.hpp
     assets/asset_types.hpp
+    assets/serialize_assets.hpp
     assets/texture_handler.hpp
 
     # Core

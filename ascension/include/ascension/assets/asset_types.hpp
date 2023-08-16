@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-14 13:56:09
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 20:42:01
+ * Last Modified: 2023-08-16 11:24:33
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,6 +27,7 @@
 namespace ascension::assets {
 
 enum class Asset_Type {
+    Unknown,
     Asset_List,
     Font,
     Shader,
@@ -38,6 +39,11 @@ struct Asset_File {
     std::string name;
     std::string filepath;
     Asset_Type type;
+};
+
+struct Texture_File : public Asset_File {
+    f32 scale{ 1.0 };
+    bool flip_on_load{ true };
 };
 
 struct Texture_Atlas_File : public Asset_File {

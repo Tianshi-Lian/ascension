@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 14:45:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 21:01:23
+ * Last Modified: 2023-08-16 11:20:34
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,6 +28,7 @@
 
 #include "assets/asset_types.hpp"
 #include "assets/texture_handler.hpp"
+#include "core/log.hpp"
 
 namespace ascension::graphics {
 class Shader;
@@ -56,6 +57,9 @@ public:
     std::shared_ptr<T> load_asset(Asset_Type type, const std::string& asset_name)
     {
         switch (type) {
+            case Asset_Type::Unknown:
+                core::log::error("Attempting to load unknown Asset_Type, name: {}", asset_name);
+                return nullptr;
             case Asset_Type::Asset_List: {
                 load_asset_file(asset_name);
                 return nullptr;
@@ -75,6 +79,9 @@ public:
     std::shared_ptr<T> get_asset(Asset_Type type, const std::string& asset_name)
     {
         switch (type) {
+            case Asset_Type::Unknown:
+                core::log::error("Attempting to get unknown Asset_Type, name: {}", asset_name);
+                return nullptr;
             case Asset_Type::Asset_List:
                 return nullptr;
             case Asset_Type::Texture:
@@ -91,6 +98,9 @@ public:
     void unload_asset(Asset_Type type, const std::string& asset_name)
     {
         switch (type) {
+            case Asset_Type::Unknown:
+                core::log::error("Attempting to unload unknown Asset_Type, name: {}", asset_name);
+                break;
             case Asset_Type::Asset_List:
                 break;
             case Asset_Type::Texture:

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-15 20:09:20
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 21:08:20
+ * Last Modified: 2023-08-16 10:51:27
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -34,11 +34,6 @@ class Texture_2D;
 }
 
 namespace ascension::assets {
-
-struct Texture_File : public Asset_File {
-    f32 scale{ 1.0 };
-    bool flip_on_load{ true };
-};
 
 class Texture_Handler {
 public:

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-15 20:09:20
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 10:51:27
+ * Last Modified: 2023-08-16 11:28:52
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -31,6 +31,7 @@
 
 namespace ascension::graphics {
 class Texture_2D;
+class Texture_Atlas;
 }
 
 namespace ascension::assets {
@@ -38,14 +39,22 @@ namespace ascension::assets {
 class Texture_Handler {
 public:
     static Texture_File parse_texture_file(const std::string& filepath);
+    static Texture_Atlas_File parse_texture_atlas_file(const std::string& filepath);
 
     std::shared_ptr<graphics::Texture_2D> load_texture(const std::string& asset_name);
     std::shared_ptr<graphics::Texture_2D> get_texture(const std::string& asset_name);
     void unload_texture(const std::string& asset_name);
 
+    std::shared_ptr<graphics::Texture_Atlas> load_texture_atlas(const std::string& asset_name);
+    std::shared_ptr<graphics::Texture_Atlas> get_texture_atlas(const std::string& asset_name);
+    void unload_texture_atlas(const std::string& asset_name);
+
 private:
     std::unordered_map<std::string, Texture_File> m_texture_files;
     std::unordered_map<std::string, std::shared_ptr<graphics::Texture_2D>> m_loaded_textures;
+
+    std::unordered_map<std::string, Texture_Atlas_File> m_texture_atlas_files;
+    std::unordered_map<std::string, std::shared_ptr<graphics::Texture_Atlas>> m_loaded_texture_atlas;
 };
 
 }

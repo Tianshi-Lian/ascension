@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-16 10:53:12
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 11:24:01
+ * Last Modified: 2023-08-16 21:24:39
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,43 +28,75 @@
 #include "assets/asset_types.hpp"
 #include "core/log.hpp"
 
+#include <iostream>
 #include <yaml-cpp/yaml.h>
 
 // IWYU pragma: export
 namespace YAML {
 
 template<>
-struct convert<ascension::assets::Asset_File> {
-    static Node encode(const ascension::assets::Asset_File& rhs)
+struct convert<v4u> {
+    static Node encode(const v4u& rhs)
     {
         Node node;
-        node["name"] = rhs.name;
-        node["filepath"] = rhs.filepath;
-        node["type"] = magic_enum::enum_name(rhs.type);
+        node.push_back(rhs.x);
+        node.push_back(rhs.y);
+        node.push_back(rhs.z);
+        node.push_back(rhs.w);
+        node.SetStyle(EmitterStyle::Flow);
         return node;
     }
 
-    static bool decode(const Node& node, ascension::assets::Asset_File& rhs)
+    static bool decode(const Node& node, v4u& rhs)
     {
-        if (!node["name"] || !node["filepath"] || !node["type"]) {
+        if (node.size() != 4) {
+            ascension::core::log::error("Failed to decode v4u: {}", node.Tag());
+            return false;
+        }
+
+        rhs.x = node[0].as<u32>();
+        rhs.y = node[1].as<u32>();
+        rhs.z = node[2].as<u32>();
+        rhs.w = node[3].as<u32>();
+
+        return true;
+    }
+};
+
+template<>
+struct convert<ascension::assets::Asset_File> {
+    static Node encode(const ascension::assets::Asset_File& rhs)
+    {
+        Node data;
+        data["filepath"] = rhs.filepath;
+        data["type"] = magic_enum::enum_name(rhs.type);
+
+        Node root;
+        root[rhs.name] = data;
+        return root;
+    }
+
+    static bool decode(const Node& root, ascension::assets::Asset_File& rhs)
+    {
+        rhs.name = root.begin()->first.Scalar();
+        const auto node = root[rhs.name];
+
+        if (!node["filepath"] || !node["type"]) {
             ascension::core::log::error(
-                "Failed to decode Asset_File: {}. Name: {} Filepath: {}",
-                node.Tag(),
+                "Failed to decode Asset_File. Name: {} Filepath: {}",
                 node["name"].as<std::string>(),
                 node["filepath"].as<std::string>()
             );
             return false;
         }
 
-        rhs.name = node["name"].as<std::string>();
         rhs.filepath = node["filepath"].as<std::string>();
         rhs.type = magic_enum::enum_cast<ascension::assets::Asset_Type>(node["type"].as<std::string>())
                        .value_or(ascension::assets::Asset_Type::Unknown);
 
         if (rhs.type == ascension::assets::Asset_Type::Unknown) {
             ascension::core::log::error(
-                "Failed to decode Asset_File: {}, unknown Asset_Type {}. Name: {} Filepath: {}",
-                node.Tag(),
+                "Failed to decode Asset_File. Unknown Asset_Type {}. Name: {} Filepath: {}",
                 node["type"].as<std::string>(),
                 rhs.name,
                 rhs.filepath
@@ -80,15 +112,19 @@ template<>
 struct convert<ascension::assets::Texture_File> {
     static Node encode(const ascension::assets::Texture_File& rhs)
     {
-        Node node = convert<ascension::assets::Asset_File>::encode(rhs);
-        node["scale"] = rhs.scale;
-        node["flip_on_load"] = rhs.flip_on_load;
-        return node;
+        Node root = convert<ascension::assets::Asset_File>::encode(rhs);
+
+        Node data = root[rhs.name];
+        data["scale"] = rhs.scale;
+        data["flip_on_load"] = rhs.flip_on_load;
+
+        return root;
     }
 
-    static bool decode(const Node& node, ascension::assets::Texture_File& rhs)
+    static bool decode(const Node& root, ascension::assets::Texture_File& rhs)
     {
-        convert<ascension::assets::Asset_File>::decode(node, rhs);
+        convert<ascension::assets::Asset_File>::decode(root, rhs);
+        const auto node = root[rhs.name];
 
         if (node["scale"]) {
             rhs.scale = node["scale"].as<f32>();
@@ -100,6 +136,39 @@ struct convert<ascension::assets::Texture_File> {
         return true;
     }
 };
+
+template<>
+struct convert<ascension::assets::Texture_Atlas_File> {
+    static Node encode(const ascension::assets::Texture_Atlas_File& rhs)
+    {
+        Node root = convert<ascension::assets::Asset_File>::encode(rhs);
+
+        Node data = root[rhs.name];
+        data["texture_name"] = rhs.texture_name;
+        data["sub_textures"] = rhs.sub_textures;
+
+        return root;
+    }
+
+    static bool decode(const Node& root, ascension::assets::Texture_Atlas_File& rhs)
+    {
+        convert<ascension::assets::Asset_File>::decode(root, rhs);
+        const auto node = root[rhs.name];
+
+        if (!node["texture_name"] || !node["sub_textures"]) {
+            ascension::core::log::error(
+                "Failed to decode Texture_Atlas_File. Name: {} Filepath: {}. Invalid data.", rhs.name, rhs.filepath
+            );
+            return false;
+        }
+
+        rhs.texture_name = node["texture_name"].as<std::string>();
+        rhs.sub_textures = node["sub_textures"].as<std::unordered_map<std::string, v4u>>();
+
+        return true;
+    }
+};
+
 }
 
 #endif // ASCENSION_ASSETS_SERIALIZE_ASSETS_HPP

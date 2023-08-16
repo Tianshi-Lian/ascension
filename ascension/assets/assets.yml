@@ -22,22 +22,20 @@
     filepath: unicorn.png
   - fruits:
     filepath: fruits.png
-  - fruit_atlas:
-    texture_atlas: true
+
+- texture_atlas:
+  - fruits:
     texture: textures/fruits
-
-
-- fruit_atlas:
-  - watermelon: [ 0, 64, 64, 128 ]
-  - pineapple: [ 64, 64, 128, 128 ]
-  - orange: [ 0, 32, 32, 64 ]
-  - grape: [ 32, 32, 64, 64 ]
-  - pear: [ 0, 0, 32, 32 ]
-  - banana: [ 32, 0, 64, 32 ]
-  - strawberry: [ 64, 48, 80, 64 ]
-  - raspberry: [ 80, 48, 96, 64 ]
-  - cherry: [ 64, 32, 80, 48 ]
-
+    sub_textures:
+      watermelon: [0, 64, 64, 128]
+      pineapple: [64, 64, 128, 128]
+      orange: [0, 32, 32, 64]
+      grape: [32, 32, 64, 64]
+      pear: [0, 0, 32, 32]
+      banana: [32, 0, 64, 32]
+      strawberry: [64, 48, 80, 64]
+      raspberry: [80, 48, 96, 64]
+      cherry: [64, 32, 80, 48]
 
 - shaders:
   - sprite_batch:

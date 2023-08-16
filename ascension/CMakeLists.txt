@@ -34,7 +34,7 @@ set_target_properties(${APP_NAME} PROPERTIES
 
 if(ENABLE_PCH)
     target_precompile_headers(${APP_NAME}
-        PRIVATE <map> <memory> <string> <vector> <utility>
+        PRIVATE <map> <memory> <string> <vector> <utility> <unordered_map>
         PRIVATE <core/types.hpp>
     )
 endif()

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-14 13:56:09
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 11:24:33
+ * Last Modified: 2023-08-16 20:32:03
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -23,6 +23,8 @@
  */
 
 #pragma once
+
+#include <unordered_map>
 
 namespace ascension::assets {
 
@@ -46,8 +48,11 @@ struct Texture_File : public Asset_File {
     bool flip_on_load{ true };
 };
 
+// TODO: We should probably consider to load the texture specified by the atlas so we don't have to remember to make
+// /t    two loads for one item.
 struct Texture_Atlas_File : public Asset_File {
-    std::string sub_texture_id;
+    std::string texture_name;
+    std::unordered_map<std::string, v4u> sub_textures;
 };
 
 struct Shader_File : public Asset_File {

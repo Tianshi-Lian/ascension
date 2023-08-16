@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-15 21:01:36
+ * Last Modified: 2023-08-16 12:06:55
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -148,7 +148,7 @@ Asset_Manager::parse_asset_document(const std::string& document_filepath, const 
                     asset.name = name;
                     asset.filepath = filepath;
                     asset.type = Asset_Type::Texture_Atlas;
-                    asset.sub_texture_id = sub_texture_id;
+                    asset.texture_name = sub_texture_id;
                     m_texture_atlas_filepaths[(asset_base_path + name)] = asset;
                 } break;
                 case Asset_Type::Shader: {
@@ -221,9 +221,9 @@ Asset_Manager::load_texture_atlas(const std::string& asset_name)
 
     Texture_Atlas_File asset = m_texture_atlas_filepaths[asset_name];
 
-    const auto texture = load_texture(asset.sub_texture_id);
+    const auto texture = load_texture(asset.texture_name);
     if (!texture) {
-        core::log::error("Asset_Manager::load_texture_atlas() failed to load internal texture {}", asset.sub_texture_id);
+        core::log::error("Asset_Manager::load_texture_atlas() failed to load internal texture {}", asset.texture_name);
         return nullptr;
     }
 
@@ -273,7 +273,7 @@ Asset_Manager::unload_texture_atlas(const std::string& asset_name)
         return;
     }
 
-    const auto texture_name = m_texture_atlas_filepaths.at(asset_name).sub_texture_id;
+    const auto texture_name = m_texture_atlas_filepaths.at(asset_name).texture_name;
     unload_texture(texture_name);
 
     m_loaded_texture_atlas.erase(asset_name);

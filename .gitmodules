@@ -1,15 +1,15 @@
+[submodule "libs/glm"]
+	path = libs/glm
+	url = git@github.com:r-ggraham/glm.git
+[submodule "libs/glew"]
+	path = libs/glew
+	url = git@github.com:r-ggraham/glew-cmake.git
+[submodule "libs/freetype"]
+	path = libs/freetype
+	url = git@github.com:r-ggraham/freetype.git
 [submodule "ascension/libs/sdl"]
 	path = ascension/libs/sdl
 	url = git@github.com:r-ggraham/SDL.git
-[submodule "ascension/libs/glm"]
-	path = libs/glm
-	url = git@github.com:r-ggraham/glm.git
-[submodule "ascension/libs/glew"]
-	path = libs/glew
-	url = git@github.com:r-ggraham/glew-cmake.git
-[submodule "ascension/libs/freetype"]
-	path = libs/freetype
-	url = git@github.com:r-ggraham/freetype.git
 [submodule "ascension/libs/pugixml"]
 	path = ascension/libs/pugixml
 	url = git@github.com:r-ggraham/pugixml.git

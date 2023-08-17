@@ -19,9 +19,7 @@ option(ENABLE_PCH "Enable Precompiled Headers" ON)
 
 # Libraries
 add_subdirectory(libs)
-add_subdirectory(erika)
 add_subdirectory(yuki)
 
 # Applications
 add_subdirectory(ascension)
-add_subdirectory(qilian)

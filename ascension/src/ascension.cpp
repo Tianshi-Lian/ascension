@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 21:25:11
+ * Last Modified: 2023-08-22 20:32:20
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -42,24 +42,8 @@ const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 1000;
 void
 Ascension::on_initialize()
 {
-    assets::Texture_Atlas_File foo;
-    foo.name = "fruits";
-    foo.filepath = "fruits.yaml";
-    foo.type = assets::Asset_Type::Texture_Atlas;
-    foo.texture_name = "textures/fruits";
-    foo.sub_textures["watermelon"] = { 0, 64, 64, 128 };
-    foo.sub_textures["pineapple"] = { 64, 64, 128, 128 };
-
-    YAML::Emitter out;
-    const YAML::Node foo_node = YAML::convert<assets::Texture_Atlas_File>::encode(foo);
-    out << foo_node;
-
-    std::ofstream yout("foo.yaml");
-    yout << out.c_str();
-    yout.close();
-
-    auto ybar = YAML::LoadFile("foo.yaml");
-    auto bar = ybar.as<assets::Texture_Atlas_File>();
+    auto foo = YAML::LoadFile("assets/assets.yml");
+    auto bar = foo.as<assets::Asset_List_File>();
 
     m_asset_manager.load_asset_file("assets/assets.xml");
     m_asset_manager.load_texture("textures/unicorn");

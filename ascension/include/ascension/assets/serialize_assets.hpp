@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-16 10:53:12
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 21:24:39
+ * Last Modified: 2023-08-22 20:30:22
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -67,11 +67,14 @@ template<>
 struct convert<ascension::assets::Asset_File> {
     static Node encode(const ascension::assets::Asset_File& rhs)
     {
+        Node root;
+
         Node data;
-        data["filepath"] = rhs.filepath;
+        if (!rhs.filepath.empty()) {
+            data["filepath"] = rhs.filepath;
+        }
         data["type"] = magic_enum::enum_name(rhs.type);
 
-        Node root;
         root[rhs.name] = data;
         return root;
     }
@@ -81,18 +84,29 @@ struct convert<ascension::assets::Asset_File> {
         rhs.name = root.begin()->first.Scalar();
         const auto node = root[rhs.name];
 
-        if (!node["filepath"] || !node["type"]) {
+        if (!node["type"]) {
             ascension::core::log::error(
-                "Failed to decode Asset_File. Name: {} Filepath: {}",
-                node["name"].as<std::string>(),
+                "Failed to decode Asset_File unknown asset type. Name: {} Filepath: {}",
+                rhs.name,
                 node["filepath"].as<std::string>()
             );
             return false;
         }
-
-        rhs.filepath = node["filepath"].as<std::string>();
         rhs.type = magic_enum::enum_cast<ascension::assets::Asset_Type>(node["type"].as<std::string>())
                        .value_or(ascension::assets::Asset_Type::Unknown);
+
+        // NOTE: Root asset_lists won't need to have a filepath as they aren't "pointing" at any asset themselves, they are just
+        // /n    holding a list of others, so we can avoid validating this for Asset_Lists.
+        // TODO: We may want to explicitly set and check this, such as 'root: true', to avoid accidents.
+        if (!node["filepath"] && rhs.type != ascension::assets::Asset_Type::Asset_List) {
+            ascension::core::log::error(
+                "Failed to decode Asset_File missing filepath. Name: {} Type: {}", rhs.name, magic_enum::enum_name(rhs.type)
+            );
+            return false;
+        }
+        if (node["filepath"]) {
+            rhs.filepath = node["filepath"].as<std::string>();
+        }
 
         if (rhs.type == ascension::assets::Asset_Type::Unknown) {
             ascension::core::log::error(
@@ -103,6 +117,60 @@ struct convert<ascension::assets::Asset_File> {
             );
             return false;
         }
+
+        return true;
+    }
+};
+
+template<>
+struct convert<ascension::assets::Asset_List_File::Asset_List_Item> {
+    static Node encode(const ascension::assets::Asset_List_File::Asset_List_Item& rhs)
+    {
+        Node root = convert<ascension::assets::Asset_File>::encode(rhs);
+
+        Node data = root[rhs.name];
+        data["list"] = magic_enum::enum_name(rhs.list);
+
+        return root;
+    }
+
+    static bool decode(const Node& root, ascension::assets::Asset_List_File::Asset_List_Item& rhs)
+    {
+        convert<ascension::assets::Asset_File>::decode(root, rhs);
+        const auto node = root[rhs.name];
+
+        if (!node["list"]) {
+            ascension::core::log::error(
+                "Failed to decode Asset_List_File::Asset_List. Name: {} Filepath: {}. Invalid data.", rhs.name, rhs.filepath
+            );
+            return false;
+        }
+
+        rhs.list = magic_enum::enum_cast<ascension::assets::Asset_Type>(node["list"].as<std::string>())
+                       .value_or(ascension::assets::Asset_Type::Unknown);
+
+        return true;
+    }
+};
+
+template<>
+struct convert<ascension::assets::Asset_List_File> {
+    static Node encode(const ascension::assets::Asset_List_File& rhs)
+    {
+        Node root = convert<ascension::assets::Asset_File>::encode(rhs);
+
+        Node data = root[rhs.name];
+        data["assets"] = rhs.assets;
+
+        return root;
+    }
+
+    static bool decode(const Node& root, ascension::assets::Asset_List_File& rhs)
+    {
+        convert<ascension::assets::Asset_File>::decode(root, rhs);
+        const auto node = root[rhs.name];
+
+        rhs.assets = node["assets"].as<std::vector<ascension::assets::Asset_List_File::Asset_List_Item>>();
 
         return true;
     }

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-14 13:56:09
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 20:32:03
+ * Last Modified: 2023-08-22 19:51:11
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -41,6 +41,14 @@ struct Asset_File {
     std::string name;
     std::string filepath;
     Asset_Type type;
+};
+
+struct Asset_List_File : public Asset_File {
+    struct Asset_List_Item : public Asset_File {
+        Asset_Type list{ Asset_Type::Unknown };
+    };
+
+    std::vector<Asset_List_Item> assets;
 };
 
 struct Texture_File : public Asset_File {

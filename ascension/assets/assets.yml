@@ -4,12 +4,9 @@ root:
     - textures:
         filepath: textures/
         type: Asset_List
-        list: Texture
     - shaders:
         filepath: shaders/
         type: Asset_List
-        list: Shader
     - fonts:
         filepath: fonts/
         type: Asset_List
-        list: Font

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-15 20:12:47
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 11:12:28
+ * Last Modified: 2023-09-04 21:17:43
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -35,12 +35,11 @@
 
 namespace ascension::assets {
 
-Texture_File
-Texture_Handler::parse_texture_file(const std::string& filepath)
+void
+Texture_Handler::register_texture_file(const std::string& asset_id, const YAML::Node& file_node)
 {
-    YAML::Node yaml_root = YAML::LoadFile(filepath);
-    auto texture_file = yaml_root.as<Texture_File>();
-    return texture_file;
+    const auto texture_file = file_node.as<Texture_File>();
+    m_texture_files[asset_id] = texture_file;
 }
 
 std::shared_ptr<graphics::Texture_2D>
@@ -103,6 +102,13 @@ Texture_Handler::unload_texture(const std::string& asset_name)
     }
 
     m_loaded_textures.erase(asset_name);
+}
+
+void
+Texture_Handler::register_texture_atlas_file(const std::string& asset_id, const YAML::Node& file_node)
+{
+    const auto texture_atlas_file = file_node.as<Texture_Atlas_File>();
+    m_texture_atlas_files[asset_id] = texture_atlas_file;
 }
 
 }

@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-16 10:53:12
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-22 20:30:22
+ * Last Modified: 2023-09-05 08:35:40
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -96,17 +96,13 @@ struct convert<ascension::assets::Asset_File> {
                        .value_or(ascension::assets::Asset_Type::Unknown);
 
         // NOTE: Root asset_lists won't need to have a filepath as they aren't "pointing" at any asset themselves, they are just
-        // /n    holding a list of others, so we can avoid validating this for Asset_Lists.
-        // TODO: We may want to explicitly set and check this, such as 'root: true', to avoid accidents.
-        if (!node["filepath"] && rhs.type != ascension::assets::Asset_Type::Asset_List) {
-            ascension::core::log::error(
-                "Failed to decode Asset_File missing filepath. Name: {} Type: {}", rhs.name, magic_enum::enum_name(rhs.type)
-            );
-            return false;
-        }
+        // /n    holding a list of others, likewise some assets such as a Texture_Atlas will hold all it's own data and won't
+        // /n    need a filepath.
         if (node["filepath"]) {
             rhs.filepath = node["filepath"].as<std::string>();
         }
+        // TODO: Have types which inherit from the base Asset_File define if they need a filepath or not.
+        // /t    Could we specify bitflags for a Asset_Files for which attributes are required?
 
         if (rhs.type == ascension::assets::Asset_Type::Unknown) {
             ascension::core::log::error(
@@ -117,37 +113,6 @@ struct convert<ascension::assets::Asset_File> {
             );
             return false;
         }
-
-        return true;
-    }
-};
-
-template<>
-struct convert<ascension::assets::Asset_List_File::Asset_List_Item> {
-    static Node encode(const ascension::assets::Asset_List_File::Asset_List_Item& rhs)
-    {
-        Node root = convert<ascension::assets::Asset_File>::encode(rhs);
-
-        Node data = root[rhs.name];
-        data["list"] = magic_enum::enum_name(rhs.list);
-
-        return root;
-    }
-
-    static bool decode(const Node& root, ascension::assets::Asset_List_File::Asset_List_Item& rhs)
-    {
-        convert<ascension::assets::Asset_File>::decode(root, rhs);
-        const auto node = root[rhs.name];
-
-        if (!node["list"]) {
-            ascension::core::log::error(
-                "Failed to decode Asset_List_File::Asset_List. Name: {} Filepath: {}. Invalid data.", rhs.name, rhs.filepath
-            );
-            return false;
-        }
-
-        rhs.list = magic_enum::enum_cast<ascension::assets::Asset_Type>(node["list"].as<std::string>())
-                       .value_or(ascension::assets::Asset_Type::Unknown);
 
         return true;
     }
@@ -170,7 +135,7 @@ struct convert<ascension::assets::Asset_List_File> {
         convert<ascension::assets::Asset_File>::decode(root, rhs);
         const auto node = root[rhs.name];
 
-        rhs.assets = node["assets"].as<std::vector<ascension::assets::Asset_List_File::Asset_List_Item>>();
+        rhs.assets = node["assets"].as<std::vector<ascension::assets::Asset_File>>();
 
         return true;
     }
@@ -223,9 +188,15 @@ struct convert<ascension::assets::Texture_Atlas_File> {
         convert<ascension::assets::Asset_File>::decode(root, rhs);
         const auto node = root[rhs.name];
 
-        if (!node["texture_name"] || !node["sub_textures"]) {
+        if (!node["texture_name"]) {
             ascension::core::log::error(
-                "Failed to decode Texture_Atlas_File. Name: {} Filepath: {}. Invalid data.", rhs.name, rhs.filepath
+                "Failed to decode Texture_Atlas_File {} {}. Missing `texture_name`.", rhs.name, rhs.filepath
+            );
+            return false;
+        }
+        if (!node["sub_textures"]) {
+            ascension::core::log::error(
+                "Failed to decode Texture_Atlas_File {} {}. Missing `sub_textures`.", rhs.name, rhs.filepath
             );
             return false;
         }

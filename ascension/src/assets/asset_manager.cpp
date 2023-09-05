@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 12:06:55
+ * Last Modified: 2023-09-05 09:00:21
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,12 +26,15 @@
 
 #include <magic_enum/magic_enum.hpp>
 #include <pugixml.hpp>
+#include <yaml-cpp/yaml.h>
 
 #include "core/log.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/sprite_font.hpp"
 #include "graphics/texture_2d.hpp"
 #include "graphics/texture_atlas.hpp"
+
+#include "assets/serialize_assets.hpp"
 
 // namespace {
 
@@ -178,14 +181,89 @@ Asset_Manager::parse_asset_document(const std::string& document_filepath, const 
     }
 }
 
-void
-Asset_Manager::load_asset_file(const std::string& asset_file)
-{
-    parse_asset_document(asset_file, "");
+// TODO: Pass around a struct {}; with the current filepath, current level, active level, current id
+// /t    to make it easier to track where we are in the list. We can also validate the current level == name
+/**
+ * struct Asset_List_Data {
+ *   std::string filepath = "assets/"
+ *   std::string asset_id;
+ *   std::string active_name;
+ *   u32 depth;
+ * };
+ *
+ * Asset_List_Data foo;
+ * foo.filepath = "assets/textures";
+ * foo.asset_id = "textures/";
+ * foo.active_name = "textures";
+ * foo.depth = 1;
+ *
+ * Asset_List_Data bar;
+ * foo.filepath = "assets/textures/levels/01/";
+ * foo.asset_id = "textures/levels/01";
+ * foo.active_name = "01";
+ * foo.depth = 3;
+ *
+ * if (asset_list name != foo.active_name) {
+ *   // trying to parse mismatched asset
+ * }
+ *
+ * const auto asset_filepath = foo.filepath + asset_file.name + ".yml";
+ * const auto asset_id = foo.asset_id + asset_file.name;
+ *
+ */
 
-    core::log::info("Loaded {} texture atlas", m_texture_atlas_filepaths.size());
-    core::log::info("Loaded {} shaders", m_shader_filepaths.size());
-    core::log::info("Loaded {} fonts", m_font_filepaths.size());
+void
+// NOLINTNEXTLINE
+Asset_Manager::parse_asset_list_file(const YAML::Node& file_node, const std::string& name_prefix)
+{
+    const auto asset_list_name = file_node.begin()->first.Scalar();
+    const auto asset_list_node = file_node[asset_list_name];
+    const auto asset_list = asset_list_node["assets"];
+
+    for (const auto& asset_node : asset_list) {
+        const auto asset_file = asset_node.as<Asset_File>();
+
+        if (asset_file.type == Asset_Type::Asset_List) {
+            const auto asset_prefix = name_prefix + asset_file.name + "/";
+            const auto asset_filepath = "assets/" + name_prefix + asset_file.filepath + asset_file.name + ".yml";
+            load_asset_file_named(asset_filepath, asset_prefix);
+        }
+        else {
+            const auto asset_id =
+                (name_prefix.empty()) ? asset_list_name + "/ " + asset_file.name : name_prefix + asset_file.name;
+
+            switch (asset_file.type) {
+                case Asset_Type::Unknown:
+                    core::log::error("Unknown Asset_Type loading file {}", asset_id);
+                    break;
+                case Asset_Type::Font:
+                case Asset_Type::Shader:
+                    break;
+                case Asset_Type::Texture_Atlas:
+                    m_texture_handler.register_texture_atlas_file(asset_id, asset_node);
+                    break;
+                case Asset_Type::Texture:
+                    m_texture_handler.register_texture_file(asset_id, asset_node);
+                    break;
+                case Asset_Type::Asset_List:
+                    break;
+            }
+        }
+    }
+}
+
+void
+// NOLINTNEXTLINE
+Asset_Manager::load_asset_file_named(const std::string& filepath, const std::string& name_prefix)
+{
+    const auto yaml_file = YAML::LoadFile(filepath);
+    parse_asset_list_file(yaml_file, name_prefix);
+}
+
+void
+Asset_Manager::load_asset_file(const std::string& filepath)
+{
+    load_asset_file_named(filepath, "");
 }
 
 std::shared_ptr<graphics::Texture_2D>

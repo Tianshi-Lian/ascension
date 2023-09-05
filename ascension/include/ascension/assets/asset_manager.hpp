@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 14:45:21
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 11:20:34
+ * Last Modified: 2023-09-04 22:03:23
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,7 +28,6 @@
 
 #include "assets/asset_types.hpp"
 #include "assets/texture_handler.hpp"
-#include "core/log.hpp"
 
 namespace ascension::graphics {
 class Shader;
@@ -51,72 +50,7 @@ public:
 
     void clear();
 
-    void load_asset_file(const std::string& asset_file);
-
-    template<typename T>
-    std::shared_ptr<T> load_asset(Asset_Type type, const std::string& asset_name)
-    {
-        switch (type) {
-            case Asset_Type::Unknown:
-                core::log::error("Attempting to load unknown Asset_Type, name: {}", asset_name);
-                return nullptr;
-            case Asset_Type::Asset_List: {
-                load_asset_file(asset_name);
-                return nullptr;
-            }
-            case Asset_Type::Texture:
-                return m_texture_handler.load_texture(asset_name);
-            case Asset_Type::Texture_Atlas:
-                return load_texture_atlas(asset_name);
-            case Asset_Type::Shader:
-                return load_shader(asset_name);
-            case Asset_Type::Font:
-                return load_font(asset_name);
-        }
-    }
-
-    template<typename T>
-    std::shared_ptr<T> get_asset(Asset_Type type, const std::string& asset_name)
-    {
-        switch (type) {
-            case Asset_Type::Unknown:
-                core::log::error("Attempting to get unknown Asset_Type, name: {}", asset_name);
-                return nullptr;
-            case Asset_Type::Asset_List:
-                return nullptr;
-            case Asset_Type::Texture:
-                return m_texture_handler.get_texture(asset_name);
-            case Asset_Type::Texture_Atlas:
-                return get_texture_atlas(asset_name);
-            case Asset_Type::Shader:
-                return get_shader(asset_name);
-            case Asset_Type::Font:
-                return get_font(asset_name);
-        }
-    }
-
-    void unload_asset(Asset_Type type, const std::string& asset_name)
-    {
-        switch (type) {
-            case Asset_Type::Unknown:
-                core::log::error("Attempting to unload unknown Asset_Type, name: {}", asset_name);
-                break;
-            case Asset_Type::Asset_List:
-                break;
-            case Asset_Type::Texture:
-                m_texture_handler.unload_texture(asset_name);
-                break;
-            case Asset_Type::Texture_Atlas:
-                unload_texture_atlas(asset_name);
-                break;
-            case Asset_Type::Shader:
-                unload_shader(asset_name);
-                break;
-            case Asset_Type::Font:
-                unload_font(asset_name);
-                break;
-        }
-    }
+    void load_asset_file(const std::string& filepath);
 
     std::shared_ptr<graphics::Texture_2D> load_texture(const std::string& asset_name);
     std::shared_ptr<graphics::Texture_2D> get_texture(const std::string& asset_name);
@@ -141,6 +75,8 @@ public:
 
 private:
     void parse_asset_document(const std::string& document_filepath, const std::string& root_name);
+    void parse_asset_list_file(const YAML::Node& file_node, const std::string& name_prefix);
+    void load_asset_file_named(const std::string& filepath, const std::string& name_prefix);
 
     Texture_Handler m_texture_handler;
 

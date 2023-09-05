@@ -1,0 +1,26 @@
+textures:
+  type: Asset_List
+  assets:
+    - wabbit_alpha:
+        type: Texture
+        filepath: wabbit_alpha.png
+        scale: 1.5
+    - unicorn:
+        type: Texture
+        filepath: unicorn.png
+    - fruits:
+        type: Texture
+        filepath: fruits.png
+    - fruits:
+        type: Texture_Atlas
+        texture_name: textures/fruits
+        sub_textures:
+          watermelon: [0, 64, 64, 128]
+          pineapple: [64, 64, 128, 128]
+          orange: [0, 32, 32, 64]
+          grape: [32, 32, 64, 64]
+          pear: [0, 0, 32, 32]
+          banana: [32, 0, 64, 32]
+          strawberry: [64, 48, 80, 64]
+          raspberry: [80, 48, 96, 64]
+          cherry: [64, 32, 80, 48]

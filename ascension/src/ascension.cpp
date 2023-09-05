@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-22 20:32:20
+ * Last Modified: 2023-09-05 08:32:42
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -42,8 +42,18 @@ const i32 WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900, OBJECT_COUNT = 1000;
 void
 Ascension::on_initialize()
 {
-    auto foo = YAML::LoadFile("assets/assets.yml");
-    auto bar = foo.as<assets::Asset_List_File>();
+    // assets::Texture_Atlas_File foo;
+    // foo.sub_textures.emplace("watermelon", v4{ 0, 64, 64, 128 });
+    //
+    // YAML::Emitter emi;
+    // const auto bar = YAML::convert<assets::Texture_Atlas_File>::encode(foo);
+    // emi << bar;
+    //
+    // std::ofstream yout("foo.yaml");
+    // yout << emi.c_str();
+    // yout.close();
+
+    m_asset_manager.load_asset_file("assets/assets.yml");
 
     m_asset_manager.load_asset_file("assets/assets.xml");
     m_asset_manager.load_texture("textures/unicorn");

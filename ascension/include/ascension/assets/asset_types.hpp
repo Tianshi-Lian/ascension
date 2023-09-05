@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-14 13:56:09
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-22 19:51:11
+ * Last Modified: 2023-09-04 21:31:29
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -44,11 +44,12 @@ struct Asset_File {
 };
 
 struct Asset_List_File : public Asset_File {
-    struct Asset_List_Item : public Asset_File {
-        Asset_Type list{ Asset_Type::Unknown };
-    };
+    // TODO: Revisit specifying a list of types to avoid sub-specifying types.
+    // struct Asset_List_Item : public Asset_File {
+    //     Asset_Type list{ Asset_Type::Unknown };
+    // };
 
-    std::vector<Asset_List_Item> assets;
+    std::vector<Asset_File> assets;
 };
 
 struct Texture_File : public Asset_File {

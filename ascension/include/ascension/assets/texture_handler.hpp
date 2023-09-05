@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-08-15 20:09:20
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-16 11:28:52
+ * Last Modified: 2023-09-04 21:17:13
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -27,6 +27,8 @@
 
 #include <unordered_map>
 
+#include <yaml-cpp/node/node.h>
+
 #include "assets/asset_types.hpp"
 
 namespace ascension::graphics {
@@ -38,8 +40,8 @@ namespace ascension::assets {
 
 class Texture_Handler {
 public:
-    static Texture_File parse_texture_file(const std::string& filepath);
-    static Texture_Atlas_File parse_texture_atlas_file(const std::string& filepath);
+    void register_texture_file(const std::string& asset_id, const YAML::Node& file_node);
+    void register_texture_atlas_file(const std::string& asset_id, const YAML::Node& file_node);
 
     std::shared_ptr<graphics::Texture_2D> load_texture(const std::string& asset_name);
     std::shared_ptr<graphics::Texture_2D> get_texture(const std::string& asset_name);

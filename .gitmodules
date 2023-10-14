@@ -10,3 +10,6 @@
 [submodule "ascension/libs/sdl"]
 	path = ascension/libs/sdl
 	url = git@github.com:r-ggraham/SDL.git
+[submodule "ascension/libs/json5"]
+	path = ascension/libs/json5
+	url = https://github.com/P-i-N/json5.git

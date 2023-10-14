@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-15 14:54:44
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-10 12:23:09
+ * Last Modified: 2023-10-14 16:00:13
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -30,7 +30,7 @@
 #include <GL/glew.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
-#include "yuki/debug/instrumentor.hpp"
+#include "debug/instrumentor.hpp"
 
 #include "core/log.hpp"
 #include "graphics/buffer_object.hpp"

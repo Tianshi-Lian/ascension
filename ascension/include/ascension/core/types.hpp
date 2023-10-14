@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-09 16:09:53
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-16 11:34:22
+ * Last Modified: 2023-10-14 15:58:22
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,9 +24,22 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include <glm/glm.hpp>
 
-#include "yuki/types.hpp" // IWYU pragma: export
+using u8 = uint8_t;
+using u16 = uint16_t;
+using u32 = uint32_t;
+using u64 = uint64_t;
+
+using i8 = int8_t;
+using i16 = int16_t;
+using i32 = int32_t;
+using i64 = int64_t;
+
+using f32 = float;
+using f64 = double;
 
 using v1 = glm::f32vec1;
 using v2 = glm::f32vec2;

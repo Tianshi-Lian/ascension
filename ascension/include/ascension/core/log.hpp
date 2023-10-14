@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-18 19:02:06
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-04-26 15:16:16
+ * Last Modified: 2023-10-14 16:09:57
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "yuki/debug/logger.hpp"
+#include "debug/logger.hpp"
 
 namespace ascension::core::log {
 
@@ -34,42 +34,42 @@ template<typename... Args>
 static void
 debug(const std::string& format, Args&&... args)
 {
-    yuki::debug::Logger::debug(SOURCE_NAME, format, std::forward<Args>(args)...);
+    ascension::debug::Logger::debug(SOURCE_NAME, format, std::forward<Args>(args)...);
 }
 
 template<typename... Args>
 static void
 info(const std::string& format, Args&&... args)
 {
-    yuki::debug::Logger::info(SOURCE_NAME, format, std::forward<Args>(args)...);
+    ascension::debug::Logger::info(SOURCE_NAME, format, std::forward<Args>(args)...);
 }
 
 template<typename... Args>
 static void
 notice(const std::string& format, Args&&... args)
 {
-    yuki::debug::Logger::notice(SOURCE_NAME, format, std::forward<Args>(args)...);
+    ascension::debug::Logger::notice(SOURCE_NAME, format, std::forward<Args>(args)...);
 }
 
 template<typename... Args>
 static void
 warn(const std::string& format, Args&&... args)
 {
-    yuki::debug::Logger::warn(SOURCE_NAME, format, std::forward<Args>(args)...);
+    ascension::debug::Logger::warn(SOURCE_NAME, format, std::forward<Args>(args)...);
 }
 
 template<typename... Args>
 static void
 error(const std::string& format, Args&&... args)
 {
-    yuki::debug::Logger::error(SOURCE_NAME, format, std::forward<Args>(args)...);
+    ascension::debug::Logger::error(SOURCE_NAME, format, std::forward<Args>(args)...);
 }
 
 template<typename... Args>
 static void
 critical(const std::string& format, Args&&... args)
 {
-    yuki::debug::Logger::critical(SOURCE_NAME, format, std::forward<Args>(args)...);
+    ascension::debug::Logger::critical(SOURCE_NAME, format, std::forward<Args>(args)...);
 }
 
 }

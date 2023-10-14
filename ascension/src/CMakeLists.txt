@@ -9,7 +9,15 @@ target_sources(${APP_NAME} PRIVATE
     core/application.cpp
     core/window.cpp
 
+    # Debug
+    debug/instrumentor.cpp
+    debug/logger.cpp
+
+    # Platform
+    platform/platform_win32.cpp
+
     # Input
+    input/input.cpp
     input/input_listener.cpp
     input/input_manager.cpp
     input/input_state.cpp

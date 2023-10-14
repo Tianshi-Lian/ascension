@@ -11,8 +11,7 @@ add_subdirectory(sdl EXCLUDE_FROM_ALL)
 # GLM
 # https://github.com/g-truc/glm
 add_library(glm INTERFACE)
-target_include_directories(glm SYSTEM INTERFACE "glm"
-)
+target_include_directories(glm SYSTEM INTERFACE "glm")
 
 # glew-cmake
 # https://github.com/Perlmint/glew-cmake
@@ -50,4 +49,7 @@ set(FMT_CUDA_TEST OFF CACHE BOOL "" FORCE)
 add_subdirectory(fmt)
 
 # magic_enum
+set(MAGIC_ENUM_OPT_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(MAGIC_ENUM_OPT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(MAGIC_ENUM_OPT_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(magic_enum)

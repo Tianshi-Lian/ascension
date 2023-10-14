@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-08 15:43:49
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-18 20:54:40
+ * Last Modified: 2023-10-14 16:15:47
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -26,8 +26,8 @@
 
 #include <SDL.h>
 
-#include "yuki/debug/instrumentor.hpp"
-#include "yuki/platform/platform.hpp"
+#include "debug/instrumentor.hpp"
+#include "platform/platform.hpp"
 
 #include "core/log.hpp"
 
@@ -67,12 +67,12 @@ Application::initialize(const std::string& app_name, i32 pos_x, i32 pos_y, i32 w
 i32
 Application::run()
 {
-    const auto platform_state = std::make_shared<yuki::Platform_State>();
-    yuki::Platform::initialize_state(platform_state);
+    const auto platform_state = std::make_shared<platform::Platform_State>();
+    platform::Platform::initialize_state(platform_state);
 
     initialize();
 
-    f64 start_time = yuki::Platform::get_platform_time(platform_state);
+    f64 start_time = platform::Platform::get_time(platform_state);
     f64 next_game_tick = start_time;
     i32 loops = 0;
 
@@ -83,9 +83,9 @@ Application::run()
     while (!m_should_quit) {
         PROFILE_SCOPE("Application::run update_loop");
 
-        start_time = yuki::Platform::get_platform_time(platform_state);
+        start_time = platform::Platform::get_time(platform_state);
         loops = 0;
-        while (yuki::Platform::get_platform_time(platform_state) > next_game_tick && loops < max_skipped_frames) {
+        while (platform::Platform::get_time(platform_state) > next_game_tick && loops < max_skipped_frames) {
             SDL_Event event;
             while (SDL_PollEvent(&event) != 0) {
                 switch (event.type) {
@@ -131,15 +131,14 @@ Application::run()
             ++update_frames;
         }
 
-        f32 interpolation = static_cast<f32>(
-            (yuki::Platform::get_platform_time(platform_state) + skip_update_ms - next_game_tick) / skip_update_ms
-        );
+        f32 interpolation =
+            static_cast<f32>((platform::Platform::get_time(platform_state) + skip_update_ms - next_game_tick) / skip_update_ms);
 
         render(interpolation);
 
         ++render_frames;
 
-        elapsed_time += (yuki::Platform::get_platform_time(platform_state) - start_time);
+        elapsed_time += (platform::Platform::get_time(platform_state) - start_time);
         if (elapsed_time >= millisecond_per_second) {
             core::log::debug("Update fps: {}  Render fps: {}", update_frames, render_frames);
             elapsed_time = 0;

@@ -1,15 +1,21 @@
-[submodule "libs/glm"]
-	path = libs/glm
-	url = git@github.com:r-ggraham/glm.git
-[submodule "libs/glew"]
-	path = libs/glew
-	url = git@github.com:r-ggraham/glew-cmake.git
-[submodule "libs/freetype"]
-	path = libs/freetype
-	url = git@github.com:r-ggraham/freetype.git
+[submodule "ascension/libs/glm"]
+	path = ascension/libs/glm
+	url = git@github.com:Tianshi-Lian/glm.git
+[submodule "ascension/libs/glew"]
+	path = ascension/libs/glew
+	url = git@github.com:Tianshi-Lian/glew-cmake.git
+[submodule "ascension/libs/freetype"]
+	path = ascension/libs/freetype
+	url = git@github.com:Tianshi-Lian/freetype.git
 [submodule "ascension/libs/sdl"]
 	path = ascension/libs/sdl
-	url = git@github.com:r-ggraham/SDL.git
+	url = git@github.com:Tianshi-Lian/SDL.git
+[submodule "ascension/libs/magic_enum"]
+	path = ascension/libs/magic_enum
+	url = git@github.com:Neargye/magic_enum.git
 [submodule "ascension/libs/json5"]
 	path = ascension/libs/json5
-	url = https://github.com/P-i-N/json5.git
+	url = git@github.com:P-i-N/json5.git
+[submodule "ascension/libs/fmt"]
+	path = ascension/libs/fmt
+	url = git@github.com:fmtlib/fmt.git

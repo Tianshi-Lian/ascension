@@ -3,12 +3,6 @@ A game about ascending through the seven planes of heaven
 
 ## Application
 - [**ascension**](ascension/): The main application for the game
-- [**qilian**](qilian/): A sandbox application for testing feature development
-## Libraries
-- [**sophia**](sophia/): A simple, lightweight build system written in Python
-- [**charlotte**](charlotte/): A set of CMake utility files
-- [**yuki**](yuki/): A core library for development, graphics & games
-- [**erika**](erika/): A 2D game engine written in C++17
 
 ## Dependencies
 ### Development scripts
@@ -17,18 +11,18 @@ A game about ascending through the seven planes of heaven
 ### Application & libraries
 - [**cmake**](https://cmake.org/): Build system of choice
 - [**ninja**](https://ninja-build.org/): CMake generator of choice
-- [**clang**](https://clang.llvm.org/) or [**gcc**](https://gcc.gnu.org/): Supported C++17 compiler
+- [**clang**](https://clang.llvm.org/) or [**gcc**](https://gcc.gnu.org/): Supported C++20 compiler
 - [**WinLibs**](https://winlibs.com/#download-release) (Optional/Windows): I personally use this for Windows development, using the `GCC + LLVM + MinGW-w64 (UCRT)` version. It conveniently contains all of the needed tools for building ISO C++ on Windows. Just extract somewhere add the `bin` folder to your PATH.
 
 ## Build
 All libraries and dependencies are either included in this repository or added as submodules in the respective libs directories.
 Don't forget to initialise them with `git submodule --init --recursive`
 
-The project currently builds on Windows & Linux(Ubuntu) with `g++` and `clang++` using ISO `c++17`.
+The project currently builds on Windows & Linux(Ubuntu) with `g++` and `clang++` using ISO `c++20`.
 
-It's recommended to set an alias for `./sophia/dev.bat` or `./sophia/dev.sh` so you can run commands from the main project directory such as `dev build`.
-- PowerShell: `New-Alias -Name dev -Value .\sophia\dev.bat`
-- bash: `echo alias dev='./sophia/dev.sh' >> ~/.bashrc`
+It's recommended to set an alias for `./scripts/dev.bat` or `./scripts/dev.sh` so you can run commands from the main project directory such as `dev build`.
+- PowerShell: `New-Alias -Name dev -Value .\scripts\dev.bat`
+- bash: `echo alias dev='./scripts/dev.sh' >> ~/.bashrc`
 
 **Commands:**
 - Help: `dev help`

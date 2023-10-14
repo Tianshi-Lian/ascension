@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-06 21:17:10
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-17 20:55:16
+ * Last Modified: 2023-10-14 16:09:57
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -24,8 +24,8 @@
 
 #include <SDL.h>
 
-#include "yuki/debug/instrumentor.hpp"
-#include "yuki/debug/logger.hpp"
+#include "debug/instrumentor.hpp"
+#include "debug/logger.hpp"
 
 #include "ascension.hpp"
 #include "core/log.hpp"
@@ -45,7 +45,7 @@ main(i32 argc, char** argv)
     UNUSED_PARAM(argc);
     UNUSED_PARAM(argv);
 
-    yuki::debug::Logger::initialize("logs/app.log", yuki::debug::Severity::LOG_DEBUG, true, true);
+    ascension::debug::Logger::initialize("logs/app.log", ascension::debug::Severity::LOG_DEBUG, true, true);
     PROFILE_BEGIN_SESSION("ascension", "logs/timings.json");
 
     core::log::critical("Critical Test");

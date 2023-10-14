@@ -1,5 +1,5 @@
 Priority:
-    core/helpers.hpp - Assert(test, "Failure message") - candidate for yuki.
+    core/helpers.hpp - Assert(test, "Failure message") - candidate for ascension.
     Animated sprites
     Optimized tilemap renderer
     Serialization

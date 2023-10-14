@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 15:04:17
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-07-22 16:27:47
+ * Last Modified: 2023-10-14 16:52:04
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -28,8 +28,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
-#include <magic_enum/magic_enum.hpp>
-#include <pugixml.hpp>
+#include <magic_enum.hpp>
+// #include <pugixml.hpp>
 
 #include "core/log.hpp"
 #include "graphics/shader.hpp"
@@ -39,22 +39,22 @@
 
 namespace {
 
-ascension::assets::Texture_Asset
-parse_texture_asset(const pugi::xml_node& node, const std::string& name, const std::string& filepath)
-{
-    ascension::assets::Texture_Asset asset;
-    if (!node.child("scale").empty()) {
-        asset.scale = std::strtof(node.child("scale").child_value(), nullptr);
-    }
-    if (!node.child("flip").empty()) {
-        asset.flip_on_load = (std::stoi(node.child("flip").child_value()) != 0);
-    }
-    asset.name = name;
-    asset.filepath = filepath;
-    asset.type = ascension::assets::Asset_Type::Texture;
+// ascension::assets::Texture_Asset
+// parse_texture_asset(const pugi::xml_node& node, const std::string& name, const std::string& filepath)
+// {
+//     ascension::assets::Texture_Asset asset;
+//     if (!node.child("scale").empty()) {
+//         asset.scale = std::strtof(node.child("scale").child_value(), nullptr);
+//     }
+//     if (!node.child("flip").empty()) {
+//         asset.flip_on_load = (std::stoi(node.child("flip").child_value()) != 0);
+//     }
+//     asset.name = name;
+//     asset.filepath = filepath;
+//     asset.type = ascension::assets::Asset_Type::Texture;
 
-    return asset;
-}
+//     return asset;
+// }
 
 }
 
@@ -79,109 +79,109 @@ Asset_Manager::clear()
 
 void
 // NOLINTNEXTLINE - this needs to be recursive.
-Asset_Manager::parse_asset_document(const std::string& document_filepath, const std::string& root_name)
+Asset_Manager::parse_asset_document(const std::string&, const std::string&)
 {
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(document_filepath.c_str());
+    // pugi::xml_document document;
+    // pugi::xml_parse_result result = document.load_file(document_filepath.c_str());
 
-    if (!result) {
-        core::log::error("Failed to load asset file {}. Error {}", document_filepath, result.description());
-        return;
-    }
+    // if (!result) {
+    //     core::log::error("Failed to load asset file {}. Error {}", document_filepath, result.description());
+    //     return;
+    // }
 
-    for (const auto& node : document.child("assets").children("asset")) {
-        const std::string name = node.attribute("name").value();
-        const std::string type_str = node.attribute("type").value();
-        const std::string filepath = node.attribute("filepath").value();
+    // for (const auto& node : document.child("assets").children("asset")) {
+    //     const std::string name = node.attribute("name").value();
+    //     const std::string type_str = node.attribute("type").value();
+    //     const std::string filepath = node.attribute("filepath").value();
 
-        const auto type = magic_enum::enum_cast<Asset_Type>(type_str);
-        if (!type.has_value()) {
-            core::log::error("Unknown asset type {}", type_str);
-            return;
-        }
+    //     const auto type = magic_enum::enum_cast<Asset_Type>(type_str);
+    //     if (!type.has_value()) {
+    //         core::log::error("Unknown asset type {}", type_str);
+    //         return;
+    //     }
 
-        std::string asset_base_path;
-        if (!root_name.empty()) {
-            asset_base_path = root_name + "/";
-        }
-        else if (type != assets::Asset_Type::Asset_List) {
-            asset_base_path = type_str + "/";
-        }
+    //     std::string asset_base_path;
+    //     if (!root_name.empty()) {
+    //         asset_base_path = root_name + "/";
+    //     }
+    //     else if (type != assets::Asset_Type::Asset_List) {
+    //         asset_base_path = type_str + "/";
+    //     }
 
-        if (type == Asset_Type::Asset_List) {
-            parse_asset_document(filepath, asset_base_path + name);
-        }
-        else {
-            switch (*type) {
-                case Asset_Type::Texture: {
-                    Texture_Asset asset = parse_texture_asset(node, name, filepath);
-                    // TODO: Should probably check we're not overwriting these...
-                    m_texture_filepaths[(asset_base_path + name)] = asset;
-                } break;
-                case Asset_Type::Texture_Atlas: {
-                    Texture_Atlas_Asset asset;
+    //     if (type == Asset_Type::Asset_List) {
+    //         parse_asset_document(filepath, asset_base_path + name);
+    //     }
+    //     else {
+    //         switch (*type) {
+    //             case Asset_Type::Texture: {
+    //                 Texture_Asset asset = parse_texture_asset(node, name, filepath);
+    //                 // TODO: Should probably check we're not overwriting these...
+    //                 m_texture_filepaths[(asset_base_path + name)] = asset;
+    //             } break;
+    //             case Asset_Type::Texture_Atlas: {
+    //                 Texture_Atlas_Asset asset;
 
-                    if (node.child("asset").empty()) {
-                        core::log::error("Trying to load texture atlas {} ({}) without respective texture", name, filepath);
-                        continue;
-                    }
+    //                 if (node.child("asset").empty()) {
+    //                     core::log::error("Trying to load texture atlas {} ({}) without respective texture", name, filepath);
+    //                     continue;
+    //                 }
 
-                    const auto texture_node = node.child("asset");
+    //                 const auto texture_node = node.child("asset");
 
-                    const std::string child_type_value = texture_node.attribute("type").value();
-                    const auto child_type = magic_enum::enum_cast<Asset_Type>(child_type_value);
-                    if (!child_type.has_value()) {
-                        core::log::error(
-                            "Unknown asset type {} loading texture atlas {} ({})", child_type_value, name, filepath
-                        );
-                        continue;
-                    }
+    //                 const std::string child_type_value = texture_node.attribute("type").value();
+    //                 const auto child_type = magic_enum::enum_cast<Asset_Type>(child_type_value);
+    //                 if (!child_type.has_value()) {
+    //                     core::log::error(
+    //                         "Unknown asset type {} loading texture atlas {} ({})", child_type_value, name, filepath
+    //                     );
+    //                     continue;
+    //                 }
 
-                    if (*child_type != Asset_Type::Texture) {
-                        core::log::error(
-                            "Unexpected child asset type {} loading texture atlas {} ({})", child_type_value, name, filepath
-                        );
-                        continue;
-                    }
+    //                 if (*child_type != Asset_Type::Texture) {
+    //                     core::log::error(
+    //                         "Unexpected child asset type {} loading texture atlas {} ({})", child_type_value, name, filepath
+    //                     );
+    //                     continue;
+    //                 }
 
-                    const std::string texture_name = texture_node.attribute("name").value();
-                    const std::string texture_filepath = texture_node.attribute("filepath").value();
-                    Texture_Asset texture_asset = parse_texture_asset(texture_node, texture_name, texture_filepath);
+    //                 const std::string texture_name = texture_node.attribute("name").value();
+    //                 const std::string texture_filepath = texture_node.attribute("filepath").value();
+    //                 Texture_Asset texture_asset = parse_texture_asset(texture_node, texture_name, texture_filepath);
 
-                    std::string sub_texture_id = asset_base_path + texture_name;
-                    m_texture_filepaths[sub_texture_id] = texture_asset;
+    //                 std::string sub_texture_id = asset_base_path + texture_name;
+    //                 m_texture_filepaths[sub_texture_id] = texture_asset;
 
-                    asset.name = name;
-                    asset.filepath = filepath;
-                    asset.type = Asset_Type::Texture_Atlas;
-                    asset.sub_texture_id = sub_texture_id;
-                    m_texture_atlas_filepaths[(asset_base_path + name)] = asset;
-                } break;
-                case Asset_Type::Shader: {
-                    Shader_Asset asset;
-                    if (node.child("vertex").empty() || node.child("fragment").empty()) {
-                        core::log::error("Trying to load shader {} ({}) without fragment or vertex source.", name, filepath);
-                        continue;
-                    }
-                    asset.vertex_src_file = node.child("vertex").child_value();
-                    asset.fragment_src_file = node.child("fragment").child_value();
-                    asset.name = name;
-                    asset.filepath = filepath;
-                    asset.type = Asset_Type::Shader;
-                    m_shader_filepaths[(asset_base_path + name)] = asset;
-                } break;
-                case Asset_Type::Font: {
-                    Font_Asset asset;
-                    asset.name = name;
-                    asset.filepath = filepath;
-                    asset.type = Asset_Type::Font;
-                    m_font_filepaths[(asset_base_path + name)] = asset;
-                } break;
-                default:
-                    break;
-            };
-        }
-    }
+    //                 asset.name = name;
+    //                 asset.filepath = filepath;
+    //                 asset.type = Asset_Type::Texture_Atlas;
+    //                 asset.sub_texture_id = sub_texture_id;
+    //                 m_texture_atlas_filepaths[(asset_base_path + name)] = asset;
+    //             } break;
+    //             case Asset_Type::Shader: {
+    //                 Shader_Asset asset;
+    //                 if (node.child("vertex").empty() || node.child("fragment").empty()) {
+    //                     core::log::error("Trying to load shader {} ({}) without fragment or vertex source.", name, filepath);
+    //                     continue;
+    //                 }
+    //                 asset.vertex_src_file = node.child("vertex").child_value();
+    //                 asset.fragment_src_file = node.child("fragment").child_value();
+    //                 asset.name = name;
+    //                 asset.filepath = filepath;
+    //                 asset.type = Asset_Type::Shader;
+    //                 m_shader_filepaths[(asset_base_path + name)] = asset;
+    //             } break;
+    //             case Asset_Type::Font: {
+    //                 Font_Asset asset;
+    //                 asset.name = name;
+    //                 asset.filepath = filepath;
+    //                 asset.type = Asset_Type::Font;
+    //                 m_font_filepaths[(asset_base_path + name)] = asset;
+    //             } break;
+    //             default:
+    //                 break;
+    //         };
+    //     }
+    // }
 }
 
 void

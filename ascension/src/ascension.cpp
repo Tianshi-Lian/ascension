@@ -3,7 +3,7 @@
  * Project: ascension
  * File Created: 2023-04-13 20:17:48
  * Author: Rob Graham (robgrahamdev@gmail.com)
- * Last Modified: 2023-08-10 12:25:26
+ * Last Modified: 2023-10-14 16:00:13
  * ------------------
  * Copyright 2023 Rob Graham
  * ==================
@@ -30,7 +30,7 @@
 #include "graphics/sprite_font.hpp"
 #include "graphics/texture_atlas.hpp"
 
-#include "yuki/debug/instrumentor.hpp"
+#include "debug/instrumentor.hpp"
 
 namespace ascension {
 

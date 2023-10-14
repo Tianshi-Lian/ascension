@@ -89,13 +89,13 @@ jobs:
         version: 1.1
 
     - name: 🐍 Install python dependencies
-      run: pip install -r ./sophia/requirements.txt
+      run: pip install -r ./scripts/requirements.txt
 
     - if: ${{ runner.os == 'Linux' }}
       name: ⚙️ Configure Linux
       run: |
-        chown $(whoami) ./sophia/dev.sh
-        chmod +x ./sophia/dev.sh
+        chown $(whoami) ./scripts/dev.sh
+        chmod +x ./scripts/dev.sh
 
     - name: 📋 Cache libs config
       id: cache-previous-build
@@ -115,7 +115,7 @@ jobs:
 
     - name: 🔨 Build
       run: >
-        ./sophia/dev${{ matrix.config.dev }}
+        ./scripts/dev${{ matrix.config.dev }}
         configure -cc=${{ matrix.config.tools_dir }}${{ matrix.config.cc }} -cxx=${{ matrix.config.tools_dir }}${{ matrix.config.cxx }} -cl=${{ matrix.config.cache }} -cxxl=${{ matrix.config.cache }}
         build -bt=${{ matrix.config.build_type }} -t=0 install -bt=${{ matrix.config.build_type }}
 

@@ -10,6 +10,3 @@
 [submodule "ascension/libs/sdl"]
 	path = ascension/libs/sdl
 	url = git@github.com:r-ggraham/SDL.git
-[submodule "ascension/libs/pugixml"]
-	path = ascension/libs/pugixml
-	url = git@github.com:r-ggraham/pugixml.git
